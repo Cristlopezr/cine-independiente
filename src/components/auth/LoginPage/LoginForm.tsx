@@ -1,15 +1,9 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import {
-	Button,
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
-	Input,
-} from '@/components/ui';
+import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
+import { Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
 const formSchema = z.object({
 	email: z
@@ -22,6 +16,8 @@ const formSchema = z.object({
 });
 
 export const LoginForm = () => {
+	const [showPassword, setShowPassword] = useState(false);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -31,6 +27,7 @@ export const LoginForm = () => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		//!llegar al backend y guardar usuario en estado si es que existe
 		console.log(values);
 	};
 
@@ -60,12 +57,25 @@ export const LoginForm = () => {
 						render={({ field }) => (
 							<FormItem>
 								<FormControl>
-									<Input
-										className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
-										placeholder='Contraseña'
-										{...field}
-										type='password'
-									/>
+									<div className='relative'>
+										<Input
+											className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
+											placeholder='Contraseña'
+											{...field}
+											type={`${!showPassword ? 'password' : 'text'}`}
+											autoComplete='new-password'
+										/>
+										<span
+											onClick={() => setShowPassword(!showPassword)}
+											className='w-5 sm:w-8 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+										>
+											{!showPassword ? (
+												<Eye className='w-full' />
+											) : (
+												<EyeOff className='w-full' />
+											)}
+										</span>
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>

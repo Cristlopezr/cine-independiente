@@ -42,6 +42,7 @@ const formSchema = z
 export const RegisterForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [showPasswordHelp, setShowPasswordHelp] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -123,20 +124,28 @@ export const RegisterForm = () => {
 											placeholder='Contraseña'
 											{...field}
 											type={`${!showPassword ? 'password' : 'text'}`}
+											autoComplete='new-password'
 										/>
-										<span className='group/card transition-all duration-700 ease-in-out'>
-											<small className='absolute w-fit right-0 bg-secondary z-10 px-6 py-2 pointer-events-none rounded-sm text-muted-foreground text-xs opacity-0 group-hover/card:opacity-100'>
+										<span
+											onMouseEnter={() => setShowPasswordHelp(true)}
+											onMouseLeave={() => setShowPasswordHelp(false)}
+										>
+											<small
+												className={`absolute w-fit right-0 bg-secondary z-10 px-6 py-2 pointer-events-none rounded-sm text-muted-foreground text-xs ${
+													showPasswordHelp ? 'opacity-100' : 'opacity-0'
+												} transition-all duration-300 ease-in-out`}
+											>
 												<ul className='flex flex-col gap-1 list-disc'>
 													<li>Al menos 8 caracteres</li>
 													<li>Una mayúscula</li>
 													<li>Un carácter especial</li>
 												</ul>
 											</small>
-											<HelpCircle className='absolute top-1/2 -translate-y-1/2 right-10 w-4' />
+											<HelpCircle className='absolute top-1/2 -translate-y-1/2 right-12 w-4 sm:w-5' />
 										</span>
 										<span
 											onClick={() => setShowPassword(!showPassword)}
-											className='w-5 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+											className='w-5 sm:w-8 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
 										>
 											{!showPassword ? (
 												<Eye className='w-full' />
@@ -162,10 +171,12 @@ export const RegisterForm = () => {
 											placeholder='Contraseña'
 											{...field}
 											type={`${!showConfirmPassword ? 'password' : 'text'}`}
+											autoComplete='new-password'
+											onInvalid={e => e.preventDefault()}
 										/>
 										<span
 											onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											className='w-5 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+											className='w-5 sm:w-8 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
 										>
 											{!showConfirmPassword ? (
 												<Eye className='w-full' />
