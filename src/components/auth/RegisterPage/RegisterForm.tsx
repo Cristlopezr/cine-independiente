@@ -1,31 +1,48 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import {
-	Button,
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
-	Input,
-} from '@/components/ui';
+import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
+import { Eye, EyeOff, HelpCircle } from 'lucide-react';
+import { useState } from 'react';
 
-
-const formSchema = z.object({
-	name: z.string().min(1, { message: 'Por favor ingresar un nombre' }),
-	lastName: z.string().min(1, { message: 'Por favor ingresar un apellido' }),
-	email: z
-		.string()
-		.min(1, {
-			message: 'Por favor ingresar un email',
-		})
-		.email('Por favor ingresar un email válido'),
-	password: z.string().min(1, { message: 'Por favor ingresar una contraseña' }),
-	password2: z.string().min(1, { message: 'Por favor confirmar contraseña' }),
-});
+const formSchema = z
+	.object({
+		name: z.string().min(1, { message: 'Por favor ingresar un nombre' }),
+		lastName: z.string().min(1, { message: 'Por favor ingresar un apellido' }),
+		email: z
+			.string()
+			.min(1, {
+				message: 'Por favor ingresar un email',
+			})
+			.email('Por favor ingresar un email válido'),
+		password: z
+			.string()
+			.min(8, { message: 'Por favor ingresar una contraseña válida' })
+			.refine(value => /[A-Z]/.test(value), {
+				message: 'La contraseña debe contener al menos una mayúscula',
+			})
+			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
+				message: 'La contraseña debe contener al menos un caracter especial',
+			}),
+		//!Validación de segunda contraseña
+		confirmPassword: z.string(),
+		/* .min(8, { message: 'Por favor ingresar una contraseña válida' })
+			.refine(value => /[A-Z]/.test(value), {
+				message: 'La contraseña debe contener al menos una mayúscula',
+			})
+			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
+				message: 'La contraseña debe contener al menos un caracter especial',
+			}), */
+	})
+	.refine(data => data.password === data.confirmPassword, {
+		message: 'Las contraseñas no coinciden',
+		path: ['confirmPassword'],
+	});
 
 export const RegisterForm = () => {
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -33,10 +50,11 @@ export const RegisterForm = () => {
 			lastName: '',
 			email: '',
 			password: '',
-			password2: '',
+			confirmPassword: '',
 		},
 	});
-
+	/* console.log(formSchema.safeParse(form.getValues())) */
+	/* console.log(form.formState, !!form.formState.errors.password) */
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		console.log(values);
 	};
@@ -99,12 +117,34 @@ export const RegisterForm = () => {
 						render={({ field }) => (
 							<FormItem>
 								<FormControl>
-									<Input
-										className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
-										placeholder='Contraseña'
-										{...field}
-										type='password'
-									/>
+									<div className='relative'>
+										<Input
+											className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
+											placeholder='Contraseña'
+											{...field}
+											type={`${!showPassword ? 'password' : 'text'}`}
+										/>
+										<span className='group/card transition-all duration-700 ease-in-out'>
+											<small className='absolute w-fit right-0 bg-secondary z-10 px-6 py-2 pointer-events-none rounded-sm text-muted-foreground text-xs opacity-0 group-hover/card:opacity-100'>
+												<ul className='flex flex-col gap-1 list-disc'>
+													<li>Al menos 8 caracteres</li>
+													<li>Una mayúscula</li>
+													<li>Un carácter especial</li>
+												</ul>
+											</small>
+											<HelpCircle className='absolute top-1/2 -translate-y-1/2 right-10 w-4' />
+										</span>
+										<span
+											onClick={() => setShowPassword(!showPassword)}
+											className='w-5 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+										>
+											{!showPassword ? (
+												<Eye className='w-full' />
+											) : (
+												<EyeOff className='w-full' />
+											)}
+										</span>
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -112,16 +152,28 @@ export const RegisterForm = () => {
 					/>
 					<FormField
 						control={form.control}
-						name='password2'
+						name='confirmPassword'
 						render={({ field }) => (
 							<FormItem>
 								<FormControl>
-									<Input
-										className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
-										placeholder='Confirmar contraseña'
-										{...field}
-										type='password'
-									/>
+									<div className='relative'>
+										<Input
+											className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
+											placeholder='Contraseña'
+											{...field}
+											type={`${!showConfirmPassword ? 'password' : 'text'}`}
+										/>
+										<span
+											onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+											className='w-5 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+										>
+											{!showConfirmPassword ? (
+												<Eye className='w-full' />
+											) : (
+												<EyeOff className='w-full' />
+											)}
+										</span>
+									</div>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
