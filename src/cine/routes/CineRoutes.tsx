@@ -2,8 +2,16 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 export const CineRoutes = () => {
 	return (
 		<Routes>
-			<Route path='/' element={<h1>Cine</h1>} />
-            <Route path='/*' element={<Navigate to='/' />} />
+			<Route
+				path='/'
+				element={
+					<>
+						<h1></h1>
+						<button>Salir</button>
+					</>
+				}
+			/>
+			<Route path='/*' element={<Navigate to='/' />} />
 		</Routes>
 	);
 };
