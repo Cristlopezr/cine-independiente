@@ -4,51 +4,18 @@ import { useForm } from 'react-hook-form';
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
 import { Eye, EyeOff, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
-
-const formSchema = z
-	.object({
-		name: z.string().min(1, { message: 'Por favor ingresar un nombre' }),
-		lastName: z.string().min(1, { message: 'Por favor ingresar un apellido' }),
-		email: z
-			.string()
-			.min(1, {
-				message: 'Por favor ingresar un email',
-			})
-			.email('Por favor ingresar un email válido'),
-		password: z
-			.string()
-			.min(8, { message: 'Por favor ingresar una contraseña válida' })
-			.refine(value => /[A-Z]/.test(value), {
-				message: 'La contraseña debe contener al menos una mayúscula',
-			})
-			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
-				message: 'La contraseña debe contener al menos un caracter especial',
-			}),
-		//!Validación de segunda contraseña
-		confirmPassword: z.string(),
-		/* .min(8, { message: 'Por favor ingresar una contraseña válida' })
-			.refine(value => /[A-Z]/.test(value), {
-				message: 'La contraseña debe contener al menos una mayúscula',
-			})
-			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
-				message: 'La contraseña debe contener al menos un caracter especial',
-			}), */
-	})
-	.refine(data => data.password === data.confirmPassword, {
-		message: 'Las contraseñas no coinciden',
-		path: ['confirmPassword'],
-	});
+import { registerFormSchema } from '@/schemas/zSchemas';
 
 export const RegisterForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [showPasswordHelp, setShowPasswordHelp] = useState(false);
 
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<z.infer<typeof registerFormSchema>>({
+		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
 			name: '',
-			lastName: '',
+			lastname: '',
 			email: '',
 			password: '',
 			confirmPassword: '',
@@ -56,7 +23,7 @@ export const RegisterForm = () => {
 	});
 	/* console.log(formSchema.safeParse(form.getValues())) */
 	/* console.log(form.formState, !!form.formState.errors.password) */
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
 		console.log(values);
 	};
 
@@ -82,7 +49,7 @@ export const RegisterForm = () => {
 					/>
 					<FormField
 						control={form.control}
-						name='lastName'
+						name='lastname'
 						render={({ field }) => (
 							<FormItem>
 								<FormControl>
@@ -168,7 +135,7 @@ export const RegisterForm = () => {
 									<div className='relative'>
 										<Input
 											className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
-											placeholder='Contraseña'
+											placeholder='Confirmar contraseña'
 											{...field}
 											type={`${!showConfirmPassword ? 'password' : 'text'}`}
 											autoComplete='new-password'

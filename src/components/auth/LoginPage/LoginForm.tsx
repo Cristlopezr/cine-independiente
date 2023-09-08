@@ -4,29 +4,20 @@ import { useForm } from 'react-hook-form';
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-
-const formSchema = z.object({
-	email: z
-		.string()
-		.min(1, {
-			message: 'Por favor ingresar un email',
-		})
-		.email('Por favor ingresar un email válido'),
-	password: z.string().min(1, { message: 'Por favor ingresar una contraseña' }),
-});
+import { loginFormSchema } from '@/schemas/zSchemas';
 
 export const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<z.infer<typeof loginFormSchema>>({
+		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
 			email: '',
 			password: '',
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+	const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
 		//!llegar al backend y guardar usuario en estado si es que existe
 		console.log(values);
 	};
