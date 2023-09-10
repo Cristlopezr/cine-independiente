@@ -1,36 +1,48 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from '../../store';
+/* import type { RootState } from '../../store'; */
+import { User } from '@/interfaces';
 
-// Define a type for the slice state
-interface CounterState {
-	value: number;
+type status = 'authenticated' | 'not-authenticated' | 'checking';
+
+interface AuthState {
+	status: status;
+	user: User;
+	errorMessage: undefined | string;
 }
 
-// Define the initial state using that type
-const initialState: CounterState = {
-	value: 0,
+const initialState: AuthState = {
+	status: 'checking',
+	user: {
+		name: '',
+		email: '',
+		lastname: '',
+		id: '',
+		verifiedEmail: false,
+	},
+	errorMessage: undefined,
 };
 
 export const authSlice = createSlice({
 	name: 'auth',
-	// `createSlice` will infer the state type from the `initialState` argument
 	initialState,
 	reducers: {
-		increment: state => {
-			state.value += 1;
+		onLogin: (state, action: PayloadAction<User>) => {
+			state.user = action.payload;
+			state.status = 'authenticated';
 		},
-		decrement: state => {
-			state.value -= 1;
+		onLogout: (state, action: PayloadAction<string>) => {
+			state.user = initialState.user;
+			state.status = 'not-authenticated';
+			state.errorMessage = action.payload;
 		},
-		// Use the PayloadAction type to declare the contents of `action.payload`
-		incrementByAmount: (state, action: PayloadAction<number>) => {
-			state.value += action.payload;
+		onChecking: state => {
+			state.status = 'checking';
+		},
+		onClearErrorMessage: state => {
+			state.errorMessage = undefined;
 		},
 	},
 });
 
-export const { increment, decrement, incrementByAmount } = authSlice.actions;
-
-// Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.auth.value;
+export const { onLogin, onLogout } = authSlice.actions;

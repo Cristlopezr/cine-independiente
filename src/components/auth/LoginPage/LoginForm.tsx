@@ -5,8 +5,9 @@ import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } fr
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { loginFormSchema } from '@/schemas/zSchemas';
+import { SelectAuth } from '..';
 
-export const LoginForm = () => {
+export const LoginForm = ({ title }: { title: string }) => {
 	const [showPassword, setShowPassword] = useState(false);
 
 	const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -23,9 +24,10 @@ export const LoginForm = () => {
 	};
 
 	return (
-		<div className='p-5'>
+		<div>
+			<h1 className='text-center mt-10 mb-5 text-2xl'>{title}</h1>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 p-5'>
 					<FormField
 						control={form.control}
 						name='email'
@@ -55,6 +57,7 @@ export const LoginForm = () => {
 											{...field}
 											type={`${!showPassword ? 'password' : 'text'}`}
 											autoComplete='new-password'
+											spellCheck={false}
 										/>
 										<span
 											onClick={() => setShowPassword(!showPassword)}
@@ -76,6 +79,7 @@ export const LoginForm = () => {
 						Iniciar Sesión
 					</Button>
 				</form>
+				<SelectAuth title='¿No tienes una cuenta?' linkText='Registrarse' href='/auth/register' />
 			</Form>
 		</div>
 	);
