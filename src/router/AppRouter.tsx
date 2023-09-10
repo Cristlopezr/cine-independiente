@@ -4,11 +4,14 @@ import { CineRoutes } from '@/cine/routes';
 import { useAppSelector } from '@/hooks/redux';
 
 export const AppRouter = () => {
-	const { status } = useAppSelector(state => state.auth);
+	const {
+		status,
+		user: { emailVerified },
+	} = useAppSelector(state => state.auth);
 
 	return (
 		<Routes>
-			{status === 'authenticated' ? (
+			{status === 'authenticated' && emailVerified ? (
 				<Route path='/*' element={<CineRoutes />} />
 			) : (
 				<Route path='/auth/*' element={<AuthRoutes />} />

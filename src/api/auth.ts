@@ -1,7 +1,10 @@
 import { User } from '@/interfaces';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const baseUrl = 'https://server-cine-independiente.vercel.app/api/user';
+//!Production
+/* const baseUrl = 'https://server-cine-independiente.vercel.app/api/user'; */
+//!Development
+const baseUrl = 'http://localhost:8080/api/user'
 
 export const authApi = createApi({
 	reducerPath: 'authApi',
@@ -12,7 +15,7 @@ export const authApi = createApi({
 			query: () => '/',
 			//!providesTags : ["User"]
 		}),
-		registerUser: builder.mutation<void,{name:string, lastname:string, email:string, password:string}>({
+		registerUser: builder.mutation<User,{name:string, lastname:string, email:string, password:string}>({
 			query: user => ({
 				url: '/',
 				method: 'POST',
@@ -27,7 +30,7 @@ export const authApi = createApi({
 				body: email,
 			}),
 		}),
-		checkVerificationCode: builder.mutation<User, { email: string; code: number }>({
+		checkVerificationCode: builder.mutation<User, { email: string; verificationCode: number }>({
 			query: token => ({
 				url: '/checkVerificationCode',
 				method: 'POST',

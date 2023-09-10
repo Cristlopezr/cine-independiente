@@ -4,7 +4,7 @@ import {
 	useCheckVerificationCodeMutation,
 } from '@/api';
 import { useAppDispatch } from './redux';
-import { onLogin, onLogout } from '@/store/auth';
+import { onError, onLogin, onLogout } from '@/store/auth';
 
 export const useAuthStore = () => {
 	const dispatch = useAppDispatch();
@@ -20,7 +20,8 @@ export const useAuthStore = () => {
 		password: string;
 	}) => {
 		try {
-			await registerUser(userData);
+			const user = await registerUser(userData).unwrap();
+			return user;
 		} catch (error) {
 			console.log(error);
 			/* dispatch(onLogout(error)) */
@@ -38,11 +39,12 @@ export const useAuthStore = () => {
 
 	const startVerifyEmail = async ({ email, code }: { email: string; code: string }) => {
 		try {
-			const user = await checkVerificationCode({ email, code: Number(code) }).unwrap();
+			const user = await checkVerificationCode({ email, verificationCode: Number(code) }).unwrap();
 			dispatch(onLogin(user));
-		} catch (error) {
-			console.log(error);
-			/* dispatch(onLogout(error)) */
+		} catch (error: any) {
+			/* {status, data:{error}} */
+			console.log({ error });
+			dispatch(onError(error.data.error));
 		}
 	};
 
