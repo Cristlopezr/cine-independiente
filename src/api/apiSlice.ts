@@ -4,8 +4,8 @@ import { /* BaseQueryApi, FetchArgs,  */createApi, fetchBaseQuery } from '@redux
 
 //!Production
 const baseUrl = 'https://server-cine-independiente.vercel.app/api/user';
-/* //!Development
-const baseUrl = 'http://localhost:8080/api/user'; */
+//!Development
+/* const baseUrl = 'http://localhost:8080/api/user'; */
 
 const baseQuery = fetchBaseQuery({
 	baseUrl,

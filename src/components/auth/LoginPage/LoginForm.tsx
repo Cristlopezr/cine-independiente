@@ -2,7 +2,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { loginFormSchema } from '@/schemas/zSchemas';
 import { SelectAuth } from '..';
@@ -10,7 +10,7 @@ import { useAuthStore } from '@/hooks';
 
 export const LoginForm = ({ title }: { title: string }) => {
 	const [showPassword, setShowPassword] = useState(false);
-	const { startLogin, errorMessage } = useAuthStore();
+	const { startLogin, errorMessage, isLoginLoading } = useAuthStore();
 
 	const form = useForm<z.infer<typeof loginFormSchema>>({
 		resolver: zodResolver(loginFormSchema),
@@ -76,11 +76,24 @@ export const LoginForm = ({ title }: { title: string }) => {
 							</FormItem>
 						)}
 					/>
-					<Button type='submit' className='w-full'>
-						Iniciar Sesión
+					<Button
+						type='submit'
+						className='w-full flex gap-2 items-center'
+						disabled={isLoginLoading}
+					>
+						{isLoginLoading ? (
+							<>
+								<Loader2 className='animate-spin text-primary-foreground' />
+								Procesando...
+							</>
+						) : (
+							'Iniciar Sesión'
+						)}
 					</Button>
 				</form>
-				<p className='text-sm md:text-base text-destructive text-center font-semibold'>{errorMessage}</p>
+				<p className='text-sm md:text-base text-destructive text-center font-semibold'>
+					{errorMessage}
+				</p>
 				<SelectAuth title='¿No tienes una cuenta?' linkText='Registrarse' href='/auth/register' />
 			</Form>
 		</div>

@@ -17,7 +17,7 @@ export const useAuthStore = () => {
 	const [checkVerificationCode, { isLoading: isCheckCodeLoading }] = useCheckVerificationCodeMutation();
 	const [refreshToken] = useLazyRefreshTokenQuery();
 
-	const [loginUser] = useLoginUserMutation();
+	const [loginUser, { isLoading: isLoginLoading }] = useLoginUserMutation();
 
 	const startLogin = async ({ email, password }: { email: string; password: string }) => {
 		try {
@@ -87,7 +87,7 @@ export const useAuthStore = () => {
 	const startLogout = () => {
 		localStorage.clear();
 		dispatch(onLogout());
-	}
+	};
 
 	const saveTokenInLocalStorage = (token: string) => {
 		localStorage.setItem('token', token);
@@ -99,15 +99,16 @@ export const useAuthStore = () => {
 		status,
 		user,
 		errorMessage,
+		isLoginLoading,
+		isRegisterLoading,
+		isRequestCodeLoading,
+		isCheckCodeLoading,
 		//Metodos
 		startLogin,
 		startRegister,
 		startVerifyEmail,
-		isRegisterLoading,
-		isRequestCodeLoading,
-		isCheckCodeLoading,
 		startRequestVerificationCode,
 		checkAuthToken,
-		startLogout
+		startLogout,
 	};
 };
