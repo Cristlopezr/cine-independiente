@@ -6,9 +6,11 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { loginFormSchema } from '@/schemas/zSchemas';
 import { SelectAuth } from '..';
+import { useAuthStore } from '@/hooks';
 
 export const LoginForm = ({ title }: { title: string }) => {
 	const [showPassword, setShowPassword] = useState(false);
+	const { startLogin, errorMessage } = useAuthStore();
 
 	const form = useForm<z.infer<typeof loginFormSchema>>({
 		resolver: zodResolver(loginFormSchema),
@@ -19,8 +21,7 @@ export const LoginForm = ({ title }: { title: string }) => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-		//!llegar al backend y guardar usuario en estado si es que existe
-		console.log(values);
+		await startLogin({ email: values.email, password: values.password });
 	};
 
 	return (
@@ -79,6 +80,7 @@ export const LoginForm = ({ title }: { title: string }) => {
 						Iniciar Sesión
 					</Button>
 				</form>
+				<p className='text-sm md:text-base text-destructive text-center font-semibold'>{errorMessage}</p>
 				<SelectAuth title='¿No tienes una cuenta?' linkText='Registrarse' href='/auth/register' />
 			</Form>
 		</div>

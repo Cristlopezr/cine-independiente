@@ -2,16 +2,33 @@ import {
 	useRegisterUserMutation,
 	useRequestVerificationCodeMutation,
 	useCheckVerificationCodeMutation,
-} from '@/api';
-import { useAppDispatch } from './redux';
+	useLoginUserMutation,
+	useLazyRefreshTokenQuery,
+} from '@/store/auth';
+import { useAppDispatch, useAppSelector } from './redux';
 import { onError, onLogin, onLogout } from '@/store/auth';
 
 export const useAuthStore = () => {
 	const dispatch = useAppDispatch();
+	const { status, user, errorMessage } = useAppSelector(state => state.auth);
 	const [registerUser, { isLoading: isRegisterLoading }] = useRegisterUserMutation();
 	const [requestVerificationCode, { isLoading: isRequestCodeLoading }] =
 		useRequestVerificationCodeMutation();
-	const [checkVerificationCode] = useCheckVerificationCodeMutation();
+	const [checkVerificationCode, { isLoading: isCheckCodeLoading }] = useCheckVerificationCodeMutation();
+	const [refreshToken] = useLazyRefreshTokenQuery();
+
+	const [loginUser] = useLoginUserMutation();
+
+	const startLogin = async ({ email, password }: { email: string; password: string }) => {
+		try {
+			const { user, token } = await loginUser({ email, password }).unwrap();
+			saveTokenInLocalStorage(token);
+			dispatch(onLogin(user));
+		} catch (error: any) {
+			dispatch(onError(error.data.msg));
+			dispatch(onLogout());
+		}
+	};
 
 	const startRegister = async (userData: {
 		name: string;
@@ -20,18 +37,18 @@ export const useAuthStore = () => {
 		password: string;
 	}) => {
 		try {
-			const user = await registerUser(userData).unwrap();
-			return user;
+			const { user, token } = await registerUser(userData).unwrap();
+			saveTokenInLocalStorage(token);
+			dispatch(onLogin(user));
 		} catch (error) {
 			console.log(error);
-			/* dispatch(onLogout(error)) */
+			dispatch(onLogout());
 		}
 	};
 
 	const startRequestVerificationCode = async ({ email }: { email: string }) => {
 		try {
-			const code = await requestVerificationCode({ email }).unwrap();
-			return code;
+			await requestVerificationCode({ email });
 		} catch (error) {
 			console.log(error);
 		}
@@ -39,20 +56,58 @@ export const useAuthStore = () => {
 
 	const startVerifyEmail = async ({ email, code }: { email: string; code: string }) => {
 		try {
-			const user = await checkVerificationCode({ email, verificationCode: Number(code) }).unwrap();
+			const { user, token } = await checkVerificationCode({
+				email,
+				verificationCode: Number(code),
+			}).unwrap();
+			saveTokenInLocalStorage(token);
 			dispatch(onLogin(user));
 		} catch (error: any) {
 			/* {status, data:{error}} */
 			console.log({ error });
-			dispatch(onError(error.data.error));
+			dispatch(onError(error.data.msg));
 		}
 	};
 
+	const checkAuthToken = async () => {
+		const token = localStorage.getItem('token');
+		if (!token) return dispatch(onLogout());
+
+		try {
+			const { user, token } = await refreshToken().unwrap();
+			saveTokenInLocalStorage(token);
+			dispatch(onLogin(user));
+		} catch (error) {
+			console.log(error);
+			localStorage.clear();
+			dispatch(onLogout());
+		}
+	};
+
+	const startLogout = () => {
+		localStorage.clear();
+		dispatch(onLogout());
+	}
+
+	const saveTokenInLocalStorage = (token: string) => {
+		localStorage.setItem('token', token);
+		localStorage.setItem('token-init-date', new Date().getTime().toString());
+	};
+
 	return {
+		//Propiedades
+		status,
+		user,
+		errorMessage,
+		//Metodos
+		startLogin,
 		startRegister,
 		startVerifyEmail,
 		isRegisterLoading,
 		isRequestCodeLoading,
+		isCheckCodeLoading,
 		startRequestVerificationCode,
+		checkAuthToken,
+		startLogout
 	};
 };

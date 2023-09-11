@@ -3,16 +3,21 @@ import { verifyEmailFormSchema } from '@/schemas/zSchemas';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/hooks';
-import { useAppSelector } from '@/hooks/redux';
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
-import { useEffect } from 'react';
+import { CheckCircle, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 export const VerifyEmailForm = () => {
-	const { startVerifyEmail, startRequestVerificationCode, isRequestCodeLoading } = useAuthStore();
 	const {
+		startVerifyEmail,
 		user: { email },
 		errorMessage,
-	} = useAppSelector(state => state.auth);
+		startRequestVerificationCode,
+		isRequestCodeLoading,
+		isCheckCodeLoading,
+	} = useAuthStore();
+
+	const [hasResentEmail, setHasResentEmail] = useState(false);
 
 	const verifyForm = useForm<z.infer<typeof verifyEmailFormSchema>>({
 		resolver: zodResolver(verifyEmailFormSchema),
@@ -20,14 +25,6 @@ export const VerifyEmailForm = () => {
 			code: '',
 		},
 	});
-
-	//!Revisar esto, cada vez que se recarga la pagina envia un nuevo correo
-	//!Incluso si es que ya hay un codigo enviado
-	useEffect(() => {
-		if (email) {
-			onSendCode();
-		}
-	}, []);
 
 	const onPressVerify = async (values: z.infer<typeof verifyEmailFormSchema>) => {
 		//!Se logea al usuario si es que verifica correctamente el codigo
@@ -37,6 +34,7 @@ export const VerifyEmailForm = () => {
 	const onSendCode = async () => {
 		try {
 			await startRequestVerificationCode({ email });
+			setHasResentEmail(true);
 		} catch (error) {
 			console.log(error);
 		}
@@ -64,18 +62,46 @@ export const VerifyEmailForm = () => {
 							</FormItem>
 						)}
 					/>
-					<Button type='submit' className='w-full'>
-						Verificar
+					<Button
+						type='submit'
+						className='w-full flex gap-2 items-center'
+						disabled={isCheckCodeLoading}
+					>
+						{isCheckCodeLoading ? (
+							<>
+								<Loader2 className='animate-spin text-primary-foreground' />
+								Procesando...
+							</>
+						) : (
+							'Verificar'
+						)}
 					</Button>
-					{errorMessage}
+					<p className='text-sm text-center mt-5 text-destructive font-semibold'>{errorMessage}</p>
 				</form>
-				<div className='flex justify-center text-sm flex-col items-center gap-2 mt-5'>
-					<span className='bg-background px-2 text-muted-foreground'>¿No recibiste el código?</span>
-					<button onClick={onSendCode} disabled={isRequestCodeLoading}>
-						Reenviar
-					</button>
-				</div>
 			</Form>
+			<div className='flex justify-center text-sm flex-col items-center gap-2 mt-5'>
+				{!hasResentEmail ? (
+					<>
+						{!isRequestCodeLoading ? (
+							<>
+								<span className='bg-background px-2 text-muted-foreground'>
+									¿No recibiste el código?
+								</span>
+								<button type='button' onClick={onSendCode} disabled={isRequestCodeLoading}>
+									Reenviar
+								</button>
+							</>
+						) : (
+							<Loader2 className='animate-spin text-primary' />
+						)}
+					</>
+				) : (
+					<div className='flex flex-col items-center gap-5 justify-center'>
+						<span className='bg-background px-2 text-muted-foreground'>Email reenviado</span>
+						<CheckCircle />
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };

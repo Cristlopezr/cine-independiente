@@ -1,19 +1,10 @@
-import { useAppSelector } from '@/hooks/redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
-export const CineRoutes = () => {
+import { CinePage } from '../pages';
 
-	const {user} = useAppSelector(state => state.auth)
+export const CineRoutes = () => {
 	return (
 		<Routes>
-			<Route
-				path='/'
-				element={
-					<>
-						<h1>{user.name}</h1>
-						<button>Salir</button>
-					</>
-				}
-			/>
+			<Route path='/' element={<CinePage />} />
 			<Route path='/*' element={<Navigate to='/' />} />
 		</Routes>
 	);

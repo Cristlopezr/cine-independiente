@@ -1,9 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage, RegisterPage, VerifyEmailPage } from '../pages';
-import { useAppSelector } from '@/hooks/redux';
+import { useAuthStore } from '@/hooks';
 
 export const AuthRoutes = () => {
-	const { status, user:{emailVerified} } = useAppSelector(state => state.auth);
+	const {
+		status,
+		user: { emailVerified },
+	} = useAuthStore();
 	return (
 		<Routes>
 			{status === 'authenticated' && !emailVerified ? (

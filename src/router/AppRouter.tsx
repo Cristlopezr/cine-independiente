@@ -1,13 +1,24 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AuthRoutes } from '@/auth/routes';
 import { CineRoutes } from '@/cine/routes';
-import { useAppSelector } from '@/hooks/redux';
+import { useAuthStore } from '@/hooks';
+import { useEffect } from 'react';
 
 export const AppRouter = () => {
 	const {
 		status,
 		user: { emailVerified },
-	} = useAppSelector(state => state.auth);
+		checkAuthToken,
+	} = useAuthStore();
+
+	useEffect(() => {
+		//!Logout si no hay token
+		checkAuthToken();
+	}, []);
+
+	if (status === 'checking') {
+		return <h1>Cargando...</h1>;
+	}
 
 	return (
 		<Routes>

@@ -7,17 +7,13 @@ import { useState } from 'react';
 import { registerFormSchema } from '@/schemas/zSchemas';
 import { useAuthStore } from '@/hooks';
 import { SelectAuth } from '..';
-import { useAppDispatch } from '@/hooks/redux';
-import { onLogin } from '@/store/auth';
 
 export const RegisterForm = ({ title }: { title: string }) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [showPasswordHelp, setShowPasswordHelp] = useState(false);
 
-	const dispatch = useAppDispatch();
-
-	const { startRegister, isRegisterLoading } = useAuthStore();
+	const { startRegister, isRegisterLoading, startRequestVerificationCode } = useAuthStore();
 
 	const form = useForm<z.infer<typeof registerFormSchema>>({
 		resolver: zodResolver(registerFormSchema),
@@ -34,9 +30,8 @@ export const RegisterForm = ({ title }: { title: string }) => {
 	/* console.log(form.formState, !!form.formState.errors.password) */
 	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
 		try {
-			const user = await startRegister(values);
-			if (!user) throw Error('Ocurrio un error');
-			dispatch(onLogin(user));
+			await startRegister(values);
+			await startRequestVerificationCode({ email: values.email });
 		} catch (error) {
 			console.log(error);
 		}
