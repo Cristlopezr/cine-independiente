@@ -1,6 +1,6 @@
 import { RootState } from '@/store';
 import { onLogin, onLogout } from '@/store/auth';
-import { BaseQueryApi, FetchArgs, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { /* BaseQueryApi, FetchArgs,  */createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 //!Production
 /* const baseUrl = 'https://server-cine-independiente.vercel.app/api/user'; */
