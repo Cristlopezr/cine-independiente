@@ -3,9 +3,9 @@ import { onLogin, onLogout } from '@/store/auth';
 import { /* BaseQueryApi, FetchArgs,  */createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 //!Production
-/* const baseUrl = 'https://server-cine-independiente.vercel.app/api/user'; */
-//!Development
-const baseUrl = 'http://localhost:8080/api/user';
+const baseUrl = 'https://server-cine-independiente.vercel.app/api/user';
+/* //!Development
+const baseUrl = 'http://localhost:8080/api/user'; */
 
 const baseQuery = fetchBaseQuery({
 	baseUrl,
