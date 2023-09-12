@@ -48,5 +48,5 @@ export const loginFormSchema = z.object({
 });
 
 export const verifyEmailFormSchema = z.object({
-	code: z.string().min(1, { message: 'Por favor ingresar un código de verificación' }),
+	code: z.string().min(1, { message: 'Por favor ingresar un código de verificación' }).regex(/^\d+$/, { message: 'Por favor ingresar solo números' }),
 });

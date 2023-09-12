@@ -3,6 +3,7 @@ import { AuthRoutes } from '@/auth/routes';
 import { CineRoutes } from '@/cine/routes';
 import { useAuthStore } from '@/hooks';
 import { useEffect } from 'react';
+import { Loading } from '@/components/ui';
 
 export const AppRouter = () => {
 	const {
@@ -17,7 +18,7 @@ export const AppRouter = () => {
 	}, []);
 
 	if (status === 'checking') {
-		return <h1>Cargando...</h1>;
+		return <Loading />;
 	}
 
 	return (

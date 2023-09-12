@@ -41,7 +41,6 @@ export const useAuthStore = () => {
 			saveTokenInLocalStorage(token);
 			dispatch(onLogin(user));
 		} catch (error) {
-			console.log(error);
 			dispatch(onLogout());
 		}
 	};
@@ -63,8 +62,6 @@ export const useAuthStore = () => {
 			saveTokenInLocalStorage(token);
 			dispatch(onLogin(user));
 		} catch (error: any) {
-			/* {status, data:{error}} */
-			console.log({ error });
 			dispatch(onError(error.data.msg));
 		}
 	};
@@ -78,7 +75,6 @@ export const useAuthStore = () => {
 			saveTokenInLocalStorage(token);
 			dispatch(onLogin(user));
 		} catch (error) {
-			console.log(error);
 			localStorage.clear();
 			dispatch(onLogout());
 		}
