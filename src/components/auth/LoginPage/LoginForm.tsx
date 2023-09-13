@@ -1,9 +1,10 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
+import { Loader2 } from 'lucide-react';
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { loginFormSchema } from '@/schemas/zSchemas';
 import { SelectAuth } from '..';
 import { useAuthStore } from '@/hooks';
@@ -62,13 +63,9 @@ export const LoginForm = ({ title }: { title: string }) => {
 										/>
 										<span
 											onClick={() => setShowPassword(!showPassword)}
-											className='w-5 sm:w-8 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+											className='px-2 text-2xl absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
 										>
-											{!showPassword ? (
-												<Eye className='w-full' />
-											) : (
-												<EyeOff className='w-full' />
-											)}
+											{!showPassword ? <BsEye /> : <BsEyeSlash />}
 										</span>
 									</div>
 								</FormControl>

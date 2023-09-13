@@ -75,13 +75,15 @@ export const useAuthStore = () => {
 			saveTokenInLocalStorage(token);
 			dispatch(onLogin(user));
 		} catch (error) {
-			localStorage.clear();
+			localStorage.removeItem('token');
+			localStorage.removeItem('token-init-date');
 			dispatch(onLogout());
 		}
 	};
 
 	const startLogout = () => {
-		localStorage.clear();
+		localStorage.removeItem('token');
+		localStorage.removeItem('token-init-date');
 		dispatch(onLogout());
 	};
 

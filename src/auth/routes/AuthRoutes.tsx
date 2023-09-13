@@ -11,8 +11,8 @@ export const AuthRoutes = () => {
 		<Routes>
 			{status === 'authenticated' && !emailVerified ? (
 				<>
-					<Route path='/verifyemail' element={<VerifyEmailPage />} />
-					<Route path='/*' element={<Navigate to='/auth/verifyemail' />} />
+					<Route path='/verify-email' element={<VerifyEmailPage />} />
+					<Route path='/*' element={<Navigate to='/auth/verify-email' />} />
 				</>
 			) : (
 				<>

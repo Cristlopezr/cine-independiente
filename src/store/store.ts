@@ -9,6 +9,7 @@ export const store = configureStore({
 		[authApiSlice.reducerPath]: authApiSlice.reducer,
 	},
 	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(authApiSlice.middleware),
+	devTools: import.meta.env.MODE !== 'production',
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

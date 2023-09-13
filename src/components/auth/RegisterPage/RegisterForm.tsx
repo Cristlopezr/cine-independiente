@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { BsEye, BsEyeSlash, BsQuestionCircle } from 'react-icons/bs';
+import { Loader2 } from 'lucide-react';
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } from '@/components/ui';
-import { Eye, EyeOff, HelpCircle, Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { registerFormSchema } from '@/schemas/zSchemas';
 import { useAuthStore } from '@/hooks';
 import { SelectAuth } from '..';
@@ -109,27 +110,23 @@ export const RegisterForm = ({ title }: { title: string }) => {
 											onMouseLeave={() => setShowPasswordHelp(false)}
 										>
 											<small
-												className={`absolute w-fit right-0 bg-secondary z-10 px-6 py-2 pointer-events-none rounded-sm text-muted-foreground text-xs ${
+												className={`absolute right-0 top-8 bg-secondary z-10 px-8 py-3 pointer-events-none rounded-sm text-muted-foreground text-xs ${
 													showPasswordHelp ? 'opacity-100' : 'opacity-0'
 												} transition-all duration-300 ease-in-out`}
 											>
-												<ul className='flex flex-col gap-1 list-disc'>
+												<ul className='flex flex-col gap-2 list-disc'>
 													<li>Al menos 8 caracteres</li>
 													<li>Una mayúscula</li>
 													<li>Un carácter especial</li>
 												</ul>
 											</small>
-											<HelpCircle className='absolute top-1/2 -translate-y-1/2 right-12 w-4 sm:w-5' />
+											<BsQuestionCircle className='absolute top-2 right-14 text-lg' />
 										</span>
 										<span
 											onClick={() => setShowPassword(!showPassword)}
-											className='w-5 sm:w-8 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+											className='px-2 text-2xl absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
 										>
-											{!showPassword ? (
-												<Eye className='w-full' />
-											) : (
-												<EyeOff className='w-full' />
-											)}
+											{!showPassword ? <BsEye /> : <BsEyeSlash />}
 										</span>
 									</div>
 								</FormControl>
@@ -154,13 +151,9 @@ export const RegisterForm = ({ title }: { title: string }) => {
 										/>
 										<span
 											onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-											className='w-5 sm:w-8 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+											className='px-2 text-2xl absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
 										>
-											{!showConfirmPassword ? (
-												<Eye className='w-full' />
-											) : (
-												<EyeOff className='w-full' />
-											)}
+											{!showConfirmPassword ? <BsEye /> : <BsEyeSlash />}
 										</span>
 									</div>
 								</FormControl>

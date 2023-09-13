@@ -1,15 +1,14 @@
-import { Button } from '@/components/ui';
 import { useAuthStore } from '@/hooks';
+import { CineLayout } from '../layout';
 
 export const CinePage = () => {
-	const { user, startLogout } = useAuthStore();
+	const { user } = useAuthStore();
 
 	return (
-		<div className='min-h-screen p-5'>
+		<CineLayout>
 			<div className='flex justify-between items-center'>
 				Hola {user.name} {user.lastname}
-				<Button onClick={startLogout}>Cerrar sesión</Button>
 			</div>
-		</div>
+		</CineLayout>
 	);
 };
