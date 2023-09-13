@@ -55,7 +55,7 @@ export const Dropdown = () => {
 						return (
 							<li
 								key={item.name}
-								className='p-3 rounded-sm hover:bg-primary-foreground'
+								className='p-3 rounded-sm hover:bg-accent'
 								onClick={item.onClick}
 							>
 								{item.name}
