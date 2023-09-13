@@ -65,7 +65,7 @@ export const Dropdown = () => {
 					return (
 						<React.Fragment key={item.name}>
 							<hr />
-							<li className='p-3 rounded-sm hover:bg-primary-foreground' onClick={item.onClick}>
+							<li className='p-3 rounded-sm hover:bg-accent' onClick={item.onClick}>
 								{item.name}
 							</li>
 						</React.Fragment>
