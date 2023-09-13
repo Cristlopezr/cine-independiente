@@ -1,10 +1,25 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { LoginPage, RegisterPage, VerifyEmailPage } from '../pages';
+import { useAuthStore } from '@/hooks';
 
 export const AuthRoutes = () => {
+	const {
+		status,
+		user: { emailVerified },
+	} = useAuthStore();
 	return (
 		<Routes>
-			<Route path='login' element={<h1>Login</h1>} />
-			<Route path='register' element={<h1>Register</h1>} />
+			{status === 'authenticated' && !emailVerified ? (
+				<>
+					<Route path='/verifyemail' element={<VerifyEmailPage />} />
+					<Route path='/*' element={<Navigate to='/auth/verifyemail' />} />
+				</>
+			) : (
+				<>
+					<Route path='login' element={<LoginPage />} />
+					<Route path='register' element={<RegisterPage />} />
+				</>
+			)}
 			<Route path='/*' element={<Navigate to='/auth/login' />} />
 		</Routes>
 	);
