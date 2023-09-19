@@ -2,8 +2,75 @@
 @tailwind components;
 @tailwind utilities;
 
-*{
+* {
 	box-sizing: border-box;
+}
+
+@keyframes upload-line {
+	0% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(400%);
+	}
+}
+
+.animate-upload-line1 {
+	animation: upload-line 0.3s infinite linear;
+}
+
+.animate-upload-line2 {
+	animation: upload-line 0.3s infinite 150ms linear;
+}
+.animate-upload-line3 {
+	animation: upload-line 0.3s infinite 300ms linear;
+}
+.animate-upload-line4 {
+	animation: upload-line 0.3s infinite 150ms linear;
+}
+.animate-upload-line5 {
+	animation: upload-line 0.3s infinite linear;
+}
+.animate-upload-line6 {
+	animation: upload-line 0.3s infinite 350ms linear;
+}
+.animate-upload-line7 {
+	animation: upload-line 0.3s infinite 100ms linear;
+}
+.animate-upload-line8 {
+	animation: upload-line 0.3s infinite 200ms linear;
+}
+.animate-upload-line9 {
+	animation: upload-line 0.3s infinite 350ms linear;
+}
+
+.ReactModalPortal > div {
+	opacity: 0;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	transition: opacity 0.2s ease-in-out;
+	z-index: 999;
+}
+
+.ReactModalPortal .ReactModal__Overlay--after-open {
+	opacity: 1;
+}
+
+.ReactModalPortal .ReactModal__Overlay--before-close {
+	opacity: 0;
+}
+
+.modal-background {
+	background-color: rgba(0, 0, 0, 0.3);
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	position: fixed;
 }
 
 @layer base {

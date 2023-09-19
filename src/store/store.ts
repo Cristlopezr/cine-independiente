@@ -1,14 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { authSlice } from './auth';
-import { authApiSlice } from '@/store/auth';
+import { authSlice, authApiSlice } from '@/store/auth';
+import { videoApiSlice, cineSlice } from '@/store/cine';
 // ...
 
 export const store = configureStore({
 	reducer: {
 		auth: authSlice.reducer,
+		cine: cineSlice.reducer,
 		[authApiSlice.reducerPath]: authApiSlice.reducer,
+		[videoApiSlice.reducerPath]: videoApiSlice.reducer,
 	},
-	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(authApiSlice.middleware),
+	middleware: getDefaultMiddleware =>
+		getDefaultMiddleware().concat(authApiSlice.middleware, videoApiSlice.middleware),
 	devTools: import.meta.env.MODE !== 'production',
 });
 

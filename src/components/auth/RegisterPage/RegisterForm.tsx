@@ -27,8 +27,6 @@ export const RegisterForm = ({ title }: { title: string }) => {
 		},
 	});
 
-	/* console.log(formSchema.safeParse(form.getValues())) */
-	/* console.log(form.formState, !!form.formState.errors.password) */
 	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
 		try {
 			await startRegister(values);
@@ -83,6 +81,7 @@ export const RegisterForm = ({ title }: { title: string }) => {
 									<Input
 										className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
 										placeholder='Dirección de correo electrónico'
+										type='email'
 										{...field}
 									/>
 								</FormControl>

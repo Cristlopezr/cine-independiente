@@ -19,6 +19,7 @@ const initialState: AuthState = {
 		lastname: '',
 		id: '',
 		emailVerified: false,
+		avatarUrl: '',
 	},
 	errorMessage: undefined,
 };

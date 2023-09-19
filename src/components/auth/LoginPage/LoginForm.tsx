@@ -39,6 +39,7 @@ export const LoginForm = ({ title }: { title: string }) => {
 									<Input
 										className='focus-visible:ring-0 border-x-0 border-t-0 rounded-none shadow-none'
 										placeholder='Dirección de correo electrónico'
+										type='email'
 										{...field}
 									/>
 								</FormControl>

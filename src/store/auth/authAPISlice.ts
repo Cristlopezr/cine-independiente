@@ -1,11 +1,11 @@
-import { apiSlice } from '@/api';
+import { cineApi } from '@/api';
 import { User } from '@/interfaces';
 
-export const authApiSlice = apiSlice.injectEndpoints({
+export const authApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
 		loginUser: builder.mutation<{user:User, token:string, ok:boolean}, {email:string, password:string}>({
 			query: (credentials) => ({
-                url:'/login',
+                url:'/user/login',
                 method:'POST',
                 body:credentials
             }),
@@ -13,7 +13,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
 		}),
 		registerUser: builder.mutation<{user:User, token:string, ok:boolean},{ name: string; lastname: string; email: string; password: string }>({
 			query: userData => ({
-				url: '/',
+				url: '/user',
 				method: 'POST',
 				body: userData,
 			}),
@@ -21,20 +21,20 @@ export const authApiSlice = apiSlice.injectEndpoints({
 		}),
 		requestVerificationCode: builder.mutation<number, { email: string }>({
 			query: email => ({
-				url: '/emailVerification',
+				url: '/user/emailVerification',
 				method: 'POST',
 				body: email,
 			}),
 		}),
 		checkVerificationCode: builder.mutation<{ user: User; token: string },{ email: string; verificationCode: number }>({
 			query: codeToken => ({
-				url: '/checkVerificationCode',
+				url: '/user/checkVerificationCode',
 				method: 'POST',
 				body: codeToken,
 			}),
 		}),
         refreshToken: builder.query<{user:User, token:string, ok:boolean},void>({
-            query:() => '/refresh'
+            query:() => '/user/refresh'
         })
 	}),
 });
