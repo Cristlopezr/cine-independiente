@@ -96,7 +96,7 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 														type='button'
 														className='absolute -left-10 top-1/2 -translate-y-1/2'
 													>
-														<BsQuestionCircle className='text-xl' />
+														<BsQuestionCircle className='text-lg' />
 													</TooltipTrigger>
 													<TooltipContent sideOffset={10} side='bottom'>
 														<div className='flex flex-col gap-1 font-semibold'>

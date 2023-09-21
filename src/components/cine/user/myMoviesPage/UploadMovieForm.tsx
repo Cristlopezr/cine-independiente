@@ -1,15 +1,7 @@
-import {
-	Button,
-	Form,
-	Separator,
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui';
+import { Button, Form, Separator } from '@/components/ui';
 import { useCineStore } from '@/hooks';
-import { uploadMovieFormSchema, uploadMovieInputSchema } from '@/schemas/zSchemas';
-import { useRef, useState } from 'react';
+import { uploadMovieFormSchema } from '@/schemas/zSchemas';
+import { useState } from 'react';
 import { BsXCircle } from 'react-icons/bs';
 import * as z from 'zod';
 import {
@@ -21,6 +13,9 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { abortController } from '@/store/cine';
+import { Alert, CustomTooltip } from '@/components';
+import { Progress } from '@/components/ui/progress';
+import { CircularProgressBar } from '@/components/cine';
 
 export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) => {
 	const [formStep, setFormStep] = useState(0);
@@ -78,25 +73,28 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 
 	const cancelUpload = () => {
 		abortController.abort();
+		onCloseModal();
+		//!Set upload progress to 0
 	};
 
 	return (
-		<div className='rounded-xl border bg-card text-card-foreground shadow'>
+		<div className='rounded-xl border bg-card text-card-foreground shadow-md'>
 			<div className='flex items-center justify-between px-6 py-5'>
 				<span className='p-0'>
 					<h1 className='text-xl'>Subir película</h1>
 					<p className='text-xs md:text-sm'>Paso {formStep + 1} de 4</p>
 				</span>
-				<TooltipProvider>
-					<Tooltip delayDuration={100}>
-						<TooltipTrigger>
-							<BsXCircle className='text-2xl cursor-pointer' onClick={onCloseModal} />
-						</TooltipTrigger>
-						<TooltipContent sideOffset={8}>
-							<p>Cerrar</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
+
+				<CustomTooltip>
+					{formStep !== 0 && uploadProgress !== 100 ? (
+						<Alert
+							onAction={cancelUpload}
+							trigger={<BsXCircle className='text-2xl cursor-pointer' />}
+						/>
+					) : (
+						<BsXCircle className='text-2xl cursor-pointer' onClick={onCloseModal} />
+					)}
+				</CustomTooltip>
 			</div>
 			<Separator />
 			<div>
@@ -111,11 +109,18 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 							{formStep === 1 && <UploadMovieFormStepOne form={form} />}
 							{formStep === 2 && <UploadMovieFormStepTwo form={form} />}
 							{formStep === 3 && <UploadMovieFormStepThree form={form} />}
-							<div>
-								<Button type='button' onClick={cancelUpload}>
-									Cancelar subida
-								</Button>
-								<p className='pt-10 md:pt-20 text-center'>{uploadProgress}% subido</p>
+							<div className='flex flex-col items-center pt-10 gap-5'>
+								<CircularProgressBar strokeWidth={8} radius={75} progress={uploadProgress} />
+								{/* <p>{uploadProgress} %</p>
+								<Progress /> */}
+								<Alert
+									onAction={cancelUpload}
+									trigger={
+										<div className='h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'>
+											Cancelar carga
+										</div>
+									}
+								/>
 							</div>
 							<div className='flex items-end justify-between'>
 								{formStep !== 1 && (

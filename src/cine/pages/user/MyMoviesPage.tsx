@@ -34,7 +34,7 @@ export const MyMoviesPage = () => {
 			<Button onClick={onOpenModal}>Subir</Button>
 			<Modal
 				isOpen={searchParams.get(params.upload.name) === params.upload.initialState}
-				className='rounded-lg text-accent-foreground w-4/5 max-w-[960px] max-h-[800px] overflow-auto'
+				className='outline-none py-2 rounded-lg text-accent-foreground w-4/5 max-w-[960px] max-h-[800px] overflow-auto'
 				overlayClassName='modal-background'
 				closeTimeoutMS={200}
 			>

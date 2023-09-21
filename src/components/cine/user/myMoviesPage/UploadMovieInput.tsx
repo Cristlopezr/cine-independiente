@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import * as z from 'zod';
 import { MdFileUpload } from 'react-icons/md';
 import { Button, Input } from '@/components/ui';
-import { useCineStore } from '@/hooks';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieInputSchema } from '@/schemas/zSchemas';
 
 interface UploadMovieInputProps {
@@ -11,6 +11,7 @@ interface UploadMovieInputProps {
 
 export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
 	const { isUploadMovieLoading, startUploadingMovie } = useCineStore();
+	const { user } = useAuthStore();
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const [hasUploadedVideo, setHasUploadedVideo] = useState(false);
@@ -25,7 +26,7 @@ export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
 			setHasUploadedVideo(true);
 			setTimeout(async () => {
 				setFormStep(1);
-				await startUploadingMovie(e.target.files?.[0]!);
+				await startUploadingMovie(e.target.files?.[0]!, { userId: user.id, email: user.email });
 			}, 1500);
 		} catch (error) {
 			if (error instanceof z.ZodError) {
