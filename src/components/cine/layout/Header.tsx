@@ -17,7 +17,7 @@ export const Header = () => {
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5'>
 						<li>Películas</li>
-						<li>Categorías</li>
+						<li>Géneros</li>
 					</ul>
 				</nav>
 			</div>

@@ -1,14 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 /* import type { RootState } from '../../store'; */
+interface CineState {
+	uploadProgress: number;
+	errorMessage: string | undefined;
+	movieToUpload: {
+		date: number | undefined;
+		imageUrl: string | undefined;
+	};
+}
 
-const initialState = {
+const initialState: CineState = {
 	uploadProgress: 0,
 	errorMessage: '',
 	movieToUpload: {
-		title: '',
-		synopsis: '',
-		productionYear: '',
+		date: undefined,
 		imageUrl: undefined,
 	},
 };

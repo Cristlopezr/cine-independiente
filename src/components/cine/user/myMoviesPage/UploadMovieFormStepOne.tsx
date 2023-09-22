@@ -12,6 +12,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { FormStepOneItem, UploadMovieForm } from '@/interfaces';
 import { uploadMovieFormSchema } from '@/schemas/zSchemas';
 
@@ -39,11 +40,14 @@ interface UploadMovieFormStepOneProps {
 export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) => {
 	const inputFileRef = useRef<HTMLInputElement | null>(null);
 	const [hasSelectedImage, setHasSelectedImage] = useState(false);
+	const { user } = useAuthStore();
+
+	const { startUploadingMovieImage } = useCineStore();
 
 	//!Error local al seleccionar la imagen
 	const [errorMessage, setErrorMessage] = useState('');
 
-	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (!e.target.files || e?.target?.files.length === 0) return;
 		try {
 			uploadMovieFormSchema
@@ -51,7 +55,7 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 				.pick({ movieImage: true })
 				.parse({ movieImage: e?.target?.files });
 			setHasSelectedImage(true);
-			//!await send to cloudinary
+			await startUploadingMovieImage(e?.target?.files[0], user.id);
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				const errorMessage = error.errors[0]?.message;

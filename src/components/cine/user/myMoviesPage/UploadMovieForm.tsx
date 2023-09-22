@@ -19,7 +19,7 @@ import { CircularProgressBar } from '@/components/cine';
 
 export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) => {
 	const [formStep, setFormStep] = useState(0);
-	const { uploadProgress } = useCineStore();
+	const { uploadProgress, movieToUpload } = useCineStore();
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
@@ -40,7 +40,6 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	const onGoNext = async () => {
 		if (formStep === 1) {
 			const isValid = await form.trigger(['title', 'productionYear', 'synopsis', 'movieImage']);
-			form.watch(['title', 'productionYear', 'synopsis', 'movieImage']);
 			if (!isValid) return;
 		}
 		if (formStep === 2) {
@@ -55,14 +54,23 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			setFormStep(formStep + 1);
 			return;
 		}
-		if (uploadProgress !== 100) {
+		//!Tal vez no es necesario
+		/* if (uploadProgress !== 100) {
 			//!Error espera
 			console.log('Espera conchetumare');
 			return;
-		}
+		} */
 		const values = form.getValues();
+		const { movieImage, ...newValues } = values;
+		const formValues = {
+			...newValues,
+			date: movieToUpload.date,
+			imageUrl: movieToUpload.imageUrl,
+			productionYear: Number(values.productionYear),
+			//!user id igual, movieURl
+		};
 		console.log(values);
-		//!Poner url de la imagen en los valores y enviarlos a la api
+		console.log(formValues);
 		//!Componente formulario enviado
 		console.log('Formulario enviado');
 	};

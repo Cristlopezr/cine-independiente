@@ -32,7 +32,14 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
+		uploadMovieImage: builder.mutation<string, { userId: string; data: FormData }>({
+			query: data => ({
+				url: `/video/upload-image?id=${data.userId}`,
+				method: 'POST',
+				body: data.data,
+			}),
+		}),
 	}),
 });
 
-export const { useUploadMovieMutation } = videoApiSlice;
+export const { useUploadMovieMutation, useUploadMovieImageMutation } = videoApiSlice;
