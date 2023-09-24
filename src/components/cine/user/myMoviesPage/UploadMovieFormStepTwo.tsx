@@ -34,7 +34,7 @@ export const UploadMovieFormStepTwo = ({ form }: UploadMovieFormStepTwoProps) =>
 					<FormField
 						control={form.control}
 						key={field.id}
-						name={`directors.${index}.value`}
+						name={`directors.${index}.name`}
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className={cn(index !== 0 && 'sr-only')}>Director *</FormLabel>
@@ -59,7 +59,7 @@ export const UploadMovieFormStepTwo = ({ form }: UploadMovieFormStepTwoProps) =>
 					variant='outline'
 					size='sm'
 					className='mt-2'
-					onClick={() => appendDirector({ value: '' })}
+					onClick={() => appendDirector({ name: '' })}
 				>
 					Agregar otro director
 				</Button>
@@ -69,7 +69,7 @@ export const UploadMovieFormStepTwo = ({ form }: UploadMovieFormStepTwoProps) =>
 					<FormField
 						control={form.control}
 						key={field.id}
-						name={`cast.${index}.value`}
+						name={`cast.${index}.name`}
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className={cn(index !== 0 && 'sr-only')}>Elenco *</FormLabel>
@@ -94,7 +94,7 @@ export const UploadMovieFormStepTwo = ({ form }: UploadMovieFormStepTwoProps) =>
 					variant='outline'
 					size='sm'
 					className='mt-2'
-					onClick={() => appendCast({ value: '' })}
+					onClick={() => appendCast({ name: '' })}
 				>
 					Agregar otro actor
 				</Button>

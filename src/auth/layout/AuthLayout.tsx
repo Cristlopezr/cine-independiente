@@ -1,9 +1,10 @@
 import { ModeToggle } from '@/components/mode-toggle';
+import { Separator } from '@/components/ui';
 
 export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
-		<div className='px-5 container min-h-screen'>
-			<nav className=' p-5'>
+		<div className='container min-h-screen'>
+			<nav className='p-5'>
 				<ul className='flex items-center justify-between'>
 					<li>Logo</li>
 					<li>
@@ -11,8 +12,8 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 					</li>
 				</ul>
 			</nav>
-			<main className='max-w-[500px] mx-auto'>{children}</main>
-
+			<Separator />
+			<main className='max-w-[600px] mx-auto mt-16'>{children}</main>
 			<footer></footer>
 		</div>
 	);

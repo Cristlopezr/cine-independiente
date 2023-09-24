@@ -1,12 +1,10 @@
 import { Loader2 } from 'lucide-react';
 
-export const Loading = () => {
+export const Loading = ({ text }: { text?: string }) => {
 	return (
-		<div className='flex justify-center'>
-			<div className='flex flex-col items-center gap-5 mt-40'>
-				<p>Cargando...</p>
-				<Loader2 className='animate-spin' />
-			</div>
+		<div className='flex flex-col items-center gap-5'>
+			{text && <p>{text}</p>}
+			<Loader2 className='animate-spin w-8 h-8' />
 		</div>
 	);
 };

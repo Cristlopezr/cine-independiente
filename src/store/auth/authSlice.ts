@@ -17,7 +17,7 @@ const initialState: AuthState = {
 		name: '',
 		email: '',
 		lastname: '',
-		id: '',
+		user_id: '',
 		emailVerified: false,
 		avatarUrl: '',
 	},

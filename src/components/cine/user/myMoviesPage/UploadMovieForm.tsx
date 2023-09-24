@@ -1,5 +1,5 @@
-import { Button, Form, Separator } from '@/components/ui';
-import { useCineStore } from '@/hooks';
+import { Button, Form, Loading, Separator } from '@/components/ui';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieFormSchema } from '@/schemas/zSchemas';
 import { useState } from 'react';
 import { BsXCircle } from 'react-icons/bs';
@@ -12,16 +12,16 @@ import {
 } from '.';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { abortController } from '@/store/cine';
+import { abortController, abortControllerResolution, useUploadMovieInfoMutation } from '@/store/cine';
 import { Alert, CustomTooltip } from '@/components';
-import { Progress } from '@/components/ui/progress';
-import { CircularProgressBar } from '@/components/cine';
+import { Progress } from '@/components/cine';
 
 export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) => {
 	const [formStep, setFormStep] = useState(0);
-	const { uploadProgress, movieToUpload } = useCineStore();
-	const [errorMessage, setErrorMessage] = useState('');
+	const { uploadProgress, movieToUpload, onSetUploadProgress, isCreateResolutionsLoading } = useCineStore();
 
+	const [uploadMovieInfo] = useUploadMovieInfoMutation();
+	const { user } = useAuthStore();
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
 		resolver: zodResolver(uploadMovieFormSchema),
 		defaultValues: {
@@ -29,10 +29,10 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			synopsis: '',
 			productionYear: '',
 			movieImage: undefined,
-			cast: [{ value: '' }],
-			directors: [{ value: '' }],
+			cast: [{ name: '' }],
+			directors: [{ name: '' }],
 			genres: [],
-			writers: [{ value: '' }],
+			writers: [{ name: '' }],
 		},
 		mode: 'onChange',
 	});
@@ -54,23 +54,9 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			setFormStep(formStep + 1);
 			return;
 		}
-		//!Tal vez no es necesario
-		/* if (uploadProgress !== 100) {
-			//!Error espera
-			console.log('Espera conchetumare');
-			return;
-		} */
-		const values = form.getValues();
-		const { movieImage, ...newValues } = values;
-		const formValues = {
-			...newValues,
-			date: movieToUpload.date,
-			imageUrl: movieToUpload.imageUrl,
-			productionYear: Number(values.productionYear),
-			//!user id igual, movieURl
-		};
-		console.log(values);
-		console.log(formValues);
+
+		const cleanedFormValues = cleanFormValues();
+		await uploadMovieInfo(cleanedFormValues);
 		//!Componente formulario enviado
 		console.log('Formulario enviado');
 	};
@@ -80,9 +66,29 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	};
 
 	const cancelUpload = () => {
-		abortController.abort();
+		if (uploadProgress !== 100) {
+			abortController.abort();
+			onSetUploadProgress(0);
+		}
+		if (isCreateResolutionsLoading) {
+			abortControllerResolution.abort();
+		}
 		onCloseModal();
-		//!Set upload progress to 0
+	};
+
+	const cleanFormValues = () => {
+		const values = form.getValues();
+		const { movieImage, ...newValues } = values;
+		const formValues = {
+			...newValues,
+			date: movieToUpload.date,
+			imageUrl: movieToUpload.imageUrl,
+			productionYear: Number(values.productionYear),
+			user_id: user.user_id,
+			enabled: true,
+			//!Enabled por ahora true;
+		};
+		return formValues;
 	};
 
 	return (
@@ -97,10 +103,13 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 					{formStep !== 0 && uploadProgress !== 100 ? (
 						<Alert
 							onAction={cancelUpload}
-							trigger={<BsXCircle className='text-2xl cursor-pointer' />}
+							trigger={<BsXCircle className='text-2xl cursor-pointer text-destructive' />}
 						/>
 					) : (
-						<BsXCircle className='text-2xl cursor-pointer' onClick={onCloseModal} />
+						<BsXCircle
+							className='text-2xl cursor-pointer text-destructive'
+							onClick={onCloseModal}
+						/>
 					)}
 				</CustomTooltip>
 			</div>
@@ -117,10 +126,23 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 							{formStep === 1 && <UploadMovieFormStepOne form={form} />}
 							{formStep === 2 && <UploadMovieFormStepTwo form={form} />}
 							{formStep === 3 && <UploadMovieFormStepThree form={form} />}
+
 							<div className='flex flex-col items-center pt-10 gap-5'>
-								<CircularProgressBar strokeWidth={8} radius={75} progress={uploadProgress} />
-								{/* <p>{uploadProgress} %</p>
-								<Progress /> */}
+								{uploadProgress !== 100 && (
+									<Progress progress={uploadProgress} text='Subiendo película' />
+								)}
+
+								{isCreateResolutionsLoading && (
+									<div className='flex flex-col gap-5 text-center'>
+										<div>
+											<p>Realizando compresión...</p>
+											<p className='text-xs'>Podría tardar unos minutos</p>
+										</div>
+										<Loading />
+									</div>
+								)}
+								{/* {showExplicitValidation && <p>Válidando película</p>} */}
+
 								<Alert
 									onAction={cancelUpload}
 									trigger={

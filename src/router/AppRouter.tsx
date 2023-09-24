@@ -18,7 +18,11 @@ export const AppRouter = () => {
 	}, []);
 
 	if (status === 'checking') {
-		return <Loading />;
+		return (
+			<div className='mt-40'>
+				<Loading text='Cargando...' />
+			</div>
+		);
 	}
 
 	return (

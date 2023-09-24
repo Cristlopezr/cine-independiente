@@ -21,15 +21,7 @@ export const registerFormSchema = z
 			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
 				message: 'La contraseña debe contener al menos un caracter especial',
 			}),
-		//!Validación de segunda contraseña
 		confirmPassword: z.string().trim(),
-		/* .min(8, { message: 'Por favor ingresar una contraseña válida' })
-			.refine(value => /[A-Z]/.test(value), {
-				message: 'La contraseña debe contener al menos una mayúscula',
-			})
-			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
-				message: 'La contraseña debe contener al menos un caracter especial',
-			}), */
 	})
 	.refine(data => data.password === data.confirmPassword, {
 		message: 'Las contraseñas no coinciden',
@@ -91,12 +83,12 @@ export const uploadMovieFormSchema = z.object({
 		.optional(),
 	directors: z.array(
 		z.object({
-			value: z.string().min(1, { message: 'Por favor ingresar un director' }),
+			name: z.string().min(1, { message: 'Por favor ingresar un director' }),
 		})
 	),
 	writers: z.array(
 		z.object({
-			value: z.string().min(1, { message: 'Por favor ingresar un guionista' }),
+			name: z.string().min(1, { message: 'Por favor ingresar un guionista' }),
 		})
 	),
 	genres: z.array(z.string()).refine(value => value.some(item => item), {
@@ -104,7 +96,7 @@ export const uploadMovieFormSchema = z.object({
 	}),
 	cast: z.array(
 		z.object({
-			value: z.string().min(1, { message: 'Por favor ingresar un actor' }),
+			name: z.string().min(1, { message: 'Por favor ingresar un actor' }),
 		})
 	),
 });

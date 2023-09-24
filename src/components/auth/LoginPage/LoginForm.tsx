@@ -26,8 +26,8 @@ export const LoginForm = ({ title }: { title: string }) => {
 	};
 
 	return (
-		<div>
-			<h1 className='text-center mt-10 mb-5 text-2xl'>{title}</h1>
+		<div className='p-10'>
+			<h1 className='text-center mb-5 text-2xl'>{title}</h1>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 p-5'>
 					<FormField
@@ -76,7 +76,7 @@ export const LoginForm = ({ title }: { title: string }) => {
 					/>
 					<Button
 						type='submit'
-						className='w-full flex gap-2 items-center'
+						className='w-full flex gap-2 items-center dark:bg-primary'
 						disabled={isLoginLoading}
 					>
 						{isLoginLoading ? (

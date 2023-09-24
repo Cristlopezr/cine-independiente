@@ -2,31 +2,48 @@ import { useRef, useState } from 'react';
 import * as z from 'zod';
 import { MdFileUpload } from 'react-icons/md';
 import { Button, Input } from '@/components/ui';
-import { useAuthStore, useCineStore } from '@/hooks';
+import { useAuthStore } from '@/hooks';
 import { uploadMovieInputSchema } from '@/schemas/zSchemas';
+import { useCreateResolutionsMutation, useUploadMovieMutation } from '@/store/cine';
 
 interface UploadMovieInputProps {
 	setFormStep: (steap: number) => void;
 }
 
+const baseUrl = `${import.meta.env.VITE_API_MOVIE_BASE_URL}/video`;
+
 export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
-	const { isUploadMovieLoading, startUploadingMovie } = useCineStore();
 	const { user } = useAuthStore();
 	const [errorMessage, setErrorMessage] = useState('');
+
+	const [uploadMovie, { isLoading: isUploadMovieLoading }] = useUploadMovieMutation();
+	const [createResolutions] = useCreateResolutionsMutation();
 
 	const [hasUploadedVideo, setHasUploadedVideo] = useState(false);
 
 	const inputFileRef = useRef<HTMLInputElement | null>(null);
 
 	const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (!e.target.files || e?.target?.files.length === 0) return;
-
+		if (!e?.target?.files || e?.target?.files?.length === 0) return;
 		try {
 			uploadMovieInputSchema.partial().pick({ file: true }).parse({ file: e?.target?.files });
 			setHasUploadedVideo(true);
+			const date = new Date().getTime().toString();
 			setTimeout(async () => {
 				setFormStep(1);
-				await startUploadingMovie(e.target.files?.[0]!, { userId: user.id, email: user.email });
+				if (!e?.target?.files) return;
+				const { data, /* msg */ } = await uploadMovie({
+					url: `${baseUrl}?id=${user.user_id}&date=${date}`,
+					data: { movie: e.target.files[0] },
+					date,
+				}).unwrap();
+				const encodedData = await createResolutions({
+					url: `${baseUrl}/encode?id=${user.user_id}`,
+					data,
+				});
+				console.log(encodedData);
+				//! Await resolutions
+				//! Await validation
 			}, 1500);
 		} catch (error) {
 			if (error instanceof z.ZodError) {
@@ -68,10 +85,11 @@ export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
 					)}
 				</div>
 			</button>
-			<p className='text-sm pb-5 text-gray-600 dark:text-gray-400'>
+			{/* <p className='text-sm pb-5 text-gray-600 dark:text-gray-400'>
 				Tu película estará deshabilitada hasta que la publiques.
-			</p>
-			<Button size='lg' onClick={() => inputFileRef.current?.click()}>
+			</p> */}
+			{/* Sacar mt-5 cuando se deje el parrafo */}
+			<Button size='lg' className='mt-5' onClick={() => inputFileRef.current?.click()}>
 				Seleccionar archivo
 			</Button>
 			{!!errorMessage ? (

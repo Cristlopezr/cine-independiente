@@ -1,19 +1,23 @@
 import { videoApi } from '@/api';
 import axios from 'axios';
-import { setUploadProgress } from './cineSlice';
+import { onError, onSetIsCreateResolutionsLoading, onSetMovieToUpload, setUploadProgress } from './cineSlice';
 export const abortController = new AbortController();
+export const abortControllerResolution = new AbortController();
 export const videoApiSlice = videoApi.injectEndpoints({
 	endpoints: builder => ({
-		uploadMovie: builder.mutation<void, { url: string; data: FormData }>({
-			queryFn: async ({ url, data }, api) => {
+		uploadMovie: builder.mutation<{ data: { inputPath: string }; msg: string },{ url: string; data: { movie: File }; date: string }>({
+			queryFn: async ({ url, data, date }, api) => {
+				api.dispatch(onSetMovieToUpload({ date }));
+				const formData = new FormData();
+				formData.append('video', data.movie);
 				try {
-					const result = await axios.post(url, data, {
+					const result = await axios.post(url, formData, {
 						headers: {
 							'Content-Type': 'multipart/form-data',
 						},
 						onUploadProgress: upload => {
-							let uploadProgress = Math.round((100 * upload.loaded) / upload.total!);
-							api.dispatch(setUploadProgress(uploadProgress));
+							let movieUploadProgress = Math.round((100 * upload.loaded) / upload.total!);
+							api.dispatch(setUploadProgress(movieUploadProgress));
 						},
 						signal: abortController.signal,
 					});
@@ -23,6 +27,7 @@ export const videoApiSlice = videoApi.injectEndpoints({
 					if (axios.isCancel(axiosError)) {
 						console.log('La solicitud fue cancelada por el usuario', axiosError.message);
 					}
+					api.dispatch(onError(err.response?.data || err.message));
 					return {
 						error: {
 							status: err.respone?.status,
@@ -32,14 +37,49 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
-		uploadMovieImage: builder.mutation<string, { userId: string; data: FormData }>({
-			query: data => ({
-				url: `/video/upload-image?id=${data.userId}`,
-				method: 'POST',
-				body: data.data,
-			}),
+		createResolutions: builder.mutation<void, { url: string; data: { inputPath: string } }>({
+			queryFn: async ({ url, data }, api) => {
+				try {
+					api.dispatch(onSetIsCreateResolutionsLoading(true));
+					const result = await axios.post(url, data, {
+						signal: abortControllerResolution.signal,
+					});
+					api.dispatch(onSetIsCreateResolutionsLoading(false));
+					return { data: result.data };
+				} catch (axiosError) {
+					api.dispatch(onSetIsCreateResolutionsLoading(false));
+					let err: any = axiosError;
+					if (axios.isCancel(axiosError)) {
+						console.log('La solicitud fue cancelada por el usuario', axiosError.message);
+					}
+					api.dispatch(onError(err.response?.data || err.message));
+					return {
+						error: {
+							status: err.respone?.status,
+							data: err.response?.data || err.message,
+						},
+					};
+				}
+			},
+		}),
+		uploadMovieImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; date: number }>({
+			query: data => {
+				const formData = new FormData();
+				formData.append('image', data.image);
+				formData.append('date', data.date.toString());
+				return { url: `/video/upload-image?id=${data.userId}`, method: 'POST', body: formData };
+			},
+			onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(onSetMovieToUpload({ imageUrl: data.imageUrl }));
+				} catch (error: any) {
+					dispatch(onError(error?.msg));
+				}
+			},
 		}),
 	}),
 });
 
-export const { useUploadMovieMutation, useUploadMovieImageMutation } = videoApiSlice;
+export const { useUploadMovieMutation, useUploadMovieImageMutation, useCreateResolutionsMutation } =
+	videoApiSlice;

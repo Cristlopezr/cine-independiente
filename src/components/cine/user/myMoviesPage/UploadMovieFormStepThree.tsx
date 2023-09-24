@@ -8,31 +8,21 @@ import {
 	FormLabel,
 	FormMessage,
 	Input,
+	Loading,
 } from '@/components/ui';
 import { useFieldArray } from 'react-hook-form';
 import { cn } from '@/lib/utils';
 import { BsX } from 'react-icons/bs';
 import { UploadMovieForm } from '@/interfaces';
-
-//!Traer de la db
-export const genres = [
-	{ id: 'romance', label: 'Romance' },
-	{ id: 'accion', label: 'Acción' },
-	{ id: 'anime', label: 'Anime' },
-	{ id: 'cortos', label: 'Cortos' },
-	{ id: 'comedia', label: 'Comedia' },
-	{ id: 'crimen', label: 'Crimen' },
-	{ id: 'deportes', label: 'Deportes' },
-	{ id: 'documentales', label: 'Documentales' },
-	{ id: 'terror', label: 'Terror y Suspenso' },
-	{ id: 'fantasia', label: 'Fantasía y Ciencia ficción' },
-];
+import { useGetGenresQuery } from '@/store/cine/cineApiSlice';
 
 interface UploadMovieFormStepThreeProps {
 	form: UploadMovieForm;
 }
 
 export const UploadMovieFormStepThree = ({ form }: UploadMovieFormStepThreeProps) => {
+	const { data: genres, isLoading, isError } = useGetGenresQuery();
+
 	const { fields, append, remove } = useFieldArray({
 		name: 'writers',
 		control: form.control,
@@ -45,7 +35,7 @@ export const UploadMovieFormStepThree = ({ form }: UploadMovieFormStepThreeProps
 					<FormField
 						control={form.control}
 						key={field.id}
-						name={`writers.${index}.value`}
+						name={`writers.${index}.name`}
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel className={cn(index !== 0 && 'sr-only')}>Guionista *</FormLabel>
@@ -70,7 +60,7 @@ export const UploadMovieFormStepThree = ({ form }: UploadMovieFormStepThreeProps
 					variant='outline'
 					size='sm'
 					className='mt-2'
-					onClick={() => append({ value: '' })}
+					onClick={() => append({ name: '' })}
 				>
 					Agregar otro guionista
 				</Button>
@@ -84,39 +74,63 @@ export const UploadMovieFormStepThree = ({ form }: UploadMovieFormStepThreeProps
 							<FormLabel className='text-base'>Género</FormLabel>
 							<FormDescription>Selecciona al menos un género</FormDescription>
 						</div>
-						<div className='grid gap-y-2 gap-x-4 grid-cols-[repeat(auto-fill,minmax(140px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]'>
-							{genres.map(genre => (
-								<FormField
-									key={genre.id}
-									control={form.control}
-									name='genres'
-									render={({ field }) => {
-										return (
-											<FormItem
-												key={genre.id}
-												className='flex flex-row items-start space-x-3 space-y-0'
-											>
-												<FormControl>
-													<Checkbox
-														checked={field.value?.includes(genre.id)}
-														onCheckedChange={checked => {
-															return checked
-																? field.onChange([...field.value, genre.id])
-																: field.onChange(
-																		field.value?.filter(
-																			value => value !== genre.id
-																		)
-																  );
-														}}
-													/>
-												</FormControl>
-												<FormLabel className='font-normal'>{genre.label}</FormLabel>
-											</FormItem>
-										);
-									}}
-								/>
-							))}
-						</div>
+						{isError ? (
+							<p className='text-center text-destructive font-semibold pt-5'>
+								Error al obtener los géneros
+							</p>
+						) : (
+							<>
+								{isLoading ? (
+									<div className='pt-5'>
+										<Loading text='Obteniendo géneros...' />
+									</div>
+								) : (
+									<div className='grid gap-y-2 gap-x-4 grid-cols-[repeat(auto-fill,minmax(140px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(160px,1fr))]'>
+										{genres!.map(genre => (
+											<FormField
+												key={genre.genre_id}
+												control={form.control}
+												name='genres'
+												render={({ field }) => {
+													return (
+														<FormItem
+															key={genre.genre_id}
+															className='flex flex-row items-start space-x-3 space-y-0'
+														>
+															<FormControl>
+																<Checkbox
+																	checked={field.value?.includes(
+																		genre.genre_id
+																	)}
+																	onCheckedChange={checked => {
+																		return checked
+																			? field.onChange([
+																					...field.value,
+																					genre.genre_id,
+																			  ])
+																			: field.onChange(
+																					field.value?.filter(
+																						value =>
+																							value !==
+																							genre.genre_id
+																					)
+																			  );
+																	}}
+																/>
+															</FormControl>
+															<FormLabel className='font-normal'>
+																{genre.name}
+															</FormLabel>
+														</FormItem>
+													);
+												}}
+											/>
+										))}
+									</div>
+								)}
+							</>
+						)}
+
 						<FormMessage />
 					</FormItem>
 				)}
