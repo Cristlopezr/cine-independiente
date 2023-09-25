@@ -1,7 +1,7 @@
 import { cineApi } from '@/api';
 import { User } from '@/interfaces';
 
-export const authApiSlic = cineApi.injectEndpoints({
+export const authApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
 		loginUser: builder.mutation<{user:User, token:string, ok:boolean}, {email:string, password:string}>({
 			query: (credentials) => ({
@@ -45,4 +45,4 @@ export const {
 	useRegisterUserMutation,
 	useRequestVerificationCodeMutation,
 	useCheckVerificationCodeMutation,
-} = authApiSlic;
+} = authApiSlice;
