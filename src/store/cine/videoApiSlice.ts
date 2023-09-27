@@ -1,8 +1,7 @@
 import { videoApi } from '@/api';
 import axios from 'axios';
-import { onError, onSetIsCreateResolutionsLoading, onSetMovieToUpload, setUploadProgress } from './cineSlice';
+import { onError, onSetMovieToUpload, setUploadProgress } from './cineSlice';
 export const abortController = new AbortController();
-export const abortControllerResolution = new AbortController();
 export const videoApiSlice = videoApi.injectEndpoints({
 	endpoints: builder => ({
 		uploadMovie: builder.mutation<{ data: { inputPath: string }; msg: string },{ url: string; data: { movie: File }; date: string }>({
@@ -37,32 +36,7 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
-		createResolutions: builder.mutation<void, { url: string; data: { inputPath: string } }>({
-			queryFn: async ({ url, data }, api) => {
-				try {
-					api.dispatch(onSetIsCreateResolutionsLoading(true));
-					const result = await axios.post(url, data, {
-						signal: abortControllerResolution.signal,
-					});
-					api.dispatch(onSetIsCreateResolutionsLoading(false));
-					return { data: result.data };
-				} catch (axiosError) {
-					api.dispatch(onSetIsCreateResolutionsLoading(false));
-					let err: any = axiosError;
-					if (axios.isCancel(axiosError)) {
-						console.log('La solicitud fue cancelada por el usuario', axiosError.message);
-					}
-					api.dispatch(onError(err.response?.data || err.message));
-					return {
-						error: {
-							status: err.respone?.status,
-							data: err.response?.data || err.message,
-						},
-					};
-				}
-			},
-		}),
-		uploadMovieImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; date: number }>({
+		uploadMovieImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; date: string }>({
 			query: data => {
 				const formData = new FormData();
 				formData.append('image', data.image);
@@ -81,5 +55,5 @@ export const videoApiSlice = videoApi.injectEndpoints({
 	}),
 });
 
-export const { useUploadMovieMutation, useUploadMovieImageMutation, useCreateResolutionsMutation } =
+export const { useUploadMovieMutation, useUploadMovieImageMutation } =
 	videoApiSlice;

@@ -4,7 +4,7 @@ import { MdFileUpload } from 'react-icons/md';
 import { Button, Input } from '@/components/ui';
 import { useAuthStore } from '@/hooks';
 import { uploadMovieInputSchema } from '@/schemas/zSchemas';
-import { useCreateResolutionsMutation, useUploadMovieMutation } from '@/store/cine';
+import { useUploadMovieMutation } from '@/store/cine';
 
 interface UploadMovieInputProps {
 	setFormStep: (steap: number) => void;
@@ -17,7 +17,6 @@ export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const [uploadMovie, { isLoading: isUploadMovieLoading }] = useUploadMovieMutation();
-	const [createResolutions] = useCreateResolutionsMutation();
 
 	const [hasUploadedVideo, setHasUploadedVideo] = useState(false);
 
@@ -32,18 +31,11 @@ export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
 			setTimeout(async () => {
 				setFormStep(1);
 				if (!e?.target?.files) return;
-				const { data, /* msg */ } = await uploadMovie({
+				await uploadMovie({
 					url: `${baseUrl}?id=${user.user_id}&date=${date}`,
 					data: { movie: e.target.files[0] },
 					date,
 				}).unwrap();
-				const encodedData = await createResolutions({
-					url: `${baseUrl}/encode?id=${user.user_id}`,
-					data,
-				});
-				console.log(encodedData);
-				//! Await resolutions
-				//! Await validation
 			}, 1500);
 		} catch (error) {
 			if (error instanceof z.ZodError) {

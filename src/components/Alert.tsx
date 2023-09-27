@@ -30,8 +30,13 @@ export const Alert = ({
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel onClick={onCancel}>Cancelar</AlertDialogCancel>
-					<AlertDialogAction onClick={onAction}>Continuar</AlertDialogAction>
+					<AlertDialogCancel onClick={onCancel}>Volver atrás</AlertDialogCancel>
+					<AlertDialogAction
+						className='bg-destructive text-destructive-foreground hover:bg-destructive/80'
+						onClick={onAction}
+					>
+						Cancelar carga
+					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>

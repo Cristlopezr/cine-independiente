@@ -27,7 +27,7 @@ export type UploadMovieForm = UseFormReturn<
 >;
 
 export interface CleanUploadMovieFormValues {
-	date: number | undefined;
+	date: string | undefined;
 	imageUrl: string | undefined;
 	productionYear: number;
 	user_id: string;
