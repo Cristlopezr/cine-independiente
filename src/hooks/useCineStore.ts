@@ -11,7 +11,7 @@ export const useCineStore = () => {
 		dispatch(onError(error));
 	};
 
-	const onMovieUploadSuccesMessage = (message: string) => {
+	const onMovieUploadSuccessMessage = (message: string) => {
 		dispatch(onSetMovieUploadSuccessMessage(message));
 	};
 
@@ -29,6 +29,6 @@ export const useCineStore = () => {
 		//Metodos
 		onErrorMessage,
 		onSetUploadProgress,
-		onSetMovieUploadSuccessMessage,
+		onMovieUploadSuccessMessage,
 	};
 };

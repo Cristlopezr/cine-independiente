@@ -27,12 +27,12 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		errorMessage: uploadErrorMessage,
 		onErrorMessage,
 		movieUploadSuccessMessage,
-		onSetMovieUploadSuccessMessage,
+		onMovieUploadSuccessMessage,
 	} = useCineStore();
 
 	useEffect(() => {
 		onErrorMessage('');
-		onSetMovieUploadSuccessMessage('');
+		onMovieUploadSuccessMessage('');
 	}, []);
 
 	const [uploadMovieInfo, { isLoading }] = useUploadMovieInfoMutation();
