@@ -1,7 +1,7 @@
 import { Button, Form, Loading, Separator } from '@/components/ui';
 import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieFormSchema } from '@/schemas/zSchemas';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsFillCheckCircleFill, BsFillExclamationTriangleFill, BsXCircle } from 'react-icons/bs';
 import * as z from 'zod';
 import {
@@ -20,7 +20,20 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	const [formStep, setFormStep] = useState(0);
 	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
-	const { uploadProgress, movieToUpload, onSetUploadProgress } = useCineStore();
+	const {
+		uploadProgress,
+		movieToUpload,
+		onSetUploadProgress,
+		errorMessage: uploadErrorMessage,
+		onErrorMessage,
+		movieUploadSuccessMessage,
+		onSetMovieUploadSuccessMessage,
+	} = useCineStore();
+
+	useEffect(() => {
+		onErrorMessage('');
+		onSetMovieUploadSuccessMessage('');
+	}, []);
 
 	const [uploadMovieInfo, { isLoading }] = useUploadMovieInfoMutation();
 	const { user } = useAuthStore();
@@ -72,7 +85,9 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	};
 
 	const cancelUpload = () => {
-		abortController.abort();
+		if (uploadProgress !== 100) {
+			abortController.abort();
+		}
 		onSetUploadProgress(0);
 		onCloseModal();
 	};
@@ -87,6 +102,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			productionYear: Number(values.productionYear),
 			user_id: user.user_id,
 			enabled: true,
+			explicitContent: false,
 			//!Enabled por ahora true;
 		};
 		return formValues;
@@ -101,7 +117,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 				</span>
 
 				<CustomTooltip>
-					{formStep !== 0 && uploadProgress !== 100 ? (
+					{(formStep !== 0 && uploadProgress !== 100) || (formStep !== 0 && !isFormSubmitted) ? (
 						<Alert
 							onAction={cancelUpload}
 							trigger={<BsXCircle className='text-2xl cursor-pointer text-destructive' />}
@@ -134,6 +150,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 								<>
 									{isLoading ? (
 										<div className='md:pt-32'>
+											<p>Procesando...</p>
 											<Loading />
 										</div>
 									) : (
@@ -154,26 +171,36 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 								</>
 							)}
 							<div className='flex flex-col items-center pt-10 gap-5'>
-								{uploadProgress !== 100 ? (
+								{!uploadErrorMessage ? (
 									<>
-										<Progress progress={uploadProgress} text='Subiendo película' />
-										<Alert
-											onAction={cancelUpload}
-											trigger={
-												<div className='h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'>
-													Cancelar carga
-												</div>
-											}
-										/>
+										{!movieUploadSuccessMessage ? (
+											<>
+												<Progress
+													progress={uploadProgress}
+													text='Subiendo película'
+												/>
+												<Alert
+													onAction={cancelUpload}
+													trigger={
+														<div className='h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'>
+															Cancelar carga
+														</div>
+													}
+												/>
+											</>
+										) : (
+											<div className='flex flex-col text-center gap-5'>
+												<p>Tu película se ha subido con éxito.</p>
+												<p>
+													Se procederá con la compresión y validación del contenido.
+													En caso de éxito o error, se te notificará por correo
+													electrónico.
+												</p>
+											</div>
+										)}
 									</>
 								) : (
-									<div className='flex flex-col text-center gap-5'>
-										<p>Tu película se ha subido con éxito.</p>
-										<p>
-											Se procederá con la compresión y validación del contenido. En caso
-											de éxito o error, se te notificará por correo electrónico.
-										</p>
-									</div>
+									<>{uploadErrorMessage}</>
 								)}
 							</div>
 							{!isFormSubmitted && (

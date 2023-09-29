@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { CinePage } from '../pages';
+import { CinePage, MoviePage } from '../pages';
 import { MyMoviesPage } from '../pages/user';
 
 export const CineRoutes = () => {
@@ -8,6 +8,7 @@ export const CineRoutes = () => {
 			<Route path='/' element={<CinePage />} />
 			<Route path='/*' element={<Navigate to='/' />} />
 			<Route path='/my-movies' element={<MyMoviesPage />} />
+			<Route path='/movie/:id' element={<MoviePage />} />
 		</Routes>
 	);
 };

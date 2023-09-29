@@ -1,10 +1,10 @@
 import { videoApi } from '@/api';
 import axios from 'axios';
-import { onError, onSetMovieToUpload, setUploadProgress } from './cineSlice';
+import { onError, onSetMovieToUpload, onSetMovieUploadSuccessMessage, setUploadProgress } from './cineSlice';
 export const abortController = new AbortController();
 export const videoApiSlice = videoApi.injectEndpoints({
 	endpoints: builder => ({
-		uploadMovie: builder.mutation<{ data: { inputPath: string }; msg: string },{ url: string; data: { movie: File }; date: string }>({
+		uploadMovie: builder.mutation<{ msg: string }, { url: string; data: { movie: File }; date: string }>({
 			queryFn: async ({ url, data, date }, api) => {
 				api.dispatch(onSetMovieToUpload({ date }));
 				const formData = new FormData();
@@ -20,13 +20,14 @@ export const videoApiSlice = videoApi.injectEndpoints({
 						},
 						signal: abortController.signal,
 					});
+					api.dispatch(onSetMovieUploadSuccessMessage(result.data));
 					return { data: result.data };
 				} catch (axiosError) {
 					let err: any = axiosError;
 					if (axios.isCancel(axiosError)) {
 						console.log('La solicitud fue cancelada por el usuario', axiosError.message);
 					}
-					api.dispatch(onError(err.response?.data || err.message));
+					api.dispatch(onError('Ha ocurrido un error en la carga de la película'));
 					return {
 						error: {
 							status: err.respone?.status,
@@ -36,7 +37,10 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
-		uploadMovieImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; date: string }>({
+		uploadMovieImage: builder.mutation<
+			{ imageUrl: string },
+			{ userId: string; image: File; date: string }
+		>({
 			query: data => {
 				const formData = new FormData();
 				formData.append('image', data.image);
@@ -55,5 +59,4 @@ export const videoApiSlice = videoApi.injectEndpoints({
 	}),
 });
 
-export const { useUploadMovieMutation, useUploadMovieImageMutation } =
-	videoApiSlice;
+export const { useUploadMovieMutation, useUploadMovieImageMutation } = videoApiSlice;

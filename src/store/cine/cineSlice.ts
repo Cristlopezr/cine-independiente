@@ -5,6 +5,7 @@ import { createSlice } from '@reduxjs/toolkit';
 interface CineState {
 	uploadProgress: number;
 	errorMessage: string | undefined;
+	movieUploadSuccessMessage: string;
 	movieToUpload: {
 		date: string | undefined;
 		imageUrl: string | undefined;
@@ -15,6 +16,7 @@ interface CineState {
 const initialState: CineState = {
 	uploadProgress: 0,
 	errorMessage: '',
+	movieUploadSuccessMessage: '',
 	movieToUpload: {
 		date: undefined,
 		imageUrl: undefined,
@@ -38,7 +40,11 @@ export const cineSlice = createSlice({
 		onGetGenres: (state, action) => {
 			state.genres = action.payload;
 		},
+		onSetMovieUploadSuccessMessage: (state, action) => {
+			state.movieUploadSuccessMessage = action.payload;
+		},
 	},
 });
 
-export const { setUploadProgress, onError, onSetMovieToUpload, onGetGenres } = cineSlice.actions;
+export const { setUploadProgress, onError, onSetMovieToUpload, onGetGenres, onSetMovieUploadSuccessMessage } =
+	cineSlice.actions;

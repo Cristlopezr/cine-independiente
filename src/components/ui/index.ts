@@ -13,3 +13,5 @@ export * from './textarea';
 export * from './checkbox';
 export * from './tabs';
 export * from './alert-dialog';
+export * from './aspect-ratio';
+export * from './skeleton';
