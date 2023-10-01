@@ -32,9 +32,12 @@ export const Header = () => {
 	return (
 		<header
 			className={`grid grid-cols-3 transition-all duration-300 items-center justify-center h-[80px] px-10 fixed z-10 right-0 left-0 ${
-				scrolled ? 'bg-background/[98]' : 'bg-gradient-to-b from-background/50 from-0%'
+				scrolled ? 'bg-background/[98]' : 'bg-transparent'
 			}`}
+			
 		>
+
+			<div className='bg-gradient-to-b from-background/50 -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
 			<div className='flex items-center gap-5'>
 				<BsList className='w-10 p-2 h-12' />
 				<nav className='hidden md:block'>

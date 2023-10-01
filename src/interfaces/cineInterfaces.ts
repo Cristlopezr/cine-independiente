@@ -77,6 +77,9 @@ export interface CleanUploadMovieFormValues {
 		name: string;
 	}[];
 	cast: { name: string }[];
+	enabled: boolean;
+	explicitContent: boolean;
+	user_id_date: string;
 }
 
 export interface FormStepOneItem {

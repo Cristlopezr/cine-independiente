@@ -12,7 +12,7 @@ import {
 } from '.';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { abortController, useUploadMovieInfoMutation } from '@/store/cine';
+import { useUpdateMovieInfoMutation } from '@/store/cine';
 import { Alert, CustomTooltip } from '@/components';
 import { Progress } from '@/components/cine';
 
@@ -20,6 +20,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	const [formStep, setFormStep] = useState(0);
 	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
+	const [abortController, setAbortController] = useState<AbortController | undefined>();
 	const {
 		uploadProgress,
 		movieToUpload,
@@ -35,7 +36,13 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		onMovieUploadSuccessMessage('');
 	}, []);
 
-	const [uploadMovieInfo, { isLoading }] = useUploadMovieInfoMutation();
+	const [
+		updateMovieInfo,
+		{
+			/* isLoading */
+		},
+	] = useUpdateMovieInfoMutation();
+	const isLoading = true;
 	const { user } = useAuthStore();
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
 		resolver: zodResolver(uploadMovieFormSchema),
@@ -54,7 +61,11 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 
 	const onGoNext = async () => {
 		if (formStep === 1) {
-			const isValid = await form.trigger(['title', 'productionYear', 'synopsis', 'movieImage']);
+			const isValid = await form.trigger(['title', 'productionYear', 'synopsis']);
+			if (!movieToUpload.imageUrl) {
+				const isImageValid = await form.trigger(['movieImage']);
+				if (!isImageValid) return;
+			}
 			if (!isValid) return;
 		}
 		if (formStep === 2) {
@@ -73,7 +84,9 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		const cleanedFormValues = cleanFormValues();
 		try {
 			setIsFormSubmitted(true);
-			await uploadMovieInfo(cleanedFormValues);
+			//!Actualizar pelicula
+			const movieUpdated = await updateMovieInfo(cleanedFormValues);
+			console.log(movieUpdated);
 		} catch (error: any) {
 			console.log(error);
 			setErrorMessage(error?.msg);
@@ -85,8 +98,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	};
 
 	const cancelUpload = () => {
-		if (uploadProgress !== 100) {
-			abortController.abort();
+		if (uploadProgress !== 100 && !uploadErrorMessage) {
+			abortController?.abort();
 		}
 		onSetUploadProgress(0);
 		onCloseModal();
@@ -103,6 +116,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			user_id: user.user_id,
 			enabled: true,
 			explicitContent: false,
+			user_id_date: user.user_id + movieToUpload.date,
 			//!Enabled por ahora true;
 		};
 		return formValues;
@@ -117,7 +131,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 				</span>
 
 				<CustomTooltip>
-					{(formStep !== 0 && uploadProgress !== 100) || (formStep !== 0 && !isFormSubmitted) ? (
+					{(formStep !== 0 && uploadProgress !== 100 && !uploadErrorMessage) ||
+					(formStep !== 0 && !isFormSubmitted && !uploadErrorMessage) ? (
 						<Alert
 							onAction={cancelUpload}
 							trigger={<BsXCircle className='text-2xl cursor-pointer text-destructive' />}
@@ -134,7 +149,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			<div>
 				{formStep === 0 && (
 					<div className='flex items-center justify-center p-20'>
-						<UploadMovieInput setFormStep={setFormStep} />
+						<UploadMovieInput setFormStep={setFormStep} setAbortController={setAbortController} />
 					</div>
 				)}
 				{formStep !== 0 && (
@@ -149,8 +164,11 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 							) : (
 								<>
 									{isLoading ? (
-										<div className='md:pt-32'>
-											<p>Procesando...</p>
+										<div className='md:pt-32 flex flex-col items-center gap-5'>
+											<div className='text-center'>
+												<p>Procesando...</p>
+												<p>Podría tardar un momento</p>
+											</div>
 											<Loading />
 										</div>
 									) : (
@@ -200,7 +218,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 										)}
 									</>
 								) : (
-									<>{uploadErrorMessage}</>
+									<p>{uploadErrorMessage}</p>
 								)}
 							</div>
 							{!isFormSubmitted && (

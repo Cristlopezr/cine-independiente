@@ -1,14 +1,15 @@
 import { videoApi } from '@/api';
 import axios from 'axios';
 import { onError, onSetMovieToUpload, onSetMovieUploadSuccessMessage, setUploadProgress } from './cineSlice';
-export const abortController = new AbortController();
+
 export const videoApiSlice = videoApi.injectEndpoints({
 	endpoints: builder => ({
-		uploadMovie: builder.mutation<{ msg: string }, { url: string; data: { movie: File }; date: string }>({
-			queryFn: async ({ url, data, date }, api) => {
+		uploadMovie: builder.mutation<{ msg: string }, { url: string; data: { movie: File,email:string }; date: string, abortController:AbortController }>({
+			queryFn: async ({ url, data, date, abortController }, api) => {
 				api.dispatch(onSetMovieToUpload({ date }));
 				const formData = new FormData();
 				formData.append('video', data.movie);
+				formData.append('email', data.email);
 				try {
 					const result = await axios.post(url, formData, {
 						headers: {
@@ -24,10 +25,10 @@ export const videoApiSlice = videoApi.injectEndpoints({
 					return { data: result.data };
 				} catch (axiosError) {
 					let err: any = axiosError;
-					if (axios.isCancel(axiosError)) {
+					/* if (axios.isCancel(axiosError)) {
 						console.log('La solicitud fue cancelada por el usuario', axiosError.message);
-					}
-					api.dispatch(onError('Ha ocurrido un error en la carga de la película'));
+					} */
+					api.dispatch(onError(err.response?.data?.msg || 'Hubo un error en la carga de la película, por favor inténtelo de nuevo más tarde.'));
 					return {
 						error: {
 							status: err.respone?.status,
@@ -37,10 +38,7 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
-		uploadMovieImage: builder.mutation<
-			{ imageUrl: string },
-			{ userId: string; image: File; date: string }
-		>({
+		uploadMovieImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; date: string }>({
 			query: data => {
 				const formData = new FormData();
 				formData.append('image', data.image);
