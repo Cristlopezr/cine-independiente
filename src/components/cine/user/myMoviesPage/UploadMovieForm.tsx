@@ -36,13 +36,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		onMovieUploadSuccessMessage('');
 	}, []);
 
-	const [
-		updateMovieInfo,
-		{
-			/* isLoading */
-		},
-	] = useUpdateMovieInfoMutation();
-	const isLoading = true;
+	const [updateMovieInfo, { isLoading }] = useUpdateMovieInfoMutation();
 	const { user } = useAuthStore();
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
 		resolver: zodResolver(uploadMovieFormSchema),
