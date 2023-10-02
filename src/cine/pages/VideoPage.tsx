@@ -29,7 +29,7 @@ export const VideoPage = () => {
 	const url = `${baseUrl}${movie?.movieUrl}/720/${movie?.user_id}_${movie?.date}${extension}`;
 
 	const videoJsOptions = {
-		autoplay: false,
+		autoplay: true,
 		controls: true,
 		responsive: true,
 		preload: 'none',
