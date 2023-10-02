@@ -82,7 +82,8 @@ const VideoJS = (props: any) => {
 			const player = (playerRef.current = videojs(videoElement, options, () => {
 				onReady && onReady(player);
 			}));
-			player.qualitySelectorHls({
+
+			(player as any).qualitySelectorHls({
 				displayCurrentQuality: true,
 				placementIndex: 2,
 				vjsIconClass: 'vjs-icon-hd',
