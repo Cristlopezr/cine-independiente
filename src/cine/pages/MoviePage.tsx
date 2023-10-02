@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CineLayout } from '../layout';
 import { useGetMovieQuery } from '@/store/cine';
 import { Loading } from '@/components/ui';
@@ -8,18 +8,24 @@ import { GoPlay } from 'react-icons/go';
 export const MoviePage = () => {
 	const { id } = useParams();
 
-	if (!id) {
-		return <div>No hay id</div>;
-	}
+	const navigate = useNavigate();
 
-	const { data, isError, isFetching } = useGetMovieQuery(id);
+	const onClickPlay = () => {
+		navigate(`/movie/player/${id}`);
+	};
+
+	const { data, isError, isFetching } = useGetMovieQuery(id!);
 
 	if (isError) {
 		return <div>Ha ocurrido un error al obtener la película</div>;
 	}
 
 	if (isFetching) {
-		return <Loading />;
+		return (
+			<div className='mt-40'>
+				<Loading text='Cargando...' />
+			</div>
+		);
 	}
 
 	const { movie } = data!;
@@ -37,8 +43,8 @@ export const MoviePage = () => {
 						<p className='text-gray-300'>{movie.productionYear}</p>
 					</div>
 					<div className='flex items-center gap-7'>
-						<GoPlay className='text-6xl' />
-						<BsPlusLg className='text-3xl' />
+						<GoPlay onClick={onClickPlay} className='text-6xl cursor-pointer' />
+						<BsPlusLg className='text-3xl cursor-pointer' />
 					</div>
 					<p className='text-xl'>{movie.synopsis}</p>
 				</div>
