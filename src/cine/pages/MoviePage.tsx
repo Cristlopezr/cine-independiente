@@ -37,9 +37,9 @@ export const MoviePage = () => {
 					<img className='w-full' src={movie.imageUrl} alt='' />
 					<div className='absolute bg-gradient-to-b from-transparent from-0% to-background top-1/4 bottom-0 left-0 right-0'></div>
 				</div>
-				<div className='px-14 absolute top-1/2 flex flex-col gap-5 w-1/2'>
+				<div className='px-14 absolute sm:top-1/2 top-2/3 flex flex-col gap-5 lg:w-1/2 sm:w-2/3'>
 					<div className='font-semibold'>
-						<p className='text-8xl'>{movie.title}</p>
+						<p className='md:text-5xl sm:text-4xl text-3xl '>{movie.title}</p>
 						<p className='text-gray-300'>{movie.productionYear}</p>
 					</div>
 					<div className='flex items-center gap-7'>

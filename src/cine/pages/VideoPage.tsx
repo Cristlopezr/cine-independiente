@@ -4,9 +4,10 @@ import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import videojs from 'video.js';
 import type Player from 'video.js/dist/types/player';
+import es from 'video.js/dist/lang/es.json';
+import qualitySelectorHls from 'videojs-quality-selector-hls';
 
 const baseUrl = 'https://storage.googleapis.com/';
-const extension = '.m3u8';
 export const VideoPage = () => {
 	const { id } = useParams();
 	const { data, isError, isFetching } = useGetMovieQuery(id!);
@@ -26,13 +27,20 @@ export const VideoPage = () => {
 
 	const { movie } = data!;
 
-	const url = `${baseUrl}${movie?.movieUrl}/720/${movie?.user_id}_${movie?.date}${extension}`;
+	const url = `${baseUrl}${movie?.movieUrl}`;
 
 	const videoJsOptions = {
 		autoplay: true,
 		controls: true,
 		responsive: true,
 		preload: 'none',
+		language: 'es',
+		controlBar: {
+			remainingTimeDisplay: {
+				displayNegative: true,
+			},
+			children: ['playToggle', 'progressControl', 'volumePanel', 'fullscreenToggle'],
+		},
 		sources: [
 			{
 				src: url,
@@ -59,6 +67,10 @@ const VideoJS = (props: any) => {
 
 	useEffect(() => {
 		// Make sure Video.js player is only initialized once
+		if (!videojs.getPlugin('qualitySelectorHls')) {
+			videojs.registerPlugin('qualitySelectorHls', qualitySelectorHls);
+		}
+		videojs.addLanguage('es', es);
 		if (!playerRef.current) {
 			// The Video.js player needs to be _inside_ the component el for React 18 Strict Mode.
 			const videoElement = document.createElement('video-js');
@@ -70,12 +82,15 @@ const VideoJS = (props: any) => {
 			const player = (playerRef.current = videojs(videoElement, options, () => {
 				onReady && onReady(player);
 			}));
-
+			player.qualitySelectorHls({
+				displayCurrentQuality: true,
+				placementIndex: 2,
+				vjsIconClass: 'vjs-icon-hd',
+			});
 			// You could update an existing player in the `else` block here
 			// on prop change, for example:
 		} else {
 			const player = playerRef.current;
-
 			player.autoplay(options.autoplay);
 			player.src(options.sources);
 		}
@@ -84,7 +99,6 @@ const VideoJS = (props: any) => {
 	// Dispose the Video.js player when the functional component unmounts
 	useEffect(() => {
 		const player = playerRef.current;
-
 		return () => {
 			if (player && !player.isDisposed()) {
 				player.dispose();

@@ -22,14 +22,14 @@ export const MovieCarouselItem = ({ className, movie }: { className?: string; mo
 					className={cn('aspect-[9/14] w-full object-cover rounded-sm', className)}
 					src={movie.imageUrl}
 				/>
+				<div className='absolute opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out bottom-5 right-5 flex items-center gap-3'>
+					<BsFillPlayCircleFill className='w-9 h-9 z-10 text-white cursor-pointer' />
+					<div className='absolute top-2 left-2 bg-black w-5 h-5 rounded-full'></div>
+					<div className='absolute top-2 right-2 bg-black w-5 h-5 rounded-full'></div>
+					<BsFillPlusCircleFill className='w-9 h-9 z-10 text-white cursor-pointer' />
+				</div>
 			</div>
 			<p className='mx-2 pt-1'>{movie.title}</p>
-			<div className='absolute opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out bottom-12 right-5 flex items-center gap-3'>
-				<BsFillPlayCircleFill className='w-9 h-9 z-10 text-white cursor-pointer' />
-				<div className='absolute top-2 left-2 bg-black w-5 h-5 rounded-full'></div>
-				<div className='absolute top-2 right-2 bg-black w-5 h-5 rounded-full'></div>
-				<BsFillPlusCircleFill className='w-9 h-9 z-10 text-white cursor-pointer' />
-			</div>
 		</div>
 	);
 };

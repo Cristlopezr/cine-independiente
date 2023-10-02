@@ -41,6 +41,7 @@
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "videojs-quality-selector-hls": "^1.1.1",
     "zod": "^3.22.2"
   },
   "devDependencies": {

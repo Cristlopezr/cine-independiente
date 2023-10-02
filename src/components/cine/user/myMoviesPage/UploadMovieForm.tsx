@@ -78,9 +78,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		const cleanedFormValues = cleanFormValues();
 		try {
 			setIsFormSubmitted(true);
-			//!Actualizar pelicula
-			const movieUpdated = await updateMovieInfo(cleanedFormValues);
-			console.log(movieUpdated);
+			//!Actualizar pelicula movieUpdated.msg
+			await updateMovieInfo(cleanedFormValues);
 		} catch (error: any) {
 			console.log(error);
 			setErrorMessage(error?.msg);
