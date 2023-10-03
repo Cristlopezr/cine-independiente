@@ -12,6 +12,15 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		getMovie: builder.query<{movie:Movie}, string>({
 			query: id => `/movie/movie/${id}`,
 		}),
+		saveWatchHistory: builder.mutation<string, {user_id:string, movie_id:string, currentTime:number}>({
+			query: data => {
+				return {
+					url: '/movie/save-watch-history',
+					method: 'POST',
+					body: data,
+				};
+			},
+		}),
 		uploadMovieInfo: builder.mutation<string, CleanUploadMovieFormValues>({
 			query: data => {
 				const { writers, directors, cast, genres, ...movie } = data;
@@ -51,4 +60,4 @@ export const cineApiSlice = cineApi.injectEndpoints({
 	}),
 });
 
-export const { useGetGenresQuery, useUploadMovieInfoMutation, useGetMoviesQuery, useUpdateMovieInfoMutation, useGetMovieQuery } = cineApiSlice;
+export const { useGetGenresQuery, useUploadMovieInfoMutation, useGetMoviesQuery, useUpdateMovieInfoMutation, useGetMovieQuery, useSaveWatchHistoryMutation } = cineApiSlice;
