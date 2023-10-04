@@ -28,7 +28,7 @@ const format = (seconds: number) => {
 export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
 	const [playerState, setPlayerState] = useState({
-		playing: false,
+		playing: true,
 		muted: false,
 		volume: 1,
 		volumeSeek: 1,
