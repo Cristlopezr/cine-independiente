@@ -6,16 +6,6 @@
 	box-sizing: border-box;
 }
 
-.video-js {
-	font-size: 15px;
-}
-
-.video-js .vjs-control-bar {
-	background-color: transparent;
-	position: absolute;
-	bottom: 8%;
-}
-
 .slick-dots .slick-active div div {
 	background-color: white;
 }
