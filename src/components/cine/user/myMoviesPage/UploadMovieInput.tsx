@@ -4,20 +4,22 @@ import { MdFileUpload } from 'react-icons/md';
 import { Button, Input } from '@/components/ui';
 import { useAuthStore } from '@/hooks';
 import { uploadMovieInputSchema } from '@/schemas/zSchemas';
-import { useCreateResolutionsMutation, useUploadMovieMutation } from '@/store/cine';
+import { useUploadMovieInfoMutation, useUploadMovieMutation } from '@/store/cine';
+import { CleanUploadMovieFormValues } from '@/interfaces';
 
 interface UploadMovieInputProps {
 	setFormStep: (steap: number) => void;
+	setAbortController: (abortController: AbortController) => void;
 }
 
 const baseUrl = `${import.meta.env.VITE_API_MOVIE_BASE_URL}/video`;
 
-export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
+export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovieInputProps) => {
 	const { user } = useAuthStore();
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const [uploadMovie, { isLoading: isUploadMovieLoading }] = useUploadMovieMutation();
-	const [createResolutions] = useCreateResolutionsMutation();
+	const [uploadMovieInfo] = useUploadMovieInfoMutation();
 
 	const [hasUploadedVideo, setHasUploadedVideo] = useState(false);
 
@@ -29,21 +31,34 @@ export const UploadMovieInput = ({ setFormStep }: UploadMovieInputProps) => {
 			uploadMovieInputSchema.partial().pick({ file: true }).parse({ file: e?.target?.files });
 			setHasUploadedVideo(true);
 			const date = new Date().getTime().toString();
+			const abortController = new AbortController();
+			setAbortController(abortController);
 			setTimeout(async () => {
 				setFormStep(1);
 				if (!e?.target?.files) return;
-				const { data, /* msg */ } = await uploadMovie({
+				await uploadMovie({
 					url: `${baseUrl}?id=${user.user_id}&date=${date}`,
-					data: { movie: e.target.files[0] },
+					data: { movie: e.target.files[0], email: user.email },
 					date,
+					abortController,
 				}).unwrap();
-				const encodedData = await createResolutions({
-					url: `${baseUrl}/encode?id=${user.user_id}`,
-					data,
-				});
-				console.log(encodedData);
-				//! Await resolutions
-				//! Await validation
+				const initialMovie: CleanUploadMovieFormValues = {
+					date,
+					cast: [{ name: user.user_id }],
+					directors: [{ name: user.user_id }],
+					//!Mandar un genre real
+					genres: ['26388c3f-2ad2-4050-9ca9-c9db7c59bf64'],
+					imageUrl: user.user_id,
+					productionYear: 0,
+					synopsis: user.user_id,
+					title: user.user_id,
+					user_id: user.user_id,
+					writers: [{ name: user.user_id }],
+					enabled: false,
+					explicitContent: false,
+					user_id_date: user.user_id + date,
+				};
+				await uploadMovieInfo(initialMovie);
 			}, 1500);
 		} catch (error) {
 			if (error instanceof z.ZodError) {

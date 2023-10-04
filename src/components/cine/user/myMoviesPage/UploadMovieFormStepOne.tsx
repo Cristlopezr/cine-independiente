@@ -41,7 +41,7 @@ interface UploadMovieFormStepOneProps {
 
 export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) => {
 	const inputFileRef = useRef<HTMLInputElement | null>(null);
-	const [isImageUploaded, setIsImageUploaded] = useState(false);
+	const [hasSelectedImage, setHasSelectedImage] = useState(false);
 	const { movieToUpload } = useCineStore();
 	const { user } = useAuthStore();
 	const [uploadMovieImage, { isLoading: isUploadMovieImageLoading }] = useUploadMovieImageMutation();
@@ -56,20 +56,22 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 				.partial()
 				.pick({ movieImage: true })
 				.parse({ movieImage: e?.target?.files });
+			setHasSelectedImage(true);
 			await uploadMovieImage({
 				userId: user.user_id,
 				image: e?.target?.files[0],
 				date: movieToUpload.date!,
 			}).unwrap();
-			setIsImageUploaded(true);
-		} catch (error) {
+		} catch (error: any) {
 			if (error instanceof z.ZodError) {
 				const errorMessage = error.errors[0]?.message;
 				setErrorMessage(errorMessage);
 				if (inputFileRef.current) {
 					inputFileRef.current.value = '';
 				}
+				return;
 			}
+			setErrorMessage(error.msg);
 		}
 	};
 
@@ -79,63 +81,74 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 				if (item.id === 'movieImage') {
 					return (
 						<div key={item.id} className='col-span-2 justify-self-center'>
-							{isUploadMovieImageLoading ? (
-								<Loading />
-							) : (
-								<>
-									{!isImageUploaded ? (
-										<div>
-											<Input
-												type={item.type}
-												ref={inputFileRef}
-												onChange={onInputChange}
-												accept='.jpeg, .png, .jpg'
-												className='hidden'
-											/>
-											<div className='relative flex flex-col items-center gap-3'>
-												<MdFileUpload
-													className='w-10 h-10 cursor-pointer'
-													onClick={() => inputFileRef?.current?.click()!}
-												/>
-												<div className='relative'>
-													<Button
+							<div>
+								<Input
+									type={item.type}
+									ref={inputFileRef}
+									onChange={onInputChange}
+									accept='.jpeg, .png, .jpg'
+									className='hidden'
+								/>
+							</div>
+							{!hasSelectedImage ? (
+								<div>
+									<div className='relative flex flex-col items-center gap-3'>
+										<MdFileUpload
+											className='w-10 h-10 cursor-pointer'
+											onClick={() => inputFileRef?.current?.click()!}
+										/>
+										<div className='relative'>
+											<Button
+												type='button'
+												onClick={() => inputFileRef?.current?.click()!}
+											>
+												Seleccionar imagen
+											</Button>
+											<TooltipProvider>
+												<Tooltip delayDuration={100}>
+													<TooltipTrigger
 														type='button'
-														onClick={() => inputFileRef?.current?.click()!}
+														className='absolute -left-10 top-1/2 -translate-y-1/2'
 													>
-														Seleccionar imagen
-													</Button>
-													<TooltipProvider>
-														<Tooltip delayDuration={100}>
-															<TooltipTrigger
-																type='button'
-																className='absolute -left-10 top-1/2 -translate-y-1/2'
-															>
-																<BsQuestionCircle className='text-lg' />
-															</TooltipTrigger>
-															<TooltipContent sideOffset={10} side='bottom'>
-																<div className='flex flex-col gap-1 font-semibold'>
-																	<p>Formatos soportados</p>
-																	<ul className='flex gap-2 justify-between'>
-																		<li>.JPG</li>
-																		<li>.JPEG</li>
-																		<li>.PNG</li>
-																	</ul>
-																</div>
-															</TooltipContent>
-														</Tooltip>
-													</TooltipProvider>
-												</div>
-												{!errorMessage ? (
-													<p className='absolute top-full pt-1 text-xs text-center'>
-														Opcional
+														<BsQuestionCircle className='text-lg' />
+													</TooltipTrigger>
+													<TooltipContent sideOffset={10} side='bottom'>
+														<div className='flex flex-col gap-1 font-semibold'>
+															<p>Formatos soportados</p>
+															<ul className='flex gap-2 justify-between'>
+																<li>.JPG</li>
+																<li>.JPEG</li>
+																<li>.PNG</li>
+															</ul>
+														</div>
+													</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
+										</div>
+										{!errorMessage ? (
+											<div className='absolute top-full pt-1 text-xs text-center'>
+												{(form?.formState?.errors?.movieImage?.message as string) ? (
+													<p className='text-destructive font-semibold'>
+														{
+															form?.formState?.errors?.movieImage
+																?.message as string
+														}
 													</p>
 												) : (
-													<p className='text-sm text-destructive font-semibold'>
-														{errorMessage}
-													</p>
+													<p>Mínimo 1920x1080</p>
 												)}
 											</div>
-										</div>
+										) : (
+											<p className='text-sm text-destructive font-semibold'>
+												{errorMessage}
+											</p>
+										)}
+									</div>
+								</div>
+							) : (
+								<>
+									{isUploadMovieImageLoading ? (
+										<Loading />
 									) : (
 										<div className='flex flex-col items-center gap-3'>
 											<BsFillCheckCircleFill className='w-8 h-8' />

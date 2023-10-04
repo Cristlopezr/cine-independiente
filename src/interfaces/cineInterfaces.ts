@@ -1,5 +1,41 @@
 import { UseFormReturn } from 'react-hook-form';
 
+export type Settings = {
+	dots: boolean;
+	infinite: boolean;
+	arrows: boolean;
+	speed: number;
+	slidesToShow: number;
+	slidesToScroll: number;
+	draggable: boolean;
+	nextArrow: JSX.Element | undefined;
+	prevArrow: JSX.Element | undefined;
+	responsive: Breakpoint[];
+};
+
+type Breakpoint = {
+	breakpoint: number;
+	settings: {
+		slidesToShow: number;
+		slidesToScroll: number;
+	};
+};
+
+export type Movie = {
+	movie_id: string;
+	thumbnailUrl: string | null;
+	imageUrl: string;
+	date: string;
+	title: string;
+	productionYear: number;
+	movieUrl: string | null;
+	synopsis: string;
+	user_id: string;
+	enabled: boolean;
+	createdAt: string;
+	updatedAt: string;
+};
+
 export interface Genre {
 	genre_id: string;
 	name: string;
@@ -27,7 +63,7 @@ export type UploadMovieForm = UseFormReturn<
 >;
 
 export interface CleanUploadMovieFormValues {
-	date: number | undefined;
+	date: string | undefined;
 	imageUrl: string | undefined;
 	productionYear: number;
 	user_id: string;
@@ -41,6 +77,9 @@ export interface CleanUploadMovieFormValues {
 		name: string;
 	}[];
 	cast: { name: string }[];
+	enabled: boolean;
+	explicitContent: boolean;
+	user_id_date: string;
 }
 
 export interface FormStepOneItem {

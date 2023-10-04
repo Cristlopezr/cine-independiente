@@ -1,14 +1,18 @@
-import { onError, setUploadProgress } from '@/store/cine';
+import { onError, onSetMovieUploadSuccessMessage, setUploadProgress } from '@/store/cine';
 import { useAppDispatch, useAppSelector } from './redux';
 
 export const useCineStore = () => {
 	const dispatch = useAppDispatch();
-	const { uploadProgress, errorMessage, movieToUpload, isCreateResolutionsLoading } = useAppSelector(
+	const { uploadProgress, errorMessage, movieToUpload, movieUploadSuccessMessage } = useAppSelector(
 		state => state.cine
 	);
 
 	const onErrorMessage = (error: string) => {
 		dispatch(onError(error));
+	};
+
+	const onMovieUploadSuccessMessage = (message: string) => {
+		dispatch(onSetMovieUploadSuccessMessage(message));
 	};
 
 	const onSetUploadProgress = (uploadProgress: number) => {
@@ -20,10 +24,11 @@ export const useCineStore = () => {
 		uploadProgress,
 		errorMessage,
 		movieToUpload,
-		isCreateResolutionsLoading,
+		movieUploadSuccessMessage,
 
 		//Metodos
 		onErrorMessage,
 		onSetUploadProgress,
+		onMovieUploadSuccessMessage,
 	};
 };

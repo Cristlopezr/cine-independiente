@@ -76,11 +76,14 @@ export const uploadMovieFormSchema = z.object({
 		}),
 	movieImage: z
 		.any()
+		.refine(files => {
+			if (!files) return false;
+			return true;
+		}, 'Por favor seleccionar una imagen')
 		.refine(
-			files => ACCEPTED_IMAGE_TYPES.includes(files[0].type),
+			files => ACCEPTED_IMAGE_TYPES.includes(files?.[0].type),
 			'Los formatos soportados son .JPG .JPEG .PNG'
-		)
-		.optional(),
+		),
 	directors: z.array(
 		z.object({
 			name: z.string().min(1, { message: 'Por favor ingresar un director' }),

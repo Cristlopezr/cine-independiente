@@ -1,8 +1,8 @@
 import { Button, Form, Loading, Separator } from '@/components/ui';
 import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieFormSchema } from '@/schemas/zSchemas';
-import { useState } from 'react';
-import { BsXCircle } from 'react-icons/bs';
+import { useEffect, useState } from 'react';
+import { BsFillCheckCircleFill, BsFillExclamationTriangleFill, BsXCircle } from 'react-icons/bs';
 import * as z from 'zod';
 import {
 	UploadMovieFormStepOne,
@@ -12,15 +12,31 @@ import {
 } from '.';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { abortController, abortControllerResolution, useUploadMovieInfoMutation } from '@/store/cine';
+import { useUpdateMovieInfoMutation } from '@/store/cine';
 import { Alert, CustomTooltip } from '@/components';
 import { Progress } from '@/components/cine';
 
 export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) => {
 	const [formStep, setFormStep] = useState(0);
-	const { uploadProgress, movieToUpload, onSetUploadProgress, isCreateResolutionsLoading } = useCineStore();
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const [abortController, setAbortController] = useState<AbortController | undefined>();
+	const {
+		uploadProgress,
+		movieToUpload,
+		onSetUploadProgress,
+		errorMessage: uploadErrorMessage,
+		onErrorMessage,
+		movieUploadSuccessMessage,
+		onMovieUploadSuccessMessage,
+	} = useCineStore();
 
-	const [uploadMovieInfo] = useUploadMovieInfoMutation();
+	useEffect(() => {
+		onErrorMessage('');
+		onMovieUploadSuccessMessage('');
+	}, []);
+
+	const [updateMovieInfo, { isLoading }] = useUpdateMovieInfoMutation();
 	const { user } = useAuthStore();
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
 		resolver: zodResolver(uploadMovieFormSchema),
@@ -39,7 +55,11 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 
 	const onGoNext = async () => {
 		if (formStep === 1) {
-			const isValid = await form.trigger(['title', 'productionYear', 'synopsis', 'movieImage']);
+			const isValid = await form.trigger(['title', 'productionYear', 'synopsis']);
+			if (!movieToUpload.imageUrl) {
+				const isImageValid = await form.trigger(['movieImage']);
+				if (!isImageValid) return;
+			}
 			if (!isValid) return;
 		}
 		if (formStep === 2) {
@@ -56,9 +76,14 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		}
 
 		const cleanedFormValues = cleanFormValues();
-		await uploadMovieInfo(cleanedFormValues);
-		//!Componente formulario enviado
-		console.log('Formulario enviado');
+		try {
+			setIsFormSubmitted(true);
+			//!Actualizar pelicula movieUpdated.msg
+			await updateMovieInfo(cleanedFormValues);
+		} catch (error: any) {
+			console.log(error);
+			setErrorMessage(error?.msg);
+		}
 	};
 
 	const onGoBack = () => {
@@ -66,13 +91,10 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	};
 
 	const cancelUpload = () => {
-		if (uploadProgress !== 100) {
-			abortController.abort();
-			onSetUploadProgress(0);
+		if (uploadProgress !== 100 && !uploadErrorMessage) {
+			abortController?.abort();
 		}
-		if (isCreateResolutionsLoading) {
-			abortControllerResolution.abort();
-		}
+		onSetUploadProgress(0);
 		onCloseModal();
 	};
 
@@ -86,6 +108,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			productionYear: Number(values.productionYear),
 			user_id: user.user_id,
 			enabled: true,
+			explicitContent: false,
+			user_id_date: user.user_id + movieToUpload.date,
 			//!Enabled por ahora true;
 		};
 		return formValues;
@@ -100,7 +124,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 				</span>
 
 				<CustomTooltip>
-					{formStep !== 0 && uploadProgress !== 100 ? (
+					{(formStep !== 0 && uploadProgress !== 100 && !uploadErrorMessage) ||
+					(formStep !== 0 && !isFormSubmitted && !uploadErrorMessage) ? (
 						<Alert
 							onAction={cancelUpload}
 							trigger={<BsXCircle className='text-2xl cursor-pointer text-destructive' />}
@@ -117,58 +142,97 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			<div>
 				{formStep === 0 && (
 					<div className='flex items-center justify-center p-20'>
-						<UploadMovieInput setFormStep={setFormStep} />
+						<UploadMovieInput setFormStep={setFormStep} setAbortController={setAbortController} />
 					</div>
 				)}
 				{formStep !== 0 && (
 					<Form {...form}>
-						<form className='min-h-[490px] gap-5 grid md:grid-cols-[1fr,200px] lg:grid-cols-[1fr,350px] p-5'>
-							{formStep === 1 && <UploadMovieFormStepOne form={form} />}
-							{formStep === 2 && <UploadMovieFormStepTwo form={form} />}
-							{formStep === 3 && <UploadMovieFormStepThree form={form} />}
-
+						<div className='min-h-[490px] gap-5 md:gap-8 grid md:grid-cols-[1fr,200px] lg:grid-cols-[1fr,350px] p-5'>
+							{!isFormSubmitted ? (
+								<form>
+									{formStep === 1 && <UploadMovieFormStepOne form={form} />}
+									{formStep === 2 && <UploadMovieFormStepTwo form={form} />}
+									{formStep === 3 && <UploadMovieFormStepThree form={form} />}
+								</form>
+							) : (
+								<>
+									{isLoading ? (
+										<div className='md:pt-32 flex flex-col items-center gap-5'>
+											<div className='text-center'>
+												<p>Procesando...</p>
+												<p>Podría tardar un momento</p>
+											</div>
+											<Loading />
+										</div>
+									) : (
+										<div className='flex flex-col items-center md:pt-32 gap-5'>
+											{!!errorMessage ? (
+												<>
+													<p className='text-destructive'>{errorMessage}</p>
+													<BsFillExclamationTriangleFill className='w-8 h-8' />
+												</>
+											) : (
+												<>
+													<p>Formulario enviado</p>
+													<BsFillCheckCircleFill className='w-8 h-8' />
+												</>
+											)}
+										</div>
+									)}
+								</>
+							)}
 							<div className='flex flex-col items-center pt-10 gap-5'>
-								{uploadProgress !== 100 && (
-									<Progress progress={uploadProgress} text='Subiendo película' />
-								)}
-
-								{isCreateResolutionsLoading && (
-									<div className='flex flex-col gap-5 text-center'>
-										<div>
-											<p>Realizando compresión...</p>
-											<p className='text-xs'>Podría tardar unos minutos</p>
-										</div>
-										<Loading />
-									</div>
-								)}
-								{/* {showExplicitValidation && <p>Válidando película</p>} */}
-
-								<Alert
-									onAction={cancelUpload}
-									trigger={
-										<div className='h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'>
-											Cancelar carga
-										</div>
-									}
-								/>
-							</div>
-							<div className='flex items-end justify-between'>
-								{formStep !== 1 && (
-									<Button onClick={onGoBack} type='button'>
-										Anterior
-									</Button>
-								)}
-								{formStep !== 3 ? (
-									<Button onClick={onGoNext} className='ml-auto' type='button'>
-										Siguiente
-									</Button>
+								{!uploadErrorMessage ? (
+									<>
+										{!movieUploadSuccessMessage ? (
+											<>
+												<Progress
+													progress={uploadProgress}
+													text='Subiendo película'
+												/>
+												<Alert
+													onAction={cancelUpload}
+													trigger={
+														<div className='h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'>
+															Cancelar carga
+														</div>
+													}
+												/>
+											</>
+										) : (
+											<div className='flex flex-col text-center gap-5'>
+												<p>Tu película se ha subido con éxito.</p>
+												<p>
+													Se procederá con la compresión y validación del contenido.
+													En caso de éxito o error, se te notificará por correo
+													electrónico.
+												</p>
+											</div>
+										)}
+									</>
 								) : (
-									<Button type='button' onClick={onGoNext}>
-										Guardar
-									</Button>
+									<p>{uploadErrorMessage}</p>
 								)}
 							</div>
-						</form>
+							{!isFormSubmitted && (
+								<div className='flex items-end justify-between'>
+									{formStep !== 1 && (
+										<Button onClick={onGoBack} type='button'>
+											Anterior
+										</Button>
+									)}
+									{formStep !== 3 ? (
+										<Button onClick={onGoNext} className='ml-auto' type='button'>
+											Siguiente
+										</Button>
+									) : (
+										<Button type='button' onClick={onGoNext}>
+											Guardar
+										</Button>
+									)}
+								</div>
+							)}
+						</div>
 					</Form>
 				)}
 			</div>

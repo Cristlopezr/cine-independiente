@@ -4,10 +4,10 @@ import { createSlice } from '@reduxjs/toolkit';
 /* import type { RootState } from '../../store'; */
 interface CineState {
 	uploadProgress: number;
-	isCreateResolutionsLoading: boolean;
 	errorMessage: string | undefined;
+	movieUploadSuccessMessage: string;
 	movieToUpload: {
-		date: number | undefined;
+		date: string | undefined;
 		imageUrl: string | undefined;
 	};
 	genres: Genre[];
@@ -15,8 +15,8 @@ interface CineState {
 
 const initialState: CineState = {
 	uploadProgress: 0,
-	isCreateResolutionsLoading: false,
 	errorMessage: '',
+	movieUploadSuccessMessage: '',
 	movieToUpload: {
 		date: undefined,
 		imageUrl: undefined,
@@ -40,16 +40,11 @@ export const cineSlice = createSlice({
 		onGetGenres: (state, action) => {
 			state.genres = action.payload;
 		},
-		onSetIsCreateResolutionsLoading: (state, action) => {
-			state.isCreateResolutionsLoading = action.payload;
+		onSetMovieUploadSuccessMessage: (state, action) => {
+			state.movieUploadSuccessMessage = action.payload;
 		},
 	},
 });
 
-export const {
-	setUploadProgress,
-	onError,
-	onSetMovieToUpload,
-	onGetGenres,
-	onSetIsCreateResolutionsLoading,
-} = cineSlice.actions;
+export const { setUploadProgress, onError, onSetMovieToUpload, onGetGenres, onSetMovieUploadSuccessMessage } =
+	cineSlice.actions;

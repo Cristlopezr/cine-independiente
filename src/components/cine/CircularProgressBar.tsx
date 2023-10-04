@@ -14,14 +14,14 @@ export const CircularProgressBar = ({
 	return (
 		<svg height={radius * 2} width={radius * 2}>
 			<circle
-				className='fill-transparent stroke-primary-foreground'
+				className='fill-transparent stroke-muted-foreground/30'
 				strokeWidth={strokeWidth}
 				r={normalizedRadius}
 				cx={radius}
 				cy={radius}
 			/>
 			<circle
-				className='fill-transparent stroke-accent'
+				className='fill-transparent stroke-muted-foreground/70'
 				strokeWidth={strokeWidth + 0.5}
 				strokeDasharray={circumference}
 				style={{

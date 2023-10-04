@@ -30,8 +30,8 @@ export function UserNav() {
 	const { user, startLogout } = useAuthStore();
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+		<DropdownMenu modal={false}>
+			<DropdownMenuTrigger asChild className='overflow-auto'>
 				<span className='flex items-center justify-between gap-2 cursor-pointer'>
 					<Avatar className='h-7 w-7 md:h-8 md:w-8 cursor-pointer'>
 						<AvatarImage src={user.avatarUrl ? user.avatarUrl : undefined} />
