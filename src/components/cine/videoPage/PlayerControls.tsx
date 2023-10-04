@@ -16,6 +16,7 @@ type PlayerControlsProps = {
 	onMute: () => void;
 	onSeek: (seeked: number) => void;
 	muted: boolean;
+	duration: number;
 	playing: boolean;
 	volume: number;
 	played: number;
@@ -36,6 +37,7 @@ export const PlayerControls = ({
 	onFastForward,
 	muted,
 	onMute,
+	duration,
 	fullScreen,
 	played,
 	loaded,
@@ -81,15 +83,14 @@ export const PlayerControls = ({
 				</div>
 				<div className='w-full relative'>
 					<Progress
-						style={{ width: `${loaded * 100}%` }}
+						style={{ width: `${loaded / duration}%` }}
 						className='bg-primary/30 h-1 absolute top-1/2 -translate-y-1/2'
 					/>
 					<Slider
 						className='cursor-pointer py-2'
-						value={[played * 100]}
-						defaultValue={[played * 100]}
-						max={100}
-						step={1}
+						value={[played]}
+						defaultValue={[played]}
+						max={duration}
 						onValueChange={e => onSeek(e[0])}
 					/>
 					<p className='absolute top-4'>

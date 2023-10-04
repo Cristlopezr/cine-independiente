@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player';
 import screenfull from 'screenfull';
 import { PlayerControls } from '.';
 import { OnProgressProps } from 'react-player/base';
+import { Loading } from '@/components/ui';
 
 export type Level = {
 	height: number;
@@ -35,13 +36,15 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 		fullScreen: false,
 		played: 0,
 		loaded: 0,
+		seeking: false,
 	});
 	const playerRef = useRef<ReactPlayer | null>(null);
 	const playerContainerRef = useRef(null);
 	const [count, setCount] = useState(0);
 	const [showControls, setShowControls] = useState(true);
+	const [loading, setLoading] = useState(false);
 
-	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded } = playerState;
+	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded, seeking } = playerState;
 
 	const handlePlayerReady = () => {
 		if (playerRef.current) {
@@ -96,7 +99,15 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 			setCount(count + 1);
 		}
 
-		setPlayerState({ ...playerState, played: state.played, loaded: state.loaded });
+		if (playerRef.current) {
+			const hlsPlayer = playerRef.current.getInternalPlayer('hls');
+			hlsPlayer.startLoad();
+		}
+
+		if (!seeking) {
+			setLoading(false);
+			setPlayerState({ ...playerState, played: state.playedSeconds, loaded: state.loadedSeconds });
+		}
 	};
 
 	const onMouseMove = () => {
@@ -105,8 +116,18 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	};
 
 	const onSeek = (seeked: number) => {
-		setPlayerState({ ...playerState, played: seeked / 100 });
-		playerRef.current?.seekTo(seeked / 100);
+		if (playerRef.current) {
+			const hlsPlayer = playerRef.current.getInternalPlayer('hls');
+			hlsPlayer.stopLoad();
+			setLoading(true);
+		}
+
+		setPlayerState({ ...playerState, played: seeked, seeking: true });
+		playerRef.current?.seekTo(seeked);
+	};
+
+	const onSeekEnded = () => {
+		setPlayerState({ ...playerState, seeking: false });
 	};
 
 	const onChangeQuality = (levelIndex: number) => {
@@ -117,7 +138,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	};
 
 	const currentTime = playerRef.current?.getCurrentTime();
-	const duration = playerRef.current?.getDuration();
+	const duration = playerRef.current?.getDuration() || 0;
 
 	const elapsedTime = format(currentTime!);
 	const totalDuration = format(duration!);
@@ -125,6 +146,13 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const url = `${baseUrl}${movie?.movieUrl}`;
 	return (
 		<div ref={playerContainerRef} onMouseMove={onMouseMove} className='h-screen relative'>
+			<div
+				className={`${
+					loading ? 'visible' : 'hidden'
+				} absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}
+			>
+				<Loading />
+			</div>
 			<ReactPlayer
 				ref={playerRef}
 				width='100%'
@@ -135,10 +163,11 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 				onReady={handlePlayerReady}
 				playing={playing}
 				onProgress={onProgress}
+				onSeek={onSeekEnded}
 			/>
 			<div
 				className={`${
-					showControls ? 'opacity-100' : 'opacity-0'
+					showControls && !loading ? 'opacity-100' : 'opacity-0'
 				} transition-all duration-300 ease-in-out`}
 			>
 				<PlayerControls
@@ -157,6 +186,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 					elapsedTime={elapsedTime}
 					totalDuration={totalDuration}
 					loaded={loaded}
+					duration={duration}
 					onChangeQuality={onChangeQuality}
 					availableLevels={availableLevels}
 				/>
