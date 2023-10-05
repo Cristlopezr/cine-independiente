@@ -48,9 +48,9 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 
 	//!Error local al seleccionar la imagen
 	const [errorMessage, setErrorMessage] = useState('');
-
 	const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (!e.target.files || e?.target?.files.length === 0) return;
+		setErrorMessage('');
 		try {
 			uploadMovieFormSchema
 				.partial()
@@ -63,15 +63,17 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 				date: movieToUpload.date!,
 			}).unwrap();
 		} catch (error: any) {
+			if (inputFileRef.current) {
+				inputFileRef.current.value = '';
+			}
+			setHasSelectedImage(false);
 			if (error instanceof z.ZodError) {
 				const errorMessage = error.errors[0]?.message;
 				setErrorMessage(errorMessage);
-				if (inputFileRef.current) {
-					inputFileRef.current.value = '';
-				}
 				return;
 			}
-			setErrorMessage(error.msg);
+
+			setErrorMessage(error.data.msg);
 		}
 	};
 
@@ -80,7 +82,7 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 			{formStepOneItems.map(item => {
 				if (item.id === 'movieImage') {
 					return (
-						<div key={item.id} className='col-span-2 justify-self-center'>
+						<div key={item.id} className='col-span-2 justify-self-center relative'>
 							<div>
 								<Input
 									type={item.type}
@@ -125,24 +127,6 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 												</Tooltip>
 											</TooltipProvider>
 										</div>
-										{!errorMessage ? (
-											<div className='absolute top-full pt-1 text-xs text-center'>
-												{(form?.formState?.errors?.movieImage?.message as string) ? (
-													<p className='text-destructive font-semibold'>
-														{
-															form?.formState?.errors?.movieImage
-																?.message as string
-														}
-													</p>
-												) : (
-													<p>Mínimo 1920x1080</p>
-												)}
-											</div>
-										) : (
-											<p className='text-sm text-destructive font-semibold'>
-												{errorMessage}
-											</p>
-										)}
 									</div>
 								</div>
 							) : (
@@ -156,6 +140,32 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 										</div>
 									)}
 								</>
+							)}
+							{!errorMessage && !isUploadMovieImageLoading ? (
+								<div className='pt-1 text-xs text-center'>
+									{(form?.formState?.errors?.movieImage?.message as string) ? (
+										<p className='text-destructive font-semibold'>
+											{!hasSelectedImage && (
+												<p>
+													{form?.formState?.errors?.movieImage?.message as string}
+												</p>
+											)}
+										</p>
+									) : (
+										<>{!hasSelectedImage && <p>Mínimo 1920x1080</p>}</>
+									)}
+								</div>
+							) : (
+								<div className='absolute -bottom-10'>
+									<p className='text-sm text-center text-destructive font-semibold'>
+										{errorMessage}
+									</p>
+									{errorMessage && (
+										<p className='text-sm text-center font-semibold'>
+											Por favor, reintentar
+										</p>
+									)}
+								</div>
 							)}
 						</div>
 					);

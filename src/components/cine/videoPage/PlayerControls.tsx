@@ -95,12 +95,12 @@ export const PlayerControls = ({
 						{muted ? (
 							<IoVolumeMuteOutline
 								onClick={onMute}
-								className='w-8 h-8 lg:w-10 lg:h-10 cursor-pointer'
+								className='w-6 h-6 cursor-pointer'
 							/>
 						) : (
 							<IoVolumeHighOutline
 								onClick={onMute}
-								className='w-8 h-8 lg:w-10 lg:h-10 cursor-pointer'
+								className='w-6 h-6 cursor-pointer'
 							/>
 						)}
 						<VolumeSlider
@@ -139,12 +139,12 @@ export const PlayerControls = ({
 						{fullScreen ? (
 							<RxExitFullScreen
 								onClick={onToggleFullScreen}
-								className='h-6 w-6 lg:w-8 lg:h-8 cursor-pointer'
+								className='w-6 h-6 cursor-pointer'
 							/>
 						) : (
 							<RxEnterFullScreen
 								onClick={onToggleFullScreen}
-								className='h-6 w-6 lg:w-8 lg:h-8 cursor-pointer'
+								className='w-6 h-6 cursor-pointer'
 							/>
 						)}
 					</div>

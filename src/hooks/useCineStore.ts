@@ -1,4 +1,4 @@
-import { onError, onSetMovieUploadSuccessMessage, setUploadProgress } from '@/store/cine';
+import { onError, onSetMovieToUpload, onSetMovieUploadSuccessMessage, setUploadProgress } from '@/store/cine';
 import { useAppDispatch, useAppSelector } from './redux';
 
 export const useCineStore = () => {
@@ -19,6 +19,10 @@ export const useCineStore = () => {
 		dispatch(setUploadProgress(uploadProgress));
 	};
 
+	const onMovieToUpload = (data: string) => {
+		dispatch(onSetMovieToUpload({ id: data }));
+	};
+
 	return {
 		//Propiedades
 		uploadProgress,
@@ -30,5 +34,6 @@ export const useCineStore = () => {
 		onErrorMessage,
 		onSetUploadProgress,
 		onMovieUploadSuccessMessage,
+		onMovieToUpload,
 	};
 };

@@ -1,5 +1,5 @@
 import { Movie } from '@/interfaces';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import screenfull from 'screenfull';
 import { PlayerControls } from '.';
@@ -7,14 +7,16 @@ import { OnProgressProps } from 'react-player/base';
 import { Loading } from '@/components/ui';
 import { BsChevronLeft } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { useSaveWatchHistoryMutation } from '@/store/cine';
 
 export type Level = {
 	height: number;
 };
 const baseUrl = 'https://storage.googleapis.com/';
+const urlBeacon = `${import.meta.env.VITE_API_CINE_BASE_URL}/movie/save-watch-history`;
 
 const format = (seconds: number) => {
-	if (isNaN(seconds)) {
+	if (seconds === 0) {
 		return '00:00';
 	}
 
@@ -46,8 +48,38 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const [showControls, setShowControls] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const [saveWatchHistory] = useSaveWatchHistoryMutation();
+	const playedRef = useRef(0);
+
+	const currentTime = playerRef.current?.getCurrentTime() || 0;
+	const duration = playerRef.current?.getDuration() || 0;
+
+	const elapsedTime = format(currentTime!);
+	const totalDuration = format(duration!);
 
 	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded, seeking } = playerState;
+
+	useEffect(() => {
+		const handleBeforeUnload = () => {
+			const formData = new FormData();
+			formData.append('user_id', movie.user_id);
+			formData.append('movie_id', movie.movie_id);
+			formData.append('currentTime', playerRef.current?.getCurrentTime().toString() || (0).toString());
+			if (document.visibilityState === 'hidden') {
+				navigator.sendBeacon(urlBeacon, formData);
+			}
+		};
+
+		document.addEventListener('visibilitychange', handleBeforeUnload);
+		return () => {
+			document.removeEventListener('visibilitychange', handleBeforeUnload);
+			onSaveWatchHistory(playedRef.current);
+		};
+	}, []);
+
+	useEffect(() => {
+		playedRef.current = played;
+	}, [played]);
 
 	const handlePlayerReady = () => {
 		if (playerRef.current) {
@@ -146,20 +178,39 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 		setLoading(false);
 	};
 
-	const currentTime = playerRef.current?.getCurrentTime();
-	const duration = playerRef.current?.getDuration() || 0;
-
-	const elapsedTime = format(currentTime!);
-	const totalDuration = format(duration!);
-
 	const url = `${baseUrl}${movie?.movieUrl}`;
 
 	const onGoBack = () => {
 		navigate(`/movie/${movie.movie_id}`);
 	};
 
+	const onEnded = () => {
+		navigate(`/movie/${movie.movie_id}`);
+	};
+
+	const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (e.keyCode === 32) {
+			onPlayPause();
+			onMouseMove();
+		}
+	};
+
+	const onSaveWatchHistory = async (currentTime: number) => {
+		await saveWatchHistory({
+			user_id: movie.user_id,
+			movie_id: movie.movie_id,
+			currentTime,
+		});
+	};
+
 	return (
-		<div ref={playerContainerRef} onMouseMove={onMouseMove} className='h-screen relative'>
+		<div
+			ref={playerContainerRef}
+			onMouseMove={onMouseMove}
+			className='h-screen relative bg-black outline-none'
+			onKeyDown={onKeyDown}
+			tabIndex={0}
+		>
 			<BsChevronLeft
 				onClick={onGoBack}
 				className={`absolute top-[8%] left-5 md:left-10 lg:left-20 z-50 w-10 h-10 ${
@@ -196,6 +247,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 				progressInterval={500}
 				onBuffer={onBuffer}
 				onBufferEnd={onBufferEnd}
+				onEnded={onEnded}
 			/>
 			<div
 				className={`${

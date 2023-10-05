@@ -12,7 +12,7 @@ import {
 } from '.';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useUpdateMovieInfoMutation } from '@/store/cine';
+import { useDeleteMovieMutation, useUpdateMovieInfoMutation } from '@/store/cine';
 import { Alert, CustomTooltip } from '@/components';
 import { Progress } from '@/components/cine';
 
@@ -21,6 +21,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [abortController, setAbortController] = useState<AbortController | undefined>();
+	const [deleteMovie] = useDeleteMovieMutation();
 	const {
 		uploadProgress,
 		movieToUpload,
@@ -79,10 +80,9 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		try {
 			setIsFormSubmitted(true);
 			//!Actualizar pelicula movieUpdated.msg
-			await updateMovieInfo(cleanedFormValues);
+			await updateMovieInfo(cleanedFormValues).unwrap();
 		} catch (error: any) {
-			console.log(error);
-			setErrorMessage(error?.msg);
+			setErrorMessage(error?.data.msg);
 		}
 	};
 
@@ -94,6 +94,10 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		if (uploadProgress !== 100 && !uploadErrorMessage) {
 			abortController?.abort();
 		}
+		if (uploadProgress === 100) {
+			deleteMovie(movieToUpload.id!);
+		}
+
 		onSetUploadProgress(0);
 		onCloseModal();
 	};
@@ -124,9 +128,21 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 				</span>
 
 				<CustomTooltip>
-					{(formStep !== 0 && uploadProgress !== 100 && !uploadErrorMessage) ||
-					(formStep !== 0 && !isFormSubmitted && !uploadErrorMessage) ? (
+					{formStep !== 0 && uploadProgress !== 100 && !uploadErrorMessage ? (
 						<Alert
+							alertDialogAction='Cancelar carga'
+							alertDialogCancel='Volver atrás'
+							alertDialogDescription='La carga de tu película se cancelará. Esta acción no se puede deshacer.'
+							alertDialogTitle='¿Estás seguro?'
+							onAction={cancelUpload}
+							trigger={<BsXCircle className='text-2xl cursor-pointer text-destructive' />}
+						/>
+					) : formStep !== 0 && !isFormSubmitted && !uploadErrorMessage ? (
+						<Alert
+							alertDialogAction='Cancelar carga'
+							alertDialogCancel='Volver atrás'
+							alertDialogDescription='Si no completas el formulario la carga de tu película se cancelará. Esta acción no se puede deshacer.'
+							alertDialogTitle='¿Estás seguro?'
 							onAction={cancelUpload}
 							trigger={<BsXCircle className='text-2xl cursor-pointer text-destructive' />}
 						/>
@@ -168,13 +184,19 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 										<div className='flex flex-col items-center md:pt-32 gap-5'>
 											{!!errorMessage ? (
 												<>
-													<p className='text-destructive'>{errorMessage}</p>
-													<BsFillExclamationTriangleFill className='w-8 h-8' />
+													<p className='text-destructive font-semibold'>
+														{errorMessage}
+													</p>
+													<BsFillExclamationTriangleFill className='w-8 h-8 text-destructive' />
 												</>
 											) : (
 												<>
-													<p>Formulario enviado</p>
+													<p>Información guardada</p>
 													<BsFillCheckCircleFill className='w-8 h-8' />
+													<p>
+														Si tu película ya se ha subido, puedes cerrar esta
+														ventana
+													</p>
 												</>
 											)}
 										</div>
@@ -191,6 +213,10 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 													text='Subiendo película'
 												/>
 												<Alert
+													alertDialogAction='Cancelar carga'
+													alertDialogCancel='Volver atrás'
+													alertDialogDescription='La carga de tu película se cancelará. Esta acción no se puede deshacer.'
+													alertDialogTitle='¿Estás seguro?'
 													onAction={cancelUpload}
 													trigger={
 														<div className='h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90'>

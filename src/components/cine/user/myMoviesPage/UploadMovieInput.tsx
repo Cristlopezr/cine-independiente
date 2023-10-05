@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import * as z from 'zod';
 import { MdFileUpload } from 'react-icons/md';
 import { Button, Input } from '@/components/ui';
-import { useAuthStore } from '@/hooks';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieInputSchema } from '@/schemas/zSchemas';
 import { useUploadMovieInfoMutation, useUploadMovieMutation } from '@/store/cine';
 import { CleanUploadMovieFormValues } from '@/interfaces';
@@ -13,10 +13,12 @@ interface UploadMovieInputProps {
 }
 
 const baseUrl = `${import.meta.env.VITE_API_MOVIE_BASE_URL}/video`;
+const genre = '26388c3f-2ad2-4050-9ca9-c9db7c59bf64';
 
 export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovieInputProps) => {
 	const { user } = useAuthStore();
 	const [errorMessage, setErrorMessage] = useState('');
+	const { onMovieToUpload } = useCineStore();
 
 	const [uploadMovie, { isLoading: isUploadMovieLoading }] = useUploadMovieMutation();
 	const [uploadMovieInfo] = useUploadMovieInfoMutation();
@@ -46,8 +48,7 @@ export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovi
 					date,
 					cast: [{ name: user.user_id }],
 					directors: [{ name: user.user_id }],
-					//!Mandar un genre real
-					genres: ['26388c3f-2ad2-4050-9ca9-c9db7c59bf64'],
+					genres: [genre],
 					imageUrl: user.user_id,
 					productionYear: 0,
 					synopsis: user.user_id,
@@ -58,7 +59,8 @@ export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovi
 					explicitContent: false,
 					user_id_date: user.user_id + date,
 				};
-				await uploadMovieInfo(initialMovie);
+				const { createdMovie } = await uploadMovieInfo(initialMovie).unwrap();
+				onMovieToUpload(createdMovie.movie_id);
 			}, 1500);
 		} catch (error) {
 			if (error instanceof z.ZodError) {

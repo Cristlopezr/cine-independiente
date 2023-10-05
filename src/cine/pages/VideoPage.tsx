@@ -7,16 +7,6 @@ export const VideoPage = () => {
 	const { id } = useParams();
 	const { data, isError, isFetching } = useGetMovieQuery(id!);
 
-	/* 	useEffect(() => {
-		if (showQualityControls === true) {
-			setTimeout(() => {
-				setShowQualityControls(!showQualityControls);
-			}, 5000);
-		}
-
-		return () => {};
-	}, [showQualityControls]); */
-
 	if (isError) {
 		return <div>Ha ocurrido un error al reproducir la película</div>;
 	}

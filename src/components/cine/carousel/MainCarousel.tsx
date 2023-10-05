@@ -8,13 +8,13 @@ function RigthArrow(props: any) {
 	const isDisabled = onClick === null;
 	return (
 		<div
-			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-12 -right-0 rounded-sm z-10 top-1 bottom-8 flex items-center justify-center`}
+			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-12 -right-0 rounded-sm z-10 top-1 bottom-0 flex items-center justify-center`}
 			onClick={onClick}
 		>
 			<BsChevronRight
 				className={`${isDisabled ? 'text-transparent' : 'text-primary'} ${
 					isDisabled ? 'text-transparent' : 'dark:text-accent-foreground'
-				} text-primary w-10 h-10 group-hover/arrow:h-12 group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
+				} text-primary w-8 h-8 sm:w-10 sm:h-10 sm:group-hover/arrow:h-12 sm:group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
 			/>
 		</div>
 	);
@@ -26,13 +26,13 @@ function LeftArrow(props: any) {
 
 	return (
 		<div
-			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-12 left-0 rounded-sm z-10 top-1 bottom-8 flex items-center justify-center`}
+			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-12 left-0 rounded-sm z-10 top-1 bottom-0 flex items-center justify-center`}
 			onClick={onClick}
 		>
 			<BsChevronLeft
 				className={`${isDisabled ? 'text-transparent' : 'text-primary'} ${
 					isDisabled ? 'text-transparent' : 'dark:text-accent-foreground'
-				} text-primary w-10 h-10 group-hover/arrow:h-12 group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
+				} text-primary w-8 h-8 sm:w-10 sm:h-10 sm:group-hover/arrow:h-12 sm:group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
 			/>
 		</div>
 	);
@@ -67,8 +67,6 @@ export const MainCarousel = () => {
 		genre: 'Fantasia y Ciencia ficción',
 	});
 
-	/* const isFetching = true; */
-
 	if (isFetching) {
 		return (
 			<div className='relative w-full'>
@@ -83,7 +81,7 @@ export const MainCarousel = () => {
 	}
 
 	return (
-		<div className='relative w-full'>
+		<div className='relative w-full min-h-[]'>
 			<Slider {...settings}>
 				{movies?.map(movie => (
 					<div

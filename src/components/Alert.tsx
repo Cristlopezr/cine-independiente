@@ -14,28 +14,34 @@ export const Alert = ({
 	onCancel,
 	onAction,
 	trigger,
+	alertDialogDescription,
+	alertDialogTitle,
+	alertDialogCancel,
+	alertDialogAction,
 }: {
 	onCancel?: () => void;
 	onAction: () => void;
 	trigger: React.ReactNode;
+	alertDialogDescription: string;
+	alertDialogTitle: string;
+	alertDialogCancel: string;
+	alertDialogAction: string;
 }) => {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger>{trigger}</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-					<AlertDialogDescription>
-						La carga de tu película se cancelará. Esta acción no se puede deshacer.
-					</AlertDialogDescription>
+					<AlertDialogTitle>{alertDialogTitle}</AlertDialogTitle>
+					<AlertDialogDescription>{alertDialogDescription}</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel onClick={onCancel}>Volver atrás</AlertDialogCancel>
+					<AlertDialogCancel onClick={onCancel}>{alertDialogCancel}</AlertDialogCancel>
 					<AlertDialogAction
 						className='bg-destructive text-destructive-foreground hover:bg-destructive/80'
 						onClick={onAction}
 					>
-						Cancelar carga
+						{alertDialogAction}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
