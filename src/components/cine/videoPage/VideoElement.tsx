@@ -5,6 +5,8 @@ import screenfull from 'screenfull';
 import { PlayerControls } from '.';
 import { OnProgressProps } from 'react-player/base';
 import { Loading } from '@/components/ui';
+import { BsChevronLeft } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 export type Level = {
 	height: number;
@@ -29,7 +31,7 @@ const format = (seconds: number) => {
 export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
 	const [playerState, setPlayerState] = useState({
-		playing: true,
+		playing: false,
 		muted: false,
 		volume: 1,
 		volumeSeek: 1,
@@ -43,6 +45,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const [count, setCount] = useState(0);
 	const [showControls, setShowControls] = useState(true);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded, seeking } = playerState;
 
@@ -91,7 +94,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	};
 
 	const onProgress = (state: OnProgressProps) => {
-		if (count > 1) {
+		if (count > 5) {
 			setShowControls(false);
 		}
 
@@ -105,7 +108,6 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 		}
 
 		if (!seeking) {
-			setLoading(false);
 			setPlayerState({ ...playerState, played: state.playedSeconds, loaded: state.loadedSeconds });
 		}
 	};
@@ -119,7 +121,6 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 		if (playerRef.current) {
 			const hlsPlayer = playerRef.current.getInternalPlayer('hls');
 			hlsPlayer.stopLoad();
-			setLoading(true);
 		}
 
 		setPlayerState({ ...playerState, played: seeked, seeking: true });
@@ -137,6 +138,14 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 		}
 	};
 
+	const onBuffer = () => {
+		setLoading(true);
+	};
+
+	const onBufferEnd = () => {
+		setLoading(false);
+	};
+
 	const currentTime = playerRef.current?.getCurrentTime();
 	const duration = playerRef.current?.getDuration() || 0;
 
@@ -144,16 +153,36 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const totalDuration = format(duration!);
 
 	const url = `${baseUrl}${movie?.movieUrl}`;
+
+	const onGoBack = () => {
+		navigate(`/movie/${movie.movie_id}`);
+	};
+
 	return (
 		<div ref={playerContainerRef} onMouseMove={onMouseMove} className='h-screen relative'>
+			<BsChevronLeft
+				onClick={onGoBack}
+				className={`absolute top-[8%] left-5 md:left-10 lg:left-20 z-50 w-10 h-10 ${
+					showControls ? 'opacity-100' : 'opacity-0'
+				} cursor-pointer transition-all duration-700 ease-out`}
+			/>
+			<div className={showControls ? 'opacity-100' : 'opacity-0'}>
+				<div className='absolute bg-gradient-to-t from-transparent from-0% to-background pointer-events-none top-0 bottom-[85%] left-0 right-0'></div>
+				<div className='absolute bg-gradient-to-b from-transparent from-0% to-background pointer-events-none top-[75%] bottom-0 left-0 right-0'></div>
+			</div>
 			<div
 				className={`${
 					loading ? 'visible' : 'hidden'
 				} absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}
 			>
-				<Loading />
+				<Loading className='md:w-10 md:h-10 lg:w-12 lg:h-12' />
 			</div>
 			<ReactPlayer
+				config={{
+					file: {
+						forceHLS: true,
+					},
+				}}
 				ref={playerRef}
 				width='100%'
 				height='100%'
@@ -164,10 +193,13 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 				playing={playing}
 				onProgress={onProgress}
 				onSeek={onSeekEnded}
+				progressInterval={500}
+				onBuffer={onBuffer}
+				onBufferEnd={onBufferEnd}
 			/>
 			<div
 				className={`${
-					showControls && !loading ? 'opacity-100' : 'opacity-0'
+					showControls ? 'opacity-100' : 'opacity-0'
 				} transition-all duration-300 ease-in-out`}
 			>
 				<PlayerControls
@@ -177,6 +209,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 					onFastForward={onFastForward}
 					muted={muted}
 					onMute={onMute}
+					movie={movie}
 					volume={volume}
 					onVolumeChange={onVolumeChange}
 					onToggleFullScreen={onToggleFullScreen}

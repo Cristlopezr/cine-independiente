@@ -18,3 +18,4 @@ export * from './skeleton';
 export * from './slider';
 export * from './volumeSlider';
 export * from './progress';
+export * from './select';
