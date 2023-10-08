@@ -26,10 +26,10 @@ export const LoginForm = ({ title }: { title: string }) => {
 	};
 
 	return (
-		<div className='p-10'>
+		<div className='py-10'>
 			<h1 className='text-center mb-5 text-2xl'>{title}</h1>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 p-5'>
+				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 py-5'>
 					<FormField
 						control={form.control}
 						name='email'

@@ -9,7 +9,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 				</ul>
 			</nav>
 			<Separator />
-			<main className='max-w-[600px] mx-auto mt-16'>{children}</main>
+			<main className='max-w-[450px] mx-auto mt-16'>{children}</main>
 			<footer></footer>
 		</div>
 	);

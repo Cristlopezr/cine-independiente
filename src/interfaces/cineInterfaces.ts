@@ -34,6 +34,8 @@ export type Movie = {
 	enabled: boolean;
 	createdAt: string;
 	updatedAt: string;
+	user_id_date: string;
+	explicitContent: boolean;
 };
 
 export interface Genre {

@@ -15,3 +15,7 @@ export * from './tabs';
 export * from './alert-dialog';
 export * from './aspect-ratio';
 export * from './skeleton';
+export * from './slider';
+export * from './volumeSlider';
+export * from './progress';
+export * from './select';

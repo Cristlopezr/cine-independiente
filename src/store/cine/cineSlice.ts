@@ -7,6 +7,7 @@ interface CineState {
 	errorMessage: string | undefined;
 	movieUploadSuccessMessage: string;
 	movieToUpload: {
+		id: string | undefined;
 		date: string | undefined;
 		imageUrl: string | undefined;
 	};
@@ -18,6 +19,7 @@ const initialState: CineState = {
 	errorMessage: '',
 	movieUploadSuccessMessage: '',
 	movieToUpload: {
+		id: undefined,
 		date: undefined,
 		imageUrl: undefined,
 	},

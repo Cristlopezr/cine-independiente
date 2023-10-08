@@ -13,7 +13,7 @@ function RigthArrow(props: any) {
 			<BsChevronRight
 				className={`${isDisabled ? 'text-transparent' : 'text-primary'} ${
 					isDisabled ? 'text-transparent' : 'dark:text-accent-foreground'
-				} w-10 h-10 group-hover/arrow:h-12 group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
+				} w-8 h-8 sm:w-10 sm:h-10 group-hover/arrow:h-12 group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
 			/>
 		</div>
 	);
@@ -30,7 +30,7 @@ function LeftArrow(props: any) {
 			<BsChevronLeft
 				className={`${isDisabled ? 'text-transparent' : 'text-primary'} ${
 					isDisabled ? 'text-transparent' : 'dark:text-accent-foreground'
-				} w-10 h-10 group-hover/arrow:h-12 group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
+				} w-8 h-8 sm:w-10 sm:h-10 group-hover/arrow:h-12 group-hover/arrow:w-12 transition-all duration-300 ease-in-out`}
 			/>
 		</div>
 	);

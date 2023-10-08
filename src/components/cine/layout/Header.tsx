@@ -31,11 +31,11 @@ export const Header = () => {
 
 	return (
 		<header
-			className={`grid grid-cols-3 transition-all duration-300 items-center justify-center h-[80px] px-10 fixed z-10 right-0 left-0 ${
+			className={`flex transition-all duration-300 items-center justify-between h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
 				scrolled ? 'bg-background/[98]' : 'bg-transparent'
 			}`}
 		>
-			<div className='bg-gradient-to-b from-background/50 -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
+			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
 			<div className='flex items-center gap-5'>
 				<BsList className='w-10 p-2 h-12' />
 				<nav className='hidden md:block'>
@@ -45,9 +45,9 @@ export const Header = () => {
 					</ul>
 				</nav>
 			</div>
-			<div className='flex flex-col justify-center items-center'>
-				<div className='text-2xl font-semibold'>Cine Stream</div>
-			</div>
+
+			<div className='md:text-2xl mr-auto md:mx-auto font-semibold'>Cine Stream</div>
+
 			<section className='flex items-center justify-end gap-4 min-[440px]:gap-6 p-2 font-semibold'>
 				<BsSearch className='text-xl cursor-pointer' />
 				<TooltipProvider>

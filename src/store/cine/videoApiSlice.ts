@@ -25,9 +25,15 @@ export const videoApiSlice = videoApi.injectEndpoints({
 					return { data: result.data };
 				} catch (axiosError) {
 					let err: any = axiosError;
-					/* if (axios.isCancel(axiosError)) {
-						console.log('La solicitud fue cancelada por el usuario', axiosError.message);
-					} */
+					if (axios.isCancel(axiosError)) {
+					/* 	console.log('La solicitud fue cancelada por el usuario', axiosError.message); */
+						return {
+							error: {
+								status: err.respone?.status,
+								data: err.response?.data || err.message,
+							},
+						};
+					}
 					api.dispatch(onError(err.response?.data?.msg || 'Hubo un error en la carga de la película, por favor inténtelo de nuevo más tarde.'));
 					return {
 						error: {
