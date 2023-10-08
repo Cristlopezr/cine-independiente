@@ -15,7 +15,7 @@ type MovieCarouselProps = {
 const skeletons = Array.from({ length: 8 });
 
 export const MovieCarousel = ({ genre, title, aspect, settings }: MovieCarouselProps) => {
-	const { data: movies, /* isError */ isFetching } = useGetMoviesQuery({ genre });
+	const { data: movies, /* isError */ isFetching } = useGetMoviesQuery(genre);
 
 	return (
 		<div>
@@ -32,7 +32,7 @@ export const MovieCarousel = ({ genre, title, aspect, settings }: MovieCarouselP
 			{!isFetching && (
 				<Slider {...settings}>
 					{movies?.map((movie, i) => (
-						<div key={i}>
+						<div key={i} className='px-[8px]'>
 							<MovieCarouselItem movie={movie} className={aspect} />
 						</div>
 					))}

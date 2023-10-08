@@ -144,13 +144,13 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 							{!errorMessage && !isUploadMovieImageLoading ? (
 								<div className='pt-1 text-xs text-center'>
 									{(form?.formState?.errors?.movieImage?.message as string) ? (
-										<p className='text-destructive font-semibold'>
+										<div className='text-destructive font-semibold'>
 											{!hasSelectedImage && (
 												<p>
 													{form?.formState?.errors?.movieImage?.message as string}
 												</p>
 											)}
-										</p>
+										</div>
 									) : (
 										<>{!hasSelectedImage && <p>Mínimo 1920x1080</p>}</>
 									)}

@@ -6,8 +6,7 @@ export const CineLayout = ({ children }: { children: React.ReactNode }) => {
 			<Header />
 			<main className='h-full'>{children}</main>
 
-			<footer className='h-[180px] mt-auto'>
-			</footer>
+			<footer className='h-[180px] mt-auto'></footer>
 		</div>
 	);
 };

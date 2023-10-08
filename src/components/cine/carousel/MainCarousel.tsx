@@ -2,6 +2,9 @@ import { Skeleton } from '@/components/ui';
 import { useGetMoviesQuery } from '@/store/cine';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import Slider from 'react-slick';
+import { HeaderImage, MovieInfo } from '../moviePage';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 function RigthArrow(props: any) {
 	const { onClick } = props;
@@ -59,13 +62,12 @@ const settings = {
 };
 
 export const MainCarousel = () => {
+	const navigate = useNavigate();
 	const {
 		data: movies,
 		/* isError, */
 		isFetching,
-	} = useGetMoviesQuery({
-		genre: 'Fantasia y Ciencia ficción',
-	});
+	} = useGetMoviesQuery('');
 
 	if (isFetching) {
 		return (
@@ -80,17 +82,18 @@ export const MainCarousel = () => {
 		);
 	}
 
+	const onClickPlay = (id: string) => {
+		navigate(`/movie/player/${id}`);
+	};
+
 	return (
-		<div className='relative w-full min-h-[]'>
+		<div className='relative w-full'>
 			<Slider {...settings}>
 				{movies?.map(movie => (
-					<div
-						key={movie.movie_id}
-						className='w-full main-slider-container relative overflow-hidden'
-					>
-						<img className='w-full' src={movie.imageUrl} alt='' />
-						<div className='absolute bg-gradient-to-b from-transparent from-75% to-background top-0 bottom-0 left-0 right-0'></div>
-					</div>
+					<React.Fragment key={movie.movie_id}>
+						<HeaderImage imageUrl={movie.imageUrl} />
+						<MovieInfo movie={movie} onClickPlay={onClickPlay} />
+					</React.Fragment>
 				))}
 			</Slider>
 		</div>

@@ -1,18 +1,18 @@
 import { cineApi } from '@/api';
-import { CleanUploadMovieFormValues, Genre, Movie } from '@/interfaces';
+import { CleanUploadMovieFormValues, DetailedMovie, Genre, Movie } from '@/interfaces';
 
 export const cineApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
 		getGenres: builder.query<Genre[], void>({
 			query: () => '/movie/get-genres',
 		}),
-		getMovies: builder.query<Movie[], { genre?: string; section?: string}>({
-			query: queryParameters => `/movie/get-movies?section=${queryParameters.section}&genre=${queryParameters.genre}`,
+		getMovies: builder.query<Movie[], string>({
+			query: data => `/movie/get-movies?q=${data}`,
 		}),
-		getMovie: builder.query<{movie:Movie}, string>({
+		getMovie: builder.query<{ movie: DetailedMovie }, string>({
 			query: id => `/movie/movie/${id}`,
 		}),
-		deleteMovie: builder.mutation<{data:{deletedMovie:Movie}}, string>({
+		deleteMovie: builder.mutation<{ data: { deletedMovie: Movie } }, string>({
 			query: id => {
 				return {
 					url: `/movie/movie/${id}`,
@@ -20,7 +20,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
-		saveWatchHistory: builder.mutation<string, {user_id:string, movie_id:string, currentTime:number}>({
+		saveWatchHistory: builder.mutation<string,{ user_id: string; movie_id: string; currentTime: number }>({
 			query: data => {
 				return {
 					url: '/movie/save-watch-history',
@@ -29,7 +29,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
-		uploadMovieInfo: builder.mutation<{createdMovie:Movie}, CleanUploadMovieFormValues>({
+		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, CleanUploadMovieFormValues>({
 			query: data => {
 				const { writers, directors, cast, genres, ...movie } = data;
 				const formData = {
@@ -68,4 +68,12 @@ export const cineApiSlice = cineApi.injectEndpoints({
 	}),
 });
 
-export const { useGetGenresQuery, useUploadMovieInfoMutation, useGetMoviesQuery, useUpdateMovieInfoMutation, useGetMovieQuery, useSaveWatchHistoryMutation, useDeleteMovieMutation } = cineApiSlice;
+export const {
+	useGetGenresQuery,
+	useUploadMovieInfoMutation,
+	useGetMoviesQuery,
+	useUpdateMovieInfoMutation,
+	useGetMovieQuery,
+	useSaveWatchHistoryMutation,
+	useDeleteMovieMutation,
+} = cineApiSlice;

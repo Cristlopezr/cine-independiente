@@ -181,11 +181,15 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const url = `${baseUrl}${movie?.movieUrl}`;
 
 	const onGoBack = () => {
-		navigate(`/movie/${movie.movie_id}`);
+		navigate(`/movie/${movie.movie_id}`, {
+			replace: true,
+		});
 	};
 
 	const onEnded = () => {
-		navigate(`/movie/${movie.movie_id}`);
+		navigate(`/movie/${movie.movie_id}`, {
+			replace: true,
+		});
 	};
 
 	const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {

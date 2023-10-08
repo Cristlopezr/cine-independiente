@@ -1,6 +1,6 @@
 import { BsSearch, BsList } from 'react-icons/bs';
 import { RiVideoAddLine } from 'react-icons/ri';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserNav, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { useEffect, useState } from 'react';
 
@@ -40,16 +40,25 @@ export const Header = () => {
 				<BsList className='w-10 p-2 h-12' />
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
-						<Link to='/'>Inicio</Link>
+						<NavLink
+							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
+							to='/'
+						>
+							Inicio
+						</NavLink>
 						<li>Géneros</li>
 					</ul>
 				</nav>
 			</div>
 
-			<div className='md:text-2xl mr-auto md:mx-auto font-semibold'>Cine Stream</div>
+			<Link to='/' className='md:text-2xl mr-auto md:mx-auto font-semibold'>
+				Cine Stream
+			</Link>
 
 			<section className='flex items-center justify-end gap-4 min-[440px]:gap-6 p-2 font-semibold'>
-				<BsSearch className='text-xl cursor-pointer' />
+				<Link to='/search'>
+					<BsSearch className='text-xl cursor-pointer' />
+				</Link>
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>

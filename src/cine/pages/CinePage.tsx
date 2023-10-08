@@ -2,7 +2,6 @@ import { CineLayout } from '../layout';
 import { MainCarousel, MovieCarousel, settings169, settings914 } from '@/components/cine/carousel';
 
 export const CinePage = () => {
-
 	return (
 		<CineLayout>
 			<MainCarousel />

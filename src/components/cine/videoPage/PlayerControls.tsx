@@ -93,15 +93,9 @@ export const PlayerControls = ({
 				<div className='flex items-center gap-1 md:gap-2 lg:gap-5'>
 					<div className='flex gap-1 items-center'>
 						{muted ? (
-							<IoVolumeMuteOutline
-								onClick={onMute}
-								className='w-6 h-6 cursor-pointer'
-							/>
+							<IoVolumeMuteOutline onClick={onMute} className='w-6 h-6 cursor-pointer' />
 						) : (
-							<IoVolumeHighOutline
-								onClick={onMute}
-								className='w-6 h-6 cursor-pointer'
-							/>
+							<IoVolumeHighOutline onClick={onMute} className='w-6 h-6 cursor-pointer' />
 						)}
 						<VolumeSlider
 							className='h-2 cursor-pointer w-0 sm:w-16 lg:w-28'
