@@ -94,9 +94,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		if (uploadProgress !== 100 && !uploadErrorMessage) {
 			abortController?.abort();
 		}
-		if (uploadProgress === 100) {
-			deleteMovie(movieToUpload.id!);
-		}
+
+		deleteMovie(movieToUpload.id!);
 
 		onSetUploadProgress(0);
 		onCloseModal();
@@ -114,6 +113,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			enabled: true,
 			explicitContent: false,
 			user_id_date: user.user_id + movieToUpload.date,
+			duration: 0,
 			//!Enabled por ahora true;
 		};
 		return formValues;

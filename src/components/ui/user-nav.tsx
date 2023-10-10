@@ -10,45 +10,30 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui';
 import { useAuthStore } from '@/hooks';
-
-const items = [
-	{
-		name: 'Item 1',
-		onClick: () => console.log('Clicked item 1'),
-	},
-	{
-		name: 'Item 2',
-		onClick: () => console.log('Clicked item 2'),
-	},
-	{
-		name: 'Item 3',
-		onClick: () => console.log('Clicked item 3'),
-	},
-];
+import { useNavigate } from 'react-router-dom';
 
 export function UserNav() {
 	const { user, startLogout } = useAuthStore();
+	const navigate = useNavigate();
+
+	const onGoToProfile = () => {
+		navigate('/profile');
+	};
 
 	return (
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild className='overflow-auto'>
 				<span className='flex items-center justify-between gap-2 cursor-pointer'>
-					<Avatar className='h-7 w-7 md:h-8 md:w-8 cursor-pointer'>
+					<Avatar className='cursor-pointer border-2 border-border-second'>
 						<AvatarImage src={user.avatarUrl ? user.avatarUrl : undefined} />
-						<AvatarFallback className='uppercase font-semibold text-lg'>
-							{user.name.slice(0, 1)}
-						</AvatarFallback>
+						<AvatarFallback className='font-semibold'>{user.name.slice(0, 1)}</AvatarFallback>
 					</Avatar>
 					<p className='hidden md:block'>{user.name}</p>
 				</span>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-fit mt-3 mr-1 lg:mr-0' align='center' forceMount>
 				<DropdownMenuGroup>
-					{items.map(item => (
-						<DropdownMenuItem onClick={item.onClick} key={item.name}>
-							{item.name}
-						</DropdownMenuItem>
-					))}
+					<DropdownMenuItem onClick={onGoToProfile}>Mi Perfil</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={startLogout}>Cerrar sesión</DropdownMenuItem>

@@ -1,5 +1,56 @@
 import { UseFormReturn } from 'react-hook-form';
 
+export interface DetailedMovie {
+	movie_id: string;
+	user_id_date: string;
+	thumbnailUrl: null;
+	imageUrl: string;
+	date: string;
+	title: string;
+	productionYear: number;
+	movieUrl: string;
+	synopsis: string;
+	user_id: string;
+	enabled: boolean;
+	explicitContent: boolean;
+	duration: number;
+	createdAt: string;
+	updatedAt: string;
+	cast: Cast[];
+	directors: Director[];
+	genres: Genre[];
+	writers: Writer[];
+}
+
+export interface Cast {
+	actor_id: string;
+	name: string;
+	movie_id: string;
+}
+
+export interface Director {
+	director_id: string;
+	name: string;
+	movie_id: string;
+}
+
+export interface Genre {
+	genre_id: string;
+	name: string;
+}
+
+export interface GenreWithMovies {
+	genre_id: string;
+	name: string;
+	movies: Movie[];
+}
+
+export interface Writer {
+	writer_id: string;
+	name: string;
+	movie_id: string;
+}
+
 export type Settings = {
 	dots: boolean;
 	infinite: boolean;
@@ -36,12 +87,8 @@ export type Movie = {
 	updatedAt: string;
 	user_id_date: string;
 	explicitContent: boolean;
+	duration: number;
 };
-
-export interface Genre {
-	genre_id: string;
-	name: string;
-}
 
 export type UploadMovieForm = UseFormReturn<
 	{
@@ -82,6 +129,7 @@ export interface CleanUploadMovieFormValues {
 	enabled: boolean;
 	explicitContent: boolean;
 	user_id_date: string;
+	duration: number;
 }
 
 export interface FormStepOneItem {

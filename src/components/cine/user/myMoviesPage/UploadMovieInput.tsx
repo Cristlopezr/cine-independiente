@@ -14,6 +14,7 @@ interface UploadMovieInputProps {
 
 const baseUrl = `${import.meta.env.VITE_API_MOVIE_BASE_URL}/video`;
 const genre = '26388c3f-2ad2-4050-9ca9-c9db7c59bf64';
+/* const genre = '18427c03-b512-4a15-a28f-31d861463543'; */
 
 export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovieInputProps) => {
 	const { user } = useAuthStore();
@@ -58,6 +59,7 @@ export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovi
 					enabled: false,
 					explicitContent: false,
 					user_id_date: user.user_id + date,
+					duration: 0,
 				};
 				const { createdMovie } = await uploadMovieInfo(initialMovie).unwrap();
 				onMovieToUpload(createdMovie.movie_id);

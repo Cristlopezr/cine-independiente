@@ -41,35 +41,35 @@ export const settings914 = {
 	infinite: false,
 	arrows: true,
 	speed: 500,
-	slidesToShow: 8,
-	slidesToScroll: 8,
+	slidesToShow: 6,
+	slidesToScroll: 6,
 	draggable: true,
 	nextArrow: <RigthArrow />,
 	prevArrow: <LeftArrow />,
 	responsive: [
 		{
-			breakpoint: 1280,
+			breakpoint: 1546,
 			settings: {
-				slidesToShow: 6,
-				slidesToScroll: 6,
+				slidesToShow: 5,
+				slidesToScroll: 5,
 			},
 		},
 		{
-			breakpoint: 1100,
+			breakpoint: 1250,
 			settings: {
 				slidesToShow: 4,
 				slidesToScroll: 4,
 			},
 		},
 		{
-			breakpoint: 600,
+			breakpoint: 900,
 			settings: {
 				slidesToShow: 3,
 				slidesToScroll: 3,
 			},
 		},
 		{
-			breakpoint: 440,
+			breakpoint: 587,
 			settings: {
 				slidesToShow: 2,
 				slidesToScroll: 2,
@@ -83,8 +83,8 @@ export const settings169 = {
 	infinite: false,
 	arrows: true,
 	speed: 500,
-	slidesToShow: 6,
-	slidesToScroll: 6,
+	slidesToShow: 5,
+	slidesToScroll: 5,
 	draggable: true,
 	nextArrow: <RigthArrow />,
 	prevArrow: <LeftArrow />,
@@ -92,29 +92,29 @@ export const settings169 = {
 		{
 			breakpoint: 1600,
 			settings: {
-				slidesToShow: 5,
-				slidesToScroll: 5,
-			},
-		},
-		{
-			breakpoint: 1258,
-			settings: {
 				slidesToShow: 4,
 				slidesToScroll: 4,
 			},
 		},
 		{
-			breakpoint: 954,
+			breakpoint: 1213,
 			settings: {
 				slidesToShow: 3,
 				slidesToScroll: 3,
 			},
 		},
 		{
-			breakpoint: 650,
+			breakpoint: 780,
 			settings: {
 				slidesToShow: 2,
 				slidesToScroll: 2,
+			},
+		},
+		{
+			breakpoint: 421,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
 			},
 		},
 	],

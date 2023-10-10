@@ -124,8 +124,9 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 
 		setPlayerState({ ...playerState, fullScreen: !screenfull.isFullscreen });
 	};
-
+console.log(loaded)
 	const onProgress = (state: OnProgressProps) => {
+		console.log({played:state.playedSeconds, loaded: state.loadedSeconds})
 		if (count > 5) {
 			setShowControls(false);
 		}
@@ -181,11 +182,15 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const url = `${baseUrl}${movie?.movieUrl}`;
 
 	const onGoBack = () => {
-		navigate(`/movie/${movie.movie_id}`);
+		navigate(`/movie/${movie.movie_id}`, {
+			replace: true,
+		});
 	};
 
 	const onEnded = () => {
-		navigate(`/movie/${movie.movie_id}`);
+		navigate(`/movie/${movie.movie_id}`, {
+			replace: true,
+		});
 	};
 
 	const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {

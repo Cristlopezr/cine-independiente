@@ -1,6 +1,6 @@
-import { BsSearch, BsList } from 'react-icons/bs';
+import { BsSearch /* BsList */ } from 'react-icons/bs';
 import { RiVideoAddLine } from 'react-icons/ri';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserNav, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { useEffect, useState } from 'react';
 
@@ -31,25 +31,34 @@ export const Header = () => {
 
 	return (
 		<header
-			className={`flex transition-all duration-300 items-center justify-between h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
+			className={`grid grid-cols-3 items-center  transition-all duration-300 h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
 				scrolled ? 'bg-background/[98]' : 'bg-transparent'
 			}`}
 		>
 			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
-			<div className='flex items-center gap-5'>
-				<BsList className='w-10 p-2 h-12' />
+			<div className='flex items-center gap-5 w-fit md:w-full'>
+				{/* <BsList className='w-10 p-2 h-12' /> */}
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
-						<Link to='/'>Inicio</Link>
-						<li>Géneros</li>
+						<NavLink
+							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
+							to='/'
+						>
+							Inicio
+						</NavLink>
+						{/* <li>Géneros</li> */}
 					</ul>
 				</nav>
 			</div>
 
-			<div className='md:text-2xl mr-auto md:mx-auto font-semibold'>Cine Stream</div>
+			<Link to='/' className='md:text-2xl font-semibold text-center'>
+				Cine Stream
+			</Link>
 
 			<section className='flex items-center justify-end gap-4 min-[440px]:gap-6 p-2 font-semibold'>
-				<BsSearch className='text-xl cursor-pointer' />
+				<Link to='/search'>
+					<BsSearch className='text-xl cursor-pointer' />
+				</Link>
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>

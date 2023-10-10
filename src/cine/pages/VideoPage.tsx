@@ -14,7 +14,7 @@ export const VideoPage = () => {
 	if (isFetching) {
 		return (
 			<div className='mt-40'>
-				<Loading text='Cargando...' />
+				<Loading />
 			</div>
 		);
 	}

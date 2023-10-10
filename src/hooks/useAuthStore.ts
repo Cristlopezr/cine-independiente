@@ -4,6 +4,7 @@ import {
 	useCheckVerificationCodeMutation,
 	useLoginUserMutation,
 	useLazyRefreshTokenQuery,
+	onUpdateUser,
 } from '@/store/auth';
 import { useAppDispatch, useAppSelector } from './redux';
 import { onError, onLogin, onLogout } from '@/store/auth';
@@ -53,6 +54,9 @@ export const useAuthStore = () => {
 		}
 	};
 
+	const startUpdatingUser = (data: { name?: string; lastname?: string; avatarUrl?: string }) => {
+		dispatch(onUpdateUser(data));
+	};
 	const startVerifyEmail = async ({ email, code }: { email: string; code: string }) => {
 		try {
 			const { user, token } = await checkVerificationCode({
@@ -109,5 +113,6 @@ export const useAuthStore = () => {
 		startRequestVerificationCode,
 		checkAuthToken,
 		startLogout,
+		startUpdatingUser,
 	};
 };

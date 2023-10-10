@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Button } from '@/components/ui';
 import { UploadMovieForm } from '@/components/cine/user/myMoviesPage';
+import { CineLayout } from '@/cine/layout';
 
 Modal.setAppElement('#root');
 
@@ -29,17 +30,19 @@ export const MyMoviesPage = () => {
 	};
 
 	return (
-		<>
-			<h1>Mis películas</h1>
-			<Button onClick={onOpenModal}>Subir</Button>
-			<Modal
-				isOpen={searchParams.get(params.upload.name) === params.upload.initialState}
-				className='outline-none py-2 rounded-lg text-accent-foreground w-4/5 max-w-[960px] max-h-[800px] overflow-auto'
-				overlayClassName='modal-background'
-				closeTimeoutMS={200}
-			>
-				<UploadMovieForm onCloseModal={onCloseModal} />
-			</Modal>
-		</>
+		<CineLayout>
+			<div className='mt-[100px] px-10'>
+				<h1>Mis películas</h1>
+				<Button onClick={onOpenModal}>Subir</Button>
+				<Modal
+					isOpen={searchParams.get(params.upload.name) === params.upload.initialState}
+					className='outline-none py-2 rounded-lg text-accent-foreground w-4/5 max-w-[960px] max-h-[800px] overflow-auto'
+					overlayClassName='modal-background'
+					closeTimeoutMS={200}
+				>
+					<UploadMovieForm onCloseModal={onCloseModal} />
+				</Modal>
+			</div>
+		</CineLayout>
 	);
 };
