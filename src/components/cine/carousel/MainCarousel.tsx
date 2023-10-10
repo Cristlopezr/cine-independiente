@@ -87,12 +87,14 @@ export const MainCarousel = () => {
 	};
 
 	return (
-		<div className='relative w-full'>
+		<div>
 			<Slider {...settings}>
 				{movies?.map(movie => (
 					<React.Fragment key={movie.movie_id}>
-						<HeaderImage imageUrl={movie.imageUrl} />
-						<MovieInfo movie={movie} onClickPlay={onClickPlay} />
+						<div className='relative w-full overflow-visible'>
+							<HeaderImage imageUrl={movie.imageUrl} />
+							<MovieInfo movie={movie} onClickPlay={onClickPlay} />
+						</div>
 					</React.Fragment>
 				))}
 			</Slider>
