@@ -19,3 +19,4 @@ export * from './slider';
 export * from './volumeSlider';
 export * from './progress';
 export * from './select';
+export * from './alert';

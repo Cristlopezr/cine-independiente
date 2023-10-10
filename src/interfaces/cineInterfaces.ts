@@ -13,6 +13,7 @@ export interface DetailedMovie {
 	user_id: string;
 	enabled: boolean;
 	explicitContent: boolean;
+	duration: number;
 	createdAt: string;
 	updatedAt: string;
 	cast: Cast[];
@@ -36,6 +37,12 @@ export interface Director {
 export interface Genre {
 	genre_id: string;
 	name: string;
+}
+
+export interface GenreWithMovies {
+	genre_id: string;
+	name: string;
+	movies: Movie[];
 }
 
 export interface Writer {
@@ -80,6 +87,7 @@ export type Movie = {
 	updatedAt: string;
 	user_id_date: string;
 	explicitContent: boolean;
+	duration: number;
 };
 
 export type UploadMovieForm = UseFormReturn<
@@ -121,6 +129,7 @@ export interface CleanUploadMovieFormValues {
 	enabled: boolean;
 	explicitContent: boolean;
 	user_id_date: string;
+	duration: number;
 }
 
 export interface FormStepOneItem {

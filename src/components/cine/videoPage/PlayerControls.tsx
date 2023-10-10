@@ -54,8 +54,8 @@ export const PlayerControls = ({
 			<div className='text-2xl font-semibold tracking-wide'>{movie.title}</div>
 			<div className='w-full relative'>
 				<Progress
-					style={{ width: `${loaded / duration}%` }}
-					className='bg-primary/30 h-1 absolute top-1/2 -translate-y-1/2'
+					style={{ width: `${(loaded / duration) * 100}%` }}
+					className='bg-gray-500 h-1 absolute top-1/2 -translate-y-1/2'
 				/>
 				<Slider
 					className='cursor-pointer py-2'

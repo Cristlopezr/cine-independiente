@@ -26,8 +26,8 @@ export const MovieInfo = ({ movie, onClickPlay }: MovieInfoProps) => {
 					<>
 						<section className='mt-5 flex flex-col justify-center gap-5'>
 							<div className='flex items-center gap-3'>
-								{movie.genres.map(({ name }) => (
-									<div className='flex items-center text-sm'>
+								{movie.genres.map(({ name, genre_id }) => (
+									<div key={genre_id} className='flex items-center text-sm'>
 										<div className='w-2 h-2 bg-primary rounded-full mr-2'></div>
 										<div>{name}</div>
 									</div>

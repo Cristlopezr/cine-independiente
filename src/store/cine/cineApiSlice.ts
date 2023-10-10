@@ -1,13 +1,19 @@
 import { cineApi } from '@/api';
-import { CleanUploadMovieFormValues, DetailedMovie, Genre, Movie } from '@/interfaces';
+import { CleanUploadMovieFormValues, DetailedMovie, Genre, GenreWithMovies, Movie } from '@/interfaces';
 
 export const cineApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
 		getGenres: builder.query<Genre[], void>({
 			query: () => '/movie/get-genres',
 		}),
+		getGenresWithMovies: builder.query<GenreWithMovies[], void>({
+			query: () => '/movie/get-genres-movies',
+		}),
 		getMovies: builder.query<Movie[], string>({
 			query: data => `/movie/get-movies?q=${data}`,
+		}),
+		getMoviesByGenre: builder.query<Movie[], string>({
+			query: id => `/movie/get-movies-by-genre/${id}`,
 		}),
 		getMovie: builder.query<{ movie: DetailedMovie }, string>({
 			query: id => `/movie/movie/${id}`,
@@ -76,4 +82,6 @@ export const {
 	useGetMovieQuery,
 	useSaveWatchHistoryMutation,
 	useDeleteMovieMutation,
+	useGetMoviesByGenreQuery,
+	useGetGenresWithMoviesQuery
 } = cineApiSlice;

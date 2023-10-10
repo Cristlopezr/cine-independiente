@@ -46,6 +46,19 @@ export const verifyEmailFormSchema = z.object({
 		.regex(/^\d+$/, { message: 'Por favor ingresar solo números' }),
 });
 
+export const profileFormSchema = z.object({
+	name: z.string().min(1, { message: 'Por favor ingresar un nombre' }).trim(),
+	lastname: z.string().min(1, { message: 'Por favor ingresar un apellido' }).trim(),
+	email: z.string(),
+	profileImage: z
+		.any()
+		.refine(
+			files => ACCEPTED_IMAGE_TYPES.includes(files?.[0].type),
+			'Los formatos soportados son .JPG .JPEG .PNG'
+		)
+		.optional(),
+});
+
 const MAX_FILE_SIZE_GB = 60;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_GB * Math.pow(2, 30); // 1 GB = 2^30 bytes
 const ACCEPTED_VIDEO_TYPES = ['video/mp4', 'video/mov', 'video/avi', 'video/mkv'];

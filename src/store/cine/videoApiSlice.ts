@@ -60,7 +60,14 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
+		uploadProfileImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; }>({
+			query: data => {
+				const formData = new FormData();
+				formData.append('image', data.image);
+				return { url: `/user/upload-profile-image?id=${data.userId}`, method: 'PUT', body: formData };
+			},
+		}),
 	}),
 });
 
-export const { useUploadMovieMutation, useUploadMovieImageMutation } = videoApiSlice;
+export const { useUploadMovieMutation, useUploadMovieImageMutation, useUploadProfileImageMutation } = videoApiSlice;

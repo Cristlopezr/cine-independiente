@@ -82,7 +82,7 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 			{formStepOneItems.map(item => {
 				if (item.id === 'movieImage') {
 					return (
-						<div key={item.id} className='col-span-2 justify-self-center relative'>
+						<div key={item.id} className='col-span-2 justify-self-center relative w-full'>
 							<div>
 								<Input
 									type={item.type}
@@ -156,7 +156,7 @@ export const UploadMovieFormStepOne = ({ form }: UploadMovieFormStepOneProps) =>
 									)}
 								</div>
 							) : (
-								<div className='absolute -bottom-10'>
+								<div className='absolute top-full'>
 									<p className='text-sm text-center text-destructive font-semibold'>
 										{errorMessage}
 									</p>

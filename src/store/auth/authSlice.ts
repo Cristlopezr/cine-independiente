@@ -46,7 +46,10 @@ export const authSlice = createSlice({
 		onError: (state, action: PayloadAction<string>) => {
 			state.errorMessage = action.payload;
 		},
+		onUpdateUser: (state, action) => {
+			state.user = { ...state.user, ...action.payload };
+		},
 	},
 });
 
-export const { onLogin, onLogout, onError } = authSlice.actions;
+export const { onLogin, onLogout, onError, onUpdateUser } = authSlice.actions;

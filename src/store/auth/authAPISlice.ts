@@ -19,6 +19,18 @@ export const authApiSlice = cineApi.injectEndpoints({
 			}),
 			//!invalidatesTags:["User"]
 		}),
+		updateUser: builder.mutation<{msg:string, updatedUser:User},{data:{avatarUrl?:string, name?:string, lastname?:string}, user_id:string}>({
+			query: data => {
+				return {
+					url: '/user/update-user',
+					method: 'PUT',
+					body: {
+						data:data.data,
+						user_id:data.user_id
+					},
+				};
+			},
+		}),
 		requestVerificationCode: builder.mutation<number, { email: string }>({
 			query: email => ({
 				url: '/user/emailVerification',
@@ -45,4 +57,5 @@ export const {
 	useRegisterUserMutation,
 	useRequestVerificationCodeMutation,
 	useCheckVerificationCodeMutation,
+	useUpdateUserMutation
 } = authApiSlice;
