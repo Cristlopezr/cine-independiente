@@ -1,6 +1,7 @@
 import { videoApi } from '@/api';
 import axios from 'axios';
 import { onError, onSetMovieToUpload, onSetMovieUploadSuccessMessage, setUploadProgress } from './cineSlice';
+import { onUpdateUser } from '../auth';
 
 export const videoApiSlice = videoApi.injectEndpoints({
 	endpoints: builder => ({
@@ -65,6 +66,14 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				const formData = new FormData();
 				formData.append('image', data.image);
 				return { url: `/user/upload-profile-image?id=${data.userId}`, method: 'PUT', body: formData };
+			},
+			onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(onUpdateUser({ avatarUrl: data.imageUrl }));
+				} catch (error: any) {
+					console.log(error)
+				}
 			},
 		}),
 	}),
