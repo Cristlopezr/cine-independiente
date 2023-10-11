@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui';
 import { useGetMoviesQuery } from '@/store/cine';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import Slider from 'react-slick';
-import { HeaderImage, MovieInfo } from '../moviePage';
+import { Header } from '../moviePage';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
@@ -91,10 +91,7 @@ export const MainCarousel = () => {
 			<Slider {...settings}>
 				{movies?.map(movie => (
 					<React.Fragment key={movie.movie_id}>
-						<div className='relative w-full overflow-visible'>
-							<HeaderImage imageUrl={movie.imageUrl} />
-							<MovieInfo movie={movie} onClickPlay={onClickPlay} />
-						</div>
+						<Header movie={movie} onClickPlay={onClickPlay} isCarousel />
 					</React.Fragment>
 				))}
 			</Slider>

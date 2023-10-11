@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CineLayout } from '../layout';
 import { useGetMovieQuery } from '@/store/cine';
 import { Loading } from '@/components/ui';
-import { HeaderImage, MovieDetails, MovieInfo } from '@/components/cine/moviePage';
+import { Header, MovieDetails } from '@/components/cine/moviePage';
 
 export const MoviePage = () => {
 	const { id } = useParams();
@@ -32,10 +32,7 @@ export const MoviePage = () => {
 	const { movie } = data!;
 	return (
 		<CineLayout>
-			<div className='relative w-full'>
-				<HeaderImage imageUrl={movie.imageUrl} />
-				<MovieInfo movie={movie} onClickPlay={onClickPlay} />
-			</div>
+			<Header movie={movie} onClickPlay={onClickPlay} />
 			<MovieDetails movie={movie} />
 		</CineLayout>
 	);
