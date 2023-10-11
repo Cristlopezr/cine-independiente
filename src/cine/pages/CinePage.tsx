@@ -8,6 +8,7 @@ import React from 'react';
 export const CinePage = () => {
 	const { data: genresWithMovies /* isError, isFetching */ } = useGetGenresWithMoviesQuery();
 
+
 	return (
 		<CineLayout>
 			<MainCarousel />

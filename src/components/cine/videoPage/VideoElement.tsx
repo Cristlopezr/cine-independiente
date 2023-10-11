@@ -30,7 +30,7 @@ const format = (seconds: number) => {
 	return `${mm}:${ss}`;
 };
 
-export const VideoElement = ({ movie }: { movie: Movie }) => {
+export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewingTime: number }) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
 	const [playerState, setPlayerState] = useState({
 		playing: true,
@@ -83,6 +83,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 
 	const handlePlayerReady = () => {
 		if (playerRef.current) {
+			playerRef.current.seekTo(viewingTime);
 			const hlsPlayer = playerRef.current.getInternalPlayer('hls');
 
 			if (hlsPlayer) {

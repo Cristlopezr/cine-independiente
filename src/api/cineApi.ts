@@ -40,5 +40,6 @@ const baseQuery = fetchBaseQuery({
 export const cineApi = createApi({
 	reducerPath: 'cineApi',
 	baseQuery,
+	tagTypes:['watchHistory'],
 	endpoints: () => ({}),
 });
