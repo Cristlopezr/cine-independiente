@@ -20,13 +20,13 @@ export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
 
 	return (
 		<section className='font-semibold main-slider-container relative overflow-hidden'>
-			<section className='absolute flex flex-col gap-3 bottom-10 font-semibold z-10 px-14'>
-				<p className='text-7xl'>{movie.title}</p>
-				<p className='text-gray-300 mt-5 font-thin'>{movie.productionYear}</p>
+			<section className='absolute flex flex-col gap-3 bottom-10 font-semibold z-10 px-14 w-full'>
+				<p className='text-3xl sm:text-5xl md:text-6xl lg:text-7xl'>{movie.title}</p>
+				<p className='text-gray-300 font-thin'>{movie.productionYear}</p>
 				<section className='flex items-center gap-7'>
 					<GoPlay
 						onClick={() => onClickPlay(movie.movie_id)}
-						className='text-6xl text-primary/80 cursor-pointer hover:text-primary'
+						className='text-5xl md:text-6xl text-primary/80 cursor-pointer hover:text-primary'
 					/>
 					{isCarousel ? (
 						<Button onClick={() => onClickSeeDetails(movie.movie_id)} variant='outline' size='lg'>
@@ -36,7 +36,7 @@ export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
 						<BsPlusLg className='text-3xl text-primary/80 cursor-pointer hover:text-primary' />
 					)}
 				</section>
-				<p className='text-lg'>
+				<p className='text-base md:text-lg w-[90%] xl:w-[60%]'>
 					{isCarousel ? (
 						<>
 							{movie.synopsis.length > 100
