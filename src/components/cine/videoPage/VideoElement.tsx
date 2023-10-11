@@ -124,9 +124,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 
 		setPlayerState({ ...playerState, fullScreen: !screenfull.isFullscreen });
 	};
-console.log(loaded)
 	const onProgress = (state: OnProgressProps) => {
-		console.log({played:state.playedSeconds, loaded: state.loadedSeconds})
 		if (count > 5) {
 			setShowControls(false);
 		}

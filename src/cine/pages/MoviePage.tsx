@@ -30,7 +30,6 @@ export const MoviePage = () => {
 	}
 
 	const { movie } = data!;
-
 	return (
 		<CineLayout>
 			<div className='relative w-full'>
