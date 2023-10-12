@@ -59,7 +59,7 @@ export const ProfileForm = ({
 		if (isFormDisabled) return;
 		const { email, ...dataToUpdate } = data;
 		try {
-			const { updatedUser, msg } = await updateUser({ data: dataToUpdate, user_id }).unwrap();
+			const { updatedUser, msg } = await updateUser({ data: { ...dataToUpdate, user_id } }).unwrap();
 			startUpdatingUser({ name: updatedUser.name, lastname: updatedUser.lastname });
 			setIsFormDisabled(true);
 			showHideAlert('success', msg);

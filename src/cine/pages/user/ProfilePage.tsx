@@ -1,6 +1,6 @@
 import { CineLayout } from '@/cine/layout';
 import { CustomAlert } from '@/components';
-import { ProfileForm, ProfileImage } from '@/components/cine/user/profilePage';
+import { DisableAccount, ProfileForm, ProfileImage } from '@/components/cine/user/profilePage';
 import { Separator } from '@/components/ui';
 import { useState } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
@@ -41,11 +41,12 @@ export const ProfilePage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<h1 className='text-2xl px-5 font-medium'>Mi Perfil</h1>
+				<h1 className='text-2xl px-5 font-medium'>Mi perfil</h1>
 				<Separator className='my-5' />
 				<div className='grid grid-cols-1 gap-10 sm:grid-cols-2'>
 					<ProfileForm showHideAlert={showHideAlert} />
 					<ProfileImage showHideAlert={showHideAlert} />
+					<DisableAccount showHideAlert={showHideAlert} />
 				</div>
 			</div>
 		</CineLayout>

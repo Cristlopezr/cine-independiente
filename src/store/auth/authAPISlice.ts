@@ -1,17 +1,23 @@
 import { cineApi } from '@/api';
-import { User } from '@/interfaces';
+import { EditUser, User } from '@/interfaces';
 
 export const authApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
-		loginUser: builder.mutation<{user:User, token:string, ok:boolean}, {email:string, password:string}>({
-			query: (credentials) => ({
-                url:'/user/login',
-                method:'POST',
-                body:credentials
-            }),
+		loginUser: builder.mutation<
+			{ user: User; token: string; ok: boolean },
+			{ email: string; password: string }
+		>({
+			query: credentials => ({
+				url: '/user/login',
+				method: 'POST',
+				body: credentials,
+			}),
 			//!providesTags : ["User"]
 		}),
-		registerUser: builder.mutation<{user:User, token:string, ok:boolean},{ name: string; lastname: string; email: string; password: string }>({
+		registerUser: builder.mutation<
+			{ user: User; token: string; ok: boolean },
+			{ name: string; lastname: string; email: string; password: string }
+		>({
 			query: userData => ({
 				url: '/user',
 				method: 'POST',
@@ -19,14 +25,14 @@ export const authApiSlice = cineApi.injectEndpoints({
 			}),
 			//!invalidatesTags:["User"]
 		}),
-		updateUser: builder.mutation<{msg:string, updatedUser:User},{data:{avatarUrl?:string, name?:string, lastname?:string}, user_id:string}>({
-			query: data => {
+		updateUser: builder.mutation<{ msg: string; updatedUser: User }, { data: EditUser }>({
+			query: ({data}) => {
 				return {
 					url: '/user/update-user',
 					method: 'PUT',
 					body: {
-						data:data.data,
-						user_id:data.user_id
+						data: data,
+						user_id: data.user_id,
 					},
 				};
 			},
@@ -38,24 +44,27 @@ export const authApiSlice = cineApi.injectEndpoints({
 				body: email,
 			}),
 		}),
-		checkVerificationCode: builder.mutation<{ user: User; token: string },{ email: string; verificationCode: number }>({
+		checkVerificationCode: builder.mutation<
+			{ user: User; token: string },
+			{ email: string; verificationCode: number }
+		>({
 			query: codeToken => ({
 				url: '/user/checkVerificationCode',
 				method: 'POST',
 				body: codeToken,
 			}),
 		}),
-        refreshToken: builder.query<{user:User, token:string, ok:boolean},void>({
-            query:() => '/user/refresh'
-        })
+		refreshToken: builder.query<{ user: User; token: string; ok: boolean }, void>({
+			query: () => '/user/refresh',
+		}),
 	}),
 });
 
 export const {
 	useLoginUserMutation,
-    useLazyRefreshTokenQuery,
+	useLazyRefreshTokenQuery,
 	useRegisterUserMutation,
 	useRequestVerificationCodeMutation,
 	useCheckVerificationCodeMutation,
-	useUpdateUserMutation
+	useUpdateUserMutation,
 } = authApiSlice;

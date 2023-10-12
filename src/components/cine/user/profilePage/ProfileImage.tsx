@@ -30,8 +30,7 @@ export const ProfileImage = ({
 				image: file,
 			}).unwrap();
 			await updateUser({
-				data: { avatarUrl: imageUrl },
-				user_id,
+				data: { avatarUrl: imageUrl, user_id },
 			}).unwrap();
 			setIsUploadProfileImageLoading(false);
 			showHideAlert('success', 'Imagen actualizada con éxito');

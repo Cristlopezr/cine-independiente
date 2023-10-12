@@ -42,7 +42,6 @@ export const CinePage = () => {
 			</CineLayout>
 		);
 	}
-
 	return (
 		<CineLayout>
 			<MainCarousel />

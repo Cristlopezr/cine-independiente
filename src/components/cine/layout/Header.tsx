@@ -39,7 +39,7 @@ export const Header = () => {
 			<div className='flex items-center gap-5 w-fit md:w-full'>
 				{/* <BsList className='w-10 p-2 h-12' /> */}
 				<nav className='hidden md:block'>
-					<ul className='flex items-center text-lg gap-5 font-semibold'>
+					<ul className='flex items-center gap-5 font-semibold'>
 						<NavLink
 							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
 							to='/'
