@@ -5,7 +5,6 @@ export interface User {
 	email: string;
 	emailVerified: boolean;
 	avatarUrl?: string;
-	active: boolean;
 }
 
 export interface EditUser {
