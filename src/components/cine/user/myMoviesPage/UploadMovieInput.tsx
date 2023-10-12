@@ -97,17 +97,13 @@ export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovi
 							{[1, 2, 3, 4, 5, 6, 7, 8, 9].map(index => (
 								<div
 									key={index}
-									className={`dark:bg-white bg-black bg-opacity-30 h-10 w-[2px] rounded-sm animate-upload-line${index}`}
+									className={`bg-white bg-opacity-30 h-10 w-[2px] rounded-sm animate-upload-line${index}`}
 								></div>
 							))}
 						</div>
 					)}
 				</div>
 			</button>
-			{/* <p className='text-sm pb-5 text-gray-600 dark:text-gray-400'>
-				Tu película estará deshabilitada hasta que la publiques.
-			</p> */}
-			{/* Sacar mt-5 cuando se deje el parrafo */}
 			<Button size='lg' className='mt-5' onClick={() => inputFileRef.current?.click()}>
 				Seleccionar archivo
 			</Button>

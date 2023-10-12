@@ -39,7 +39,7 @@ export const Header = () => {
 			<div className='flex items-center gap-5 w-fit md:w-full'>
 				{/* <BsList className='w-10 p-2 h-12' /> */}
 				<nav className='hidden md:block'>
-					<ul className='flex items-center gap-5 font-semibold'>
+					<ul className='flex items-center text-lg gap-5 font-semibold'>
 						<NavLink
 							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
 							to='/'
@@ -56,9 +56,19 @@ export const Header = () => {
 			</Link>
 
 			<section className='flex items-center justify-end gap-4 min-[440px]:gap-6 p-2 font-semibold'>
-				<Link to='/search'>
-					<BsSearch className='text-xl cursor-pointer' />
-				</Link>
+				<TooltipProvider>
+					<Tooltip delayDuration={100}>
+						<TooltipTrigger>
+							<Link to='/search'>
+								<BsSearch className='text-xl cursor-pointer' />
+							</Link>
+						</TooltipTrigger>
+						<TooltipContent sideOffset={8}>
+							<p>Buscar</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>

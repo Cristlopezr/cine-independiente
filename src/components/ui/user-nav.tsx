@@ -33,7 +33,7 @@ export function UserNav() {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-fit mt-3 mr-1 lg:mr-0' align='center' forceMount>
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={onGoToProfile}>Mi Perfil</DropdownMenuItem>
+					<DropdownMenuItem onClick={onGoToProfile}>Mi perfil</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={startLogout}>Cerrar sesión</DropdownMenuItem>
