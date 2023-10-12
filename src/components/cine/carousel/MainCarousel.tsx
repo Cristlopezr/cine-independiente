@@ -63,11 +63,17 @@ const settings = {
 
 export const MainCarousel = () => {
 	const navigate = useNavigate();
-	const {
-		data: movies,
-		/* isError, */
-		isFetching,
-	} = useGetMoviesQuery('');
+	const { data: movies, isError, isFetching } = useGetMoviesQuery('');
+
+	if (isError) {
+		return (
+			<div className='relative w-full'>
+				<div className='w-full flex items-center justify-center main-slider-container relative h-screen'>
+					<div className='text-xl sm:text-2xl'>Ha ocurrido un error al obtener las películas.</div>
+				</div>
+			</div>
+		);
+	}
 
 	if (isFetching) {
 		return (
