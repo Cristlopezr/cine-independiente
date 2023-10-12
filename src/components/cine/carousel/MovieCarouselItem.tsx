@@ -1,22 +1,15 @@
-import { useAuthStore } from '@/hooks';
-import { Movie, WatchHistory } from '@/interfaces';
+import { useCineStore } from '@/hooks';
+import { Movie } from '@/interfaces';
 import { cn } from '@/lib/utils';
-import { useGetWatchHistoryQuery } from '@/store/cine';
 import { BsFillPlayCircleFill, BsFillPlusCircleFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 
-let viewingTime: WatchHistory;
 export const MovieCarouselItem = ({ className, movie }: { className?: string; movie: Movie }) => {
-	const { user } = useAuthStore();
-	const { data, isSuccess } = useGetWatchHistoryQuery(user.user_id);
-
 	const navigate = useNavigate();
 
-	if (isSuccess) {
-		viewingTime = data.watchHistory.find(({ movie_id }) => movie_id === movie.movie_id)!;
+	const { watchHistory } = useCineStore();
 
-		console.log(viewingTime?.viewingTime, movie.duration);
-	}
+	const history = watchHistory?.find(({ movie_id }) => movie_id === movie.movie_id);
 
 	const onClickMovie = (movieId: string) => {
 		navigate(`/movie/${movieId}`);
@@ -40,10 +33,13 @@ export const MovieCarouselItem = ({ className, movie }: { className?: string; mo
 							className={cn('aspect-[16/9] w-full object-cover', className)}
 							src={movie.imageUrl}
 						/>
-						{viewingTime?.viewingTime ? (
+						{!!history?.viewingTime && (
+							<div className='h-[5px] w-full absolute bottom-0 bg-[hsl(237,83%,80%,0.2)]'></div>
+						)}
+						{!!history?.viewingTime ? (
 							<div
-								className='h-[2px] absolute bottom-0 bg-red-500'
-								style={{ width: `${(viewingTime.viewingTime / movie.duration) * 100}%` }}
+								className='h-[5px] absolute bottom-0 bg-white'
+								style={{ width: `${(history.viewingTime / movie.duration) * 100}%` }}
 							></div>
 						) : null}
 					</div>

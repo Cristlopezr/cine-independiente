@@ -34,11 +34,9 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					body: data,
 				};
 			},
-			invalidatesTags: [{ type: 'watchHistory' }]
 		}),
 		getWatchHistory: builder.query<{watchHistory:WatchHistory[]}, string>({
 			query: id => `/movie/get-watch-history/${id}`,
-			providesTags: [{ type: 'watchHistory'}]
 		}),
 		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, CleanUploadMovieFormValues>({
 			query: data => {
@@ -89,5 +87,6 @@ export const {
 	useDeleteMovieMutation,
 	useGetMoviesByGenreQuery,
 	useGetGenresWithMoviesQuery,
-	useGetWatchHistoryQuery
+	useGetWatchHistoryQuery,
+	useLazyGetWatchHistoryQuery
 } = cineApiSlice;

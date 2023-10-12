@@ -1,4 +1,4 @@
-import { Genre } from '@/interfaces';
+import { Genre, WatchHistory } from '@/interfaces';
 import { createSlice } from '@reduxjs/toolkit';
 /* import type { PayloadAction } from '@reduxjs/toolkit'; */
 /* import type { RootState } from '../../store'; */
@@ -12,6 +12,7 @@ interface CineState {
 		imageUrl: string | undefined;
 	};
 	genres: Genre[];
+	watchHistory: WatchHistory[];
 }
 
 const initialState: CineState = {
@@ -24,6 +25,7 @@ const initialState: CineState = {
 		imageUrl: undefined,
 	},
 	genres: [],
+	watchHistory: [],
 };
 
 export const cineSlice = createSlice({
@@ -45,8 +47,11 @@ export const cineSlice = createSlice({
 		onSetMovieUploadSuccessMessage: (state, action) => {
 			state.movieUploadSuccessMessage = action.payload;
 		},
+		onSetWatchHistory: (state,action) => {
+			state.watchHistory = action.payload
+		}
 	},
 });
 
-export const { setUploadProgress, onError, onSetMovieToUpload, onGetGenres, onSetMovieUploadSuccessMessage } =
+export const { setUploadProgress, onError, onSetMovieToUpload, onGetGenres, onSetMovieUploadSuccessMessage, onSetWatchHistory } =
 	cineSlice.actions;
