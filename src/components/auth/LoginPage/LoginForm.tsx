@@ -8,6 +8,7 @@ import { Button, Form, FormControl, FormField, FormItem, FormMessage, Input } fr
 import { loginFormSchema } from '@/schemas/zSchemas';
 import { SelectAuth } from '..';
 import { useAuthStore } from '@/hooks';
+import { Link } from 'react-router-dom';
 
 export const LoginForm = ({ title }: { title: string }) => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -89,6 +90,9 @@ export const LoginForm = ({ title }: { title: string }) => {
 						)}
 					</Button>
 				</form>
+				<Link className='text-sm flex justify-end pb-2' to='/auth/password-recover'>
+					¿Olvidaste la contraseña?
+				</Link>
 				<p className='text-sm md:text-base text-destructive text-center font-semibold'>
 					{errorMessage}
 				</p>

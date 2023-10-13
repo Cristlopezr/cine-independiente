@@ -3,10 +3,7 @@ import { EditUser, User } from '@/interfaces';
 
 export const authApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
-		loginUser: builder.mutation<
-			{ user: User; token: string; ok: boolean },
-			{ email: string; password: string }
-		>({
+		loginUser: builder.mutation<{ user: User; token: string; ok: boolean },{ email: string; password: string }>({
 			query: credentials => ({
 				url: '/user/login',
 				method: 'POST',
@@ -14,10 +11,7 @@ export const authApiSlice = cineApi.injectEndpoints({
 			}),
 			//!providesTags : ["User"]
 		}),
-		registerUser: builder.mutation<
-			{ user: User; token: string; ok: boolean },
-			{ name: string; lastname: string; email: string; password: string }
-		>({
+		registerUser: builder.mutation<{ user: User; token: string; ok: boolean },{ name: string; lastname: string; email: string; password: string }>({
 			query: userData => ({
 				url: '/user',
 				method: 'POST',
@@ -44,14 +38,25 @@ export const authApiSlice = cineApi.injectEndpoints({
 				body: email,
 			}),
 		}),
-		checkVerificationCode: builder.mutation<
-			{ user: User; token: string },
-			{ email: string; verificationCode: number }
-		>({
+		checkVerificationCode: builder.mutation<{ user: User; token: string },{ email: string; verificationCode: number }>({
 			query: codeToken => ({
 				url: '/user/checkVerificationCode',
 				method: 'POST',
 				body: codeToken,
+			}),
+		}),
+		passwordRecover: builder.mutation<{ msg:string },{ email: string }>({
+			query: email => ({
+				url: '/user/password-change-request',
+				method: 'POST',
+				body: email,
+			}),
+		}),
+		resetPassword: builder.mutation<{ msg:string },{ newPassword: string, user_id:string }>({
+			query: data => ({
+				url: '/user/reset-password',
+				method: 'POST',
+				body: data,
 			}),
 		}),
 		refreshToken: builder.query<{ user: User; token: string; ok: boolean }, void>({
@@ -67,4 +72,6 @@ export const {
 	useRequestVerificationCodeMutation,
 	useCheckVerificationCodeMutation,
 	useUpdateUserMutation,
+	usePasswordRecoverMutation,
+	useResetPasswordMutation
 } = authApiSlice;

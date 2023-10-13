@@ -46,6 +46,35 @@ export const verifyEmailFormSchema = z.object({
 		.regex(/^\d+$/, { message: 'Por favor ingresar solo números' }),
 });
 
+export const recoverPasswordEmailFormSchema = z.object({
+	email: z
+		.string()
+		.min(1, {
+			message: 'Por favor ingresar un email',
+		})
+		.trim()
+		.email('Por favor ingresar un email válido'),
+});
+
+export const resetPasswordFormSchema = z
+	.object({
+		password: z
+			.string()
+			.min(8, { message: 'Por favor ingresar una contraseña válida' })
+			.trim()
+			.refine(value => /[A-Z]/.test(value), {
+				message: 'La contraseña debe contener al menos una mayúscula',
+			})
+			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
+				message: 'La contraseña debe contener al menos un caracter especial',
+			}),
+		confirmPassword: z.string().trim(),
+	})
+	.refine(data => data.password === data.confirmPassword, {
+		message: 'Las contraseñas no coinciden',
+		path: ['confirmPassword'],
+	});
+
 export const profileFormSchema = z.object({
 	name: z.string().min(1, { message: 'Por favor ingresar un nombre' }).trim(),
 	lastname: z.string().min(1, { message: 'Por favor ingresar un apellido' }).trim(),

@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage, RegisterPage, VerifyEmailPage } from '../pages';
+import { LoginPage, PasswordRecover, RegisterPage, ResetPassword, VerifyEmailPage } from '../pages';
 import { useAuthStore } from '@/hooks';
 
 export const AuthRoutes = () => {
@@ -20,6 +20,8 @@ export const AuthRoutes = () => {
 					<Route path='register' element={<RegisterPage />} />
 				</>
 			)}
+			<Route path='password-recover' element={<PasswordRecover />} />
+			<Route path='reset-password' element={<ResetPassword />} />
 			<Route path='/*' element={<Navigate to='/auth/login' />} />
 		</Routes>
 	);
