@@ -9,27 +9,13 @@ import { BsChevronLeft } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { useSaveWatchHistoryMutation } from '@/store/cine';
 import { useAuthStore, useCineStore } from '@/hooks';
+import { formatMovieTime } from '@/helpers';
 
 export type Level = {
 	height: number;
 };
 const baseUrl = 'https://storage.googleapis.com/';
 const urlBeacon = `${import.meta.env.VITE_API_CINE_BASE_URL}/movie/save-watch-history`;
-
-const format = (seconds: number) => {
-	if (seconds === 0) {
-		return '00:00';
-	}
-
-	const date = new Date(seconds * 1000);
-	const hh = date.getUTCHours();
-	const mm = date.getUTCMinutes();
-	const ss = date.getUTCSeconds().toString().padStart(2, '0');
-	if (hh) {
-		return `${hh}:${mm.toString().padStart(2, '0')}:${ss}`;
-	}
-	return `${mm}:${ss}`;
-};
 
 export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewingTime: number }) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
@@ -57,8 +43,8 @@ export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewing
 	const currentTime = playerRef.current?.getCurrentTime() || 0;
 	const duration = movie.duration || 0;
 
-	const elapsedTime = format(currentTime!);
-	const totalDuration = format(duration);
+	const elapsedTime = formatMovieTime(currentTime!);
+	const totalDuration = formatMovieTime(duration);
 
 	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded, seeking } = playerState;
 

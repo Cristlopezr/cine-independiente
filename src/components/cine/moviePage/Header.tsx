@@ -4,6 +4,7 @@ import { GoPlay } from 'react-icons/go';
 import { BsPlusLg } from 'react-icons/bs';
 import { Button } from '@/components/ui';
 import { useNavigate } from 'react-router-dom';
+import { formatMovieTime } from '@/helpers';
 
 interface HeaderProps {
 	movie: Movie;
@@ -39,7 +40,12 @@ export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
 				<p className='uppercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl z-10 drop-shadow-[0_10px_10px_hsla(224,71.4%,4.1%,1)]'>
 					{movie.title}
 				</p>
-				<p className='text-gray-300 font-thin'>{movie.productionYear}</p>
+				<div className='flex items-center gap-5 text-white/70 font-normal tracking-widest'>
+					<p className='drop-shadow-[0_5px_5px_hsla(224,71.4%,4.1%,1)]'>
+						{formatMovieTime(movie.duration)} MIN
+					</p>
+					<p className='drop-shadow-[0_5px_5px_hsla(224,71.4%,4.1%,1)]'>{movie.productionYear}</p>
+				</div>
 				<section className='flex items-center gap-7'>
 					<GoPlay
 						onClick={() => onClickPlay(movie.movie_id)}

@@ -1,18 +1,48 @@
 import { CineLayout } from '@/cine/layout';
 import { CustomAlert } from '@/components';
-import { DisableAccount, ProfileForm, ProfileImage } from '@/components/cine/user/profilePage';
-import { Separator } from '@/components/ui';
+import { EditMovieForm } from '@/components/cine/user/movieDetailsPage';
+import { Loading, Separator } from '@/components/ui';
 import { useShowHideAlert } from '@/hooks';
+import { useGetMovieQuery } from '@/store/cine';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { BiSolidError } from 'react-icons/bi';
 
-export type AlertType = 'success' | 'error';
+import { useParams } from 'react-router-dom';
 
-export const ProfilePage = () => {
-	const { showAlert, showHideAlert } = useShowHideAlert();
+export const MovieDetailsPage = () => {
+	const { id } = useParams();
+
+	const {showAlert, showHideAlert} = useShowHideAlert()
+
+	const { data, isFetching, isError } = useGetMovieQuery(id!);
+
+	if (isError) {
+		return (
+			<CineLayout>
+				<div className='mt-[100px]'>
+					<div className='text-center text-xl'>Ha ocurrido un error al obtener la película.</div>
+				</div>
+			</CineLayout>
+		);
+	}
+
+	if (isFetching) {
+		return (
+			<CineLayout>
+				<div className='mt-40'>
+					<Loading />
+				</div>
+			</CineLayout>
+		);
+	}
+
+	const { movie } = data!;
+
 	return (
 		<CineLayout>
 			<div className='mt-[100px] px-10'>
+				<h1 className='px-5 text-2xl font-semibold'>{movie.title}</h1>
+				<Separator className='my-5' />
 				<CustomAlert
 					className={`${
 						showAlert.success ? 'top-32' : '-top-24'
@@ -29,13 +59,7 @@ export const ProfilePage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<h1 className='text-2xl px-5 font-semibold'>Mi perfil</h1>
-				<Separator className='my-5' />
-				<div className='grid grid-cols-1 gap-10 sm:grid-cols-2'>
-					<ProfileForm showHideAlert={showHideAlert} />
-					<ProfileImage showHideAlert={showHideAlert} />
-					<DisableAccount showHideAlert={showHideAlert} />
-				</div>
+				<EditMovieForm movie={movie} showHideAlert={showHideAlert} />
 			</div>
 		</CineLayout>
 	);

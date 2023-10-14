@@ -20,6 +20,10 @@ export function UserNav() {
 		navigate('/profile');
 	};
 
+	const onGoToMyMovies = () => {
+		navigate('/my-movies');
+	};
+
 	return (
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger asChild className='overflow-auto'>
@@ -34,6 +38,7 @@ export function UserNav() {
 			<DropdownMenuContent className='w-fit mt-3 mr-1 lg:mr-0' align='center' forceMount>
 				<DropdownMenuGroup>
 					<DropdownMenuItem onClick={onGoToProfile}>Mi perfil</DropdownMenuItem>
+					<DropdownMenuItem onClick={onGoToMyMovies}>Mis películas</DropdownMenuItem>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={startLogout}>Cerrar sesión</DropdownMenuItem>

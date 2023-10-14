@@ -105,6 +105,29 @@ export const uploadMovieInputSchema = z.object({
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const CURRENT_YEAR = new Date().getFullYear();
 
+export const editMovieFormSchema = z.object({
+	title: z.string().min(1, { message: 'Por favor ingresar un título' }),
+	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }),
+	productionYear: z
+		.string()
+		.min(4, { message: 'Por favor ingresar un año válido' })
+		.max(4, { message: 'Por favor ingresar un año válido' })
+		.regex(/^\d+$/, { message: 'Por favor ingresar un año válido' })
+		.refine(value => Number(value) <= CURRENT_YEAR && Number(value) >= 1900, {
+			message: 'Por favor ingresar un año válido',
+		}),
+	/* movieImage: z
+		.any()
+		.refine(files => {
+			if (!files) return false;
+			return true;
+		}, 'Por favor seleccionar una imagen')
+		.refine(
+			files => ACCEPTED_IMAGE_TYPES.includes(files?.[0].type),
+			'Los formatos soportados son .JPG .JPEG .PNG'
+		), */
+});
+
 export const uploadMovieFormSchema = z.object({
 	title: z.string().min(1, { message: 'Por favor ingresar un título' }),
 	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }),

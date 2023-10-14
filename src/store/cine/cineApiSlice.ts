@@ -1,5 +1,12 @@
 import { cineApi } from '@/api';
-import { CleanUploadMovieFormValues, DetailedMovie, Genre, GenreWithMovies, Movie, WatchHistory } from '@/interfaces';
+import {
+	CleanUploadMovieFormValues,
+	DetailedMovie,
+	Genre,
+	GenreWithMovies,
+	Movie,
+	WatchHistory,
+} from '@/interfaces';
 
 export const cineApiSlice = cineApi.injectEndpoints({
 	endpoints: builder => ({
@@ -18,6 +25,9 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		getMovie: builder.query<{ movie: DetailedMovie }, string>({
 			query: id => `/movie/movie/${id}`,
 		}),
+		getMoviesByUser: builder.query<{ userMovies: Movie[] }, string>({
+			query: id => `/movie/get-movies-by-user/${id}`,
+		}),
 		deleteMovie: builder.mutation<{ data: { deletedMovie: Movie } }, string>({
 			query: id => {
 				return {
@@ -35,7 +45,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
-		getWatchHistory: builder.query<{watchHistory:WatchHistory[]}, string>({
+		getWatchHistory: builder.query<{ watchHistory: WatchHistory[] }, string>({
 			query: id => `/movie/get-watch-history/${id}`,
 		}),
 		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, CleanUploadMovieFormValues>({
@@ -74,6 +84,15 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
+		updateMovie: builder.mutation<{msg:string, updateMovie:Movie}, {user_id_date:string, data:Movie}>({
+			query: data => {		
+				return {
+					url: '/movie/update-movie',
+					method: 'PUT',
+					body: data,
+				};
+			},
+		}),
 	}),
 });
 
@@ -88,5 +107,7 @@ export const {
 	useGetMoviesByGenreQuery,
 	useGetGenresWithMoviesQuery,
 	useGetWatchHistoryQuery,
-	useLazyGetWatchHistoryQuery
+	useLazyGetWatchHistoryQuery,
+	useGetMoviesByUserQuery,
+	useUpdateMovieMutation
 } = cineApiSlice;
