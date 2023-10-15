@@ -145,3 +145,16 @@ export interface WatchHistory {
 	user_id: string;
 	viewingTime: number;
 }
+
+export interface UpdateMovie {
+	thumbnailUrl?: string | null;
+	imageUrl?: string;
+	title?: string;
+	productionYear?: number;
+	synopsis?: string;
+	enabled?: boolean;
+}
+
+export interface UpdateMovieTeam {
+	name: string;
+}

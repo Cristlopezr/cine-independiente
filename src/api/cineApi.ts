@@ -41,4 +41,5 @@ export const cineApi = createApi({
 	reducerPath: 'cineApi',
 	baseQuery,
 	endpoints: () => ({}),
+	tagTypes:["movie"]
 });

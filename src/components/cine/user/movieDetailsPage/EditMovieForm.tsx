@@ -26,13 +26,6 @@ export const EditMovieForm = ({
 	movie: DetailedMovie;
 	showHideAlert: (alertType: AlertType, msg: string) => void;
 }) => {
-	const [movieState, setMovieState] = useState({
-		title: movie.title,
-		productionYear: movie.productionYear.toString(),
-		synopsis: movie.synopsis,
-	});
-
-	const { title, productionYear, synopsis } = movieState;
 	const [onUpdateMovie, { isLoading }] = useUpdateMovieMutation();
 	const form = useForm<z.infer<typeof editMovieFormSchema>>({
 		resolver: zodResolver(editMovieFormSchema),
@@ -44,51 +37,46 @@ export const EditMovieForm = ({
 	});
 
 	const isSubmitButtonDisable =
-		form.getValues('title') === title &&
-		form.getValues('productionYear') === productionYear &&
-		form.getValues('synopsis') === synopsis;
+		form.getValues('title') === movie.title &&
+		form.getValues('productionYear') === movie.productionYear.toString() &&
+		form.getValues('synopsis') === movie.synopsis;
 
 	const [isFormDisabled, setIsFormDisabled] = useState(true);
 
 	const onEdit = () => {
 		setIsFormDisabled(false);
-		form.setValue('title', title);
-		form.setValue('productionYear', productionYear);
-		form.setValue('synopsis', synopsis);
+		form.reset({
+			title: movie.title,
+			productionYear: movie.productionYear.toString(),
+			synopsis: movie.synopsis,
+		});
 	};
 
 	const onCancel = () => {
 		setIsFormDisabled(true);
-		form.setValue('title', title);
-		form.setValue('productionYear', productionYear);
-		form.setValue('synopsis', synopsis);
+		form.reset({
+			title: movie.title,
+			productionYear: movie.productionYear.toString(),
+			synopsis: movie.synopsis,
+		});
 	};
 
 	const onSubmit = async (values: z.infer<typeof editMovieFormSchema>) => {
-		const { cast, directors, genres, writers, ...movieInfo } = movie;
-
 		try {
-			const { updateMovie } = await onUpdateMovie({
+			await onUpdateMovie({
 				user_id_date: movie.user_id_date,
+				movie_id: movie.movie_id,
 				data: {
-					...movieInfo,
 					...values,
 					productionYear: Number(values.productionYear),
 				},
 			}).unwrap();
-			console.log(updateMovie);
-			const { title, synopsis, productionYear } = updateMovie;
 			setIsFormDisabled(true);
-			setMovieState({ title, synopsis, productionYear: productionYear.toString() });
 			showHideAlert('success', 'Película actualizada correctamente');
 		} catch (error: any) {
 			onCancel();
-			console.log(error);
 			showHideAlert('error', error?.data?.msg || 'Ocurrió un error al actualizar la película');
 		}
-
-		//!Updatear movie
-		//!user_id_date y data por el body
 	};
 
 	return (
@@ -145,7 +133,7 @@ export const EditMovieForm = ({
 						)}
 						{!isFormDisabled && (
 							<div className='flex gap-12 items-center'>
-								<Button type='button' onClick={onCancel} /* disabled={isUpdateUserLoading} */>
+								<Button type='button' onClick={onCancel} disabled={isLoading}>
 									Cancelar
 								</Button>
 								{isLoading ? (

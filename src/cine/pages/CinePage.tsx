@@ -12,7 +12,7 @@ export const CinePage = () => {
 
 	if (isError) {
 		return (
-			<CineLayout>
+			<CineLayout headerTransparent>
 				<MainCarousel />
 				<section className='pt-10 flex text-xl sm:text-2xl items-center justify-center px-5 lg:px-12'>
 					<div>Ha ocurrido un error al obtener las películas.</div>
@@ -23,7 +23,7 @@ export const CinePage = () => {
 
 	if (isFetching) {
 		return (
-			<CineLayout>
+			<CineLayout headerTransparent>
 				<MainCarousel />
 				<section className='mt-5 flex flex-col gap-5 px-5 lg:px-12'>
 					{skeletons.map((_, i) => (
@@ -43,7 +43,7 @@ export const CinePage = () => {
 		);
 	}
 	return (
-		<CineLayout>
+		<CineLayout headerTransparent>
 			<MainCarousel />
 			<section className='mt-5 flex flex-col gap-5 px-5 lg:px-12'>
 				{genresWithMovies?.map(({ name, genre_id, movies }) => {

@@ -18,20 +18,28 @@ export const MoviePage = () => {
 	const { data, isError, isFetching } = useGetMovieQuery(id!);
 
 	if (isError) {
-		return <div>Ha ocurrido un error al obtener la película</div>;
+		return (
+			<CineLayout headerTransparent>
+				<div className='mt-[100px] text-center text-xl'>
+					Ha ocurrido un error al obtener la película.
+				</div>
+			</CineLayout>
+		);
 	}
 
 	if (isFetching) {
 		return (
-			<div className='mt-40'>
-				<Loading />
-			</div>
+			<CineLayout headerTransparent>
+				<div className='mt-40'>
+					<Loading />
+				</div>
+			</CineLayout>
 		);
 	}
 
 	const { movie } = data!;
 	return (
-		<CineLayout>
+		<CineLayout headerTransparent>
 			<Header movie={movie} onClickPlay={onClickPlay} />
 			<MovieDetails movie={movie} />
 		</CineLayout>

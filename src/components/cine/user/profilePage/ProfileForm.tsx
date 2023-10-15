@@ -43,16 +43,12 @@ export const ProfileForm = ({
 
 	const onEdit = () => {
 		setIsFormDisabled(false);
-		form.setValue('name', name);
-		form.setValue('lastname', lastname);
-		form.setValue('email', email);
+		form.reset({ name, lastname, email });
 	};
 
 	const onCancel = () => {
 		setIsFormDisabled(true);
-		form.setValue('name', name);
-		form.setValue('lastname', lastname);
-		form.setValue('email', email);
+		form.reset({ name, lastname, email });
 	};
 
 	const onSubmit = async (data: z.infer<typeof profileFormSchema>) => {
@@ -65,7 +61,7 @@ export const ProfileForm = ({
 			showHideAlert('success', msg);
 		} catch (error: any) {
 			onCancel();
-			showHideAlert('error', error?.data?.msg);
+			showHideAlert('error', error?.data?.msg || 'Ocurrió un error al actualizar el perfil');
 		}
 	};
 

@@ -1,6 +1,6 @@
 import { CineLayout } from '@/cine/layout';
 import { CustomAlert } from '@/components';
-import { EditMovieForm } from '@/components/cine/user/movieDetailsPage';
+import { EditDirectorsForm, EditMovieForm } from '@/components/cine/user/movieDetailsPage';
 import { Loading, Separator } from '@/components/ui';
 import { useShowHideAlert } from '@/hooks';
 import { useGetMovieQuery } from '@/store/cine';
@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 export const MovieDetailsPage = () => {
 	const { id } = useParams();
 
-	const {showAlert, showHideAlert} = useShowHideAlert()
+	const { showAlert, showHideAlert } = useShowHideAlert();
 
 	const { data, isFetching, isError } = useGetMovieQuery(id!);
 
@@ -59,7 +59,10 @@ export const MovieDetailsPage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<EditMovieForm movie={movie} showHideAlert={showHideAlert} />
+				<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 items-start gap-10'>
+					<EditMovieForm movie={movie} showHideAlert={showHideAlert} />
+					<EditDirectorsForm movie={movie} showHideAlert={showHideAlert} />
+				</div>
 			</div>
 		</CineLayout>
 	);
