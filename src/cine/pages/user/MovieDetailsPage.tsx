@@ -69,9 +69,9 @@ export const MovieDetailsPage = () => {
 				<div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start gap-10'>
 					<EditMovieForm movie={movie} showHideAlert={showHideAlert} />
 					<MovieImage movie={movie} showHideAlert={showHideAlert} />
-					<EditCastForm movie={movie} showHideAlert={showHideAlert} />
 					<EditDirectorsForm movie={movie} showHideAlert={showHideAlert} />
 					<EditWritersForm movie={movie} showHideAlert={showHideAlert} />
+					<EditCastForm movie={movie} showHideAlert={showHideAlert} />
 					<DisableMovie movie={movie} showHideAlert={showHideAlert} />
 				</div>
 			</div>
