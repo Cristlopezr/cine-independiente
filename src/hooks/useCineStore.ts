@@ -39,8 +39,12 @@ export const useCineStore = () => {
 		} catch (error) {}
 	};
 	const onSetViewingTime = (viewingTime: number, movie_id: string, user_id: string) => {
-		if (watchHistory.length === 0) {
-			const newWatchHistory = [{ viewingTime, movie_id, user_id }];
+		const movieWatchHistory = watchHistory.find(
+			singleWatchHistory => singleWatchHistory.movie_id === movie_id
+		);
+
+		if (!movieWatchHistory) {
+			const newWatchHistory = [...watchHistory, { viewingTime, movie_id, user_id }];
 			dispatch(onSetWatchHistory(newWatchHistory));
 			return;
 		}
