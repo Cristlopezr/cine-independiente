@@ -1,6 +1,13 @@
 import { CineLayout } from '@/cine/layout';
 import { CustomAlert } from '@/components';
-import { EditDirectorsForm, EditMovieForm } from '@/components/cine/user/movieDetailsPage';
+import {
+	DisableMovie,
+	EditCastForm,
+	EditDirectorsForm,
+	EditMovieForm,
+	EditWritersForm,
+	MovieImage,
+} from '@/components/cine/user/movieDetailsPage';
 import { Loading, Separator } from '@/components/ui';
 import { useShowHideAlert } from '@/hooks';
 import { useGetMovieQuery } from '@/store/cine';
@@ -59,9 +66,13 @@ export const MovieDetailsPage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 items-start gap-10'>
+				<div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start gap-10'>
 					<EditMovieForm movie={movie} showHideAlert={showHideAlert} />
+					<MovieImage movie={movie} showHideAlert={showHideAlert} />
 					<EditDirectorsForm movie={movie} showHideAlert={showHideAlert} />
+					<EditWritersForm movie={movie} showHideAlert={showHideAlert} />
+					<EditCastForm movie={movie} showHideAlert={showHideAlert} />
+					<DisableMovie movie={movie} showHideAlert={showHideAlert} />
 				</div>
 			</div>
 		</CineLayout>

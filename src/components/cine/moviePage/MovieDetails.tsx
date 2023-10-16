@@ -1,8 +1,6 @@
 import { DetailedMovie } from '@/interfaces';
 
 export const MovieDetails = ({ movie }: { movie: DetailedMovie }) => {
-	console.log(movie?.directors[0]?.director_id);
-	console.log(movie?.directors[1]?.director_id);
 	return (
 		<section className='flex flex-col gap-10 px-14'>
 			<div className='z-10 flex flex-col gap-5'>

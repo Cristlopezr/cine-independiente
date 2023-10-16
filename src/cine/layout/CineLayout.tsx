@@ -12,7 +12,7 @@ export const CineLayout = ({
 			<Header headerTransparent={headerTransparent} />
 			<main className='h-full'>{children}</main>
 
-			<footer className='h-[180px] mt-auto'></footer>
+			<footer className='h-[180px]'></footer>
 		</div>
 	);
 };

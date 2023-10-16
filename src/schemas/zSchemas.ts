@@ -137,6 +137,22 @@ export const editDirectorsFormSchema = z.object({
 	),
 });
 
+export const editWritersFormSchema = z.object({
+	writers: z.array(
+		z.object({
+			name: z.string().min(1, { message: 'Por favor ingresar un guionista' }).trim(),
+		})
+	),
+});
+
+export const editCastFormSchema = z.object({
+	cast: z.array(
+		z.object({
+			name: z.string().min(1, { message: 'Por favor ingresar un actor' }).trim(),
+		})
+	),
+});
+
 export const uploadMovieFormSchema = z.object({
 	title: z.string().min(1, { message: 'Por favor ingresar un título' }).trim(),
 	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }).trim(),

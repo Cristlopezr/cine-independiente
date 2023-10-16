@@ -1,3 +1,4 @@
+import { AlertType } from '@/cine/pages/user';
 import {
 	Button,
 	Form,
@@ -9,62 +10,58 @@ import {
 	Input,
 	Loading,
 } from '@/components/ui';
-import { editDirectorsFormSchema } from '@/schemas/zSchemas';
+import { compareArrays } from '@/helpers';
+import { DetailedMovie } from '@/interfaces';
+import { cn } from '@/lib/utils';
+import { editWritersFormSchema } from '@/schemas/zSchemas';
+import { useUpdateWritersMutation } from '@/store/cine';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { DetailedMovie } from '../../../../interfaces/cineInterfaces';
-import { AlertType } from '../../../../cine/pages/user/ProfilePage';
-import { cn } from '@/lib/utils';
 import { BsX } from 'react-icons/bs';
-import { compareArrays } from '@/helpers';
-import { useUpdateDirectorsMutation } from '@/store/cine';
+import * as z from 'zod';
 
-export const EditDirectorsForm = ({
+export const EditWritersForm = ({
 	movie,
 	showHideAlert,
 }: {
 	movie: DetailedMovie;
 	showHideAlert: (alertType: AlertType, msg: string) => void;
 }) => {
-	const [updateDirector, { isLoading }] = useUpdateDirectorsMutation();
-	const form = useForm<z.infer<typeof editDirectorsFormSchema>>({
-		resolver: zodResolver(editDirectorsFormSchema),
+	const [updateWriter, { isLoading }] = useUpdateWritersMutation();
+	const form = useForm<z.infer<typeof editWritersFormSchema>>({
+		resolver: zodResolver(editWritersFormSchema),
 		defaultValues: {
-			directors: movie.directors,
+			writers: movie.writers,
 		},
 	});
 
-	const {
-		fields: directorFields,
-		append: appendDirector,
-		remove: removeDirector,
-	} = useFieldArray({
-		name: 'directors',
+	const { fields, append, remove } = useFieldArray({
+		name: 'writers',
 		control: form.control,
 	});
 
-	const isSubmitButtonDisable = compareArrays(form.getValues('directors'), movie.directors);
+	const isSubmitButtonDisable = compareArrays(form.getValues('writers'), movie.writers);
 
 	const [isFormDisabled, setIsFormDisabled] = useState(true);
 
 	const onEdit = () => {
 		setIsFormDisabled(false);
-		form.reset({ directors: movie.directors });
+		form.reset({ writers: movie.writers });
 	};
 
 	const onCancel = () => {
 		setIsFormDisabled(true);
-		form.reset({ directors: movie.directors });
+		form.reset({ writers: movie.writers });
 	};
 
-	const onSubmit = async (values: z.infer<typeof editDirectorsFormSchema>) => {
+	const onSubmit = async (values: z.infer<typeof editWritersFormSchema>) => {
 		try {
-			await updateDirector({ movie, directors: values.directors }).unwrap();
+			await updateWriter({ movie, writers: values.writers }).unwrap();
 			setIsFormDisabled(true);
 			showHideAlert('success', 'Película actualizada correctamente');
 		} catch (error: any) {
+			console.log(error);
 			onCancel();
 			showHideAlert('error', error?.data?.msg || 'Ocurrió un error al actualizar la película');
 		}
@@ -74,22 +71,22 @@ export const EditDirectorsForm = ({
 		<div className='p-10 border rounded-md'>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-					{directorFields.map((field, index) => (
+					{fields.map((field, index) => (
 						<FormField
 							disabled={isFormDisabled}
 							control={form.control}
 							key={field.id}
-							name={`directors.${index}.name`}
+							name={`writers.${index}.name`}
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel className={cn(index !== 0 && 'sr-only')}>Directores</FormLabel>
+									<FormLabel className={cn(index !== 0 && 'sr-only')}>Guionistas</FormLabel>
 									<FormControl>
 										<div className='relative'>
-											<Input {...field} placeholder='Director' />
-											{form.getValues('directors').length > 1 && !isFormDisabled && (
+											<Input {...field} placeholder='Guionista' />
+											{form.getValues('writers').length > 1 && !isFormDisabled && (
 												<BsX
 													className='cursor-pointer text-3xl absolute top-1/2 -translate-y-1/2 -right-8'
-													onClick={() => removeDirector(index)}
+													onClick={() => remove(index)}
 												/>
 											)}
 										</div>
@@ -104,9 +101,9 @@ export const EditDirectorsForm = ({
 						variant='outline'
 						size='sm'
 						className={`${isFormDisabled ? 'hidden' : 'block'} mt-2`}
-						onClick={() => appendDirector({ name: '' })}
+						onClick={() => append({ name: '' })}
 					>
-						Agregar otro director
+						Agregar otro guionista
 					</Button>
 					<div className='pt-5'>
 						{isFormDisabled && (

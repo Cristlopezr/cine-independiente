@@ -76,7 +76,15 @@ export const videoApiSlice = videoApi.injectEndpoints({
 				}
 			},
 		}),
+		updateMovieImage: builder.mutation<{ imageUrl: string },{ userId: string; image: File; date: string }>({
+			query: data => {
+				const formData = new FormData();
+				formData.append('image', data.image);
+				formData.append('date', data.date.toString());
+				return { url: `/video/upload-image?id=${data.userId}`, method: 'POST', body: formData };
+			},
+		}),
 	}),
 });
 
-export const { useUploadMovieMutation, useUploadMovieImageMutation, useUploadProfileImageMutation } = videoApiSlice;
+export const { useUploadMovieMutation, useUploadMovieImageMutation, useUploadProfileImageMutation, useUpdateMovieImageMutation } = videoApiSlice;

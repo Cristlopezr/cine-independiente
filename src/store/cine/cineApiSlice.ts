@@ -1,5 +1,6 @@
 import { cineApi } from '@/api';
 import {
+	Cast,
 	CleanUploadMovieFormValues,
 	DetailedMovie,
 	Director,
@@ -9,6 +10,7 @@ import {
 	UpdateMovie,
 	UpdateMovieTeam,
 	WatchHistory,
+	Writer,
 } from '@/interfaces';
 
 export const cineApiSlice = cineApi.injectEndpoints({
@@ -18,22 +20,22 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		}),
 		getGenresWithMovies: builder.query<GenreWithMovies[], void>({
 			query: () => '/movie/get-genres-movies',
-			providesTags:["movie"]
+			providesTags: ['movie'],
 		}),
 		getMovies: builder.query<Movie[], string>({
 			query: data => `/movie/get-movies?q=${data}`,
-			providesTags:["movie"]
+			providesTags: ['movie'],
 		}),
 		getMoviesByGenre: builder.query<Movie[], string>({
 			query: id => `/movie/get-movies-by-genre/${id}`,
-			providesTags:["movie"]
+			providesTags: ['movie'],
 		}),
 		getMovie: builder.query<{ movie: DetailedMovie }, string>({
 			query: id => `/movie/movie/${id}`,
 		}),
 		getMoviesByUser: builder.query<{ userMovies: Movie[] }, string>({
 			query: id => `/movie/get-movies-by-user/${id}`,
-			providesTags:["movie"]
+			providesTags: ['movie'],
 		}),
 		deleteMovie: builder.mutation<{ data: { deletedMovie: Movie } }, string>({
 			query: id => {
@@ -91,48 +93,105 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
-		updateMovie: builder.mutation<{msg:string, updateMovie:Movie}, {user_id_date:string, movie_id:string, data:UpdateMovie}>({
-			query: data => {		
+		updateMovie: builder.mutation<{ msg: string; updateMovie: Movie },{ user_id_date: string; movie_id: string; data: UpdateMovie }>({
+			query: data => {
 				return {
 					url: '/movie/update-movie',
 					method: 'PUT',
 					body: data,
 				};
 			},
-			onQueryStarted: async ({movie_id,...data}, { dispatch, queryFulfilled }) => {
-				const patchResult = dispatch(
-					cineApiSlice.util.updateQueryData('getMovie', movie_id, (draft) => {
-					  Object.assign(draft.movie, data.data)
-					})
-				  )
-				  try {
-					await queryFulfilled
-				  } catch {
-					patchResult.undo()
-			}},
-			invalidatesTags:["movie"]
+			onQueryStarted: async ({ movie_id }, { dispatch, queryFulfilled }) => {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(
+						cineApiSlice.util.updateQueryData('getMovie', movie_id, draft => {
+							Object.assign(draft.movie, data.updateMovie);
+						})
+					);
+				} catch {}
+			},
+			invalidatesTags: ['movie'],
 		}),
-		updateDirectors: builder.mutation<{msg:string, updatedDirectors:Director[]}, {movie_id:string,movie:DetailedMovie, directors:UpdateMovieTeam[]}>({
-			query: data => {		
+		updateDirectors: builder.mutation<{ msg: string; updatedDirectors: Director[] },{ movie: DetailedMovie; directors: UpdateMovieTeam[] }>({
+			query: data => {
+				const formData = {
+					movie_id: data.movie.movie_id,
+					directors: data.directors,
+				};
 				return {
 					url: '/director/update-director',
 					method: 'PUT',
-					body: data,
+					body: formData,
 				};
 			},
-			onQueryStarted: async ({movie}, { dispatch, queryFulfilled }) => {
+			onQueryStarted: async ({ movie }, { dispatch, queryFulfilled }) => {
 				try {
-					const { data } = await queryFulfilled
+					const { data } = await queryFulfilled;
 					dispatch(
-					  cineApiSlice.util.upsertQueryData('getMovie', movie.movie_id, {movie:{
-						...movie,
-						directors:data.updatedDirectors
-					  }})
-					)
-				  } catch {}
-			
-			}})
+						cineApiSlice.util.upsertQueryData('getMovie', movie.movie_id, {
+							movie: {
+								...movie,
+								directors: data.updatedDirectors,
+							},
+						})
+					);
+				} catch {}
+			},
 		}),
+		updateWriters: builder.mutation<{ msg: string; updatedWriters: Writer[] },{ movie: DetailedMovie; writers: UpdateMovieTeam[] }>({
+			query: data => {
+				const formData = {
+					movie_id: data.movie.movie_id,
+					writers: data.writers,
+				};
+				return {
+					url: '/writer/update-writer',
+					method: 'PUT',
+					body: formData,
+				};
+			},
+			onQueryStarted: async ({ movie }, { dispatch, queryFulfilled }) => {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(
+						cineApiSlice.util.upsertQueryData('getMovie', movie.movie_id, {
+							movie: {
+								...movie,
+								writers: data.updatedWriters,
+							},
+						})
+					);
+				} catch {}
+			},
+		}),
+		updateCast: builder.mutation<{ msg: string; updatedCast: Cast[] },{ movie: DetailedMovie; cast: UpdateMovieTeam[] }>({
+			query: data => {
+				const formData = {
+					movie_id: data.movie.movie_id,
+					cast: data.cast,
+				};
+				return {
+					url: '/cast/update-cast',
+					method: 'PUT',
+					body: formData,
+				};
+			},
+			onQueryStarted: async ({ movie }, { dispatch, queryFulfilled }) => {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(
+						cineApiSlice.util.upsertQueryData('getMovie', movie.movie_id, {
+							movie: {
+								...movie,
+								cast: data.updatedCast,
+							},
+						})
+					);
+				} catch {}
+			},
+		}),
+	}),
 });
 
 export const {
@@ -149,5 +208,7 @@ export const {
 	useLazyGetWatchHistoryQuery,
 	useGetMoviesByUserQuery,
 	useUpdateMovieMutation,
-	useUpdateDirectorsMutation
+	useUpdateDirectorsMutation,
+	useUpdateWritersMutation,
+	useUpdateCastMutation,
 } = cineApiSlice;

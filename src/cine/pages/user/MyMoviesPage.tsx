@@ -19,7 +19,7 @@ const params = {
 export const MyMoviesPage = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const { user } = useAuthStore();
-	const { data, isFetching, isError } = useGetMoviesByUserQuery(user.user_id);
+	const { data, isFetching, isError, error } = useGetMoviesByUserQuery(user.user_id);
 	const navigate = useNavigate();
 
 	const onCloseModal = () => {
@@ -62,9 +62,15 @@ export const MyMoviesPage = () => {
 				) : (
 					<>
 						{isError ? (
-							<div className='text-center text-xl'>
-								Ha ocurrido un error al obtener las películas.
-							</div>
+							<>
+								{isError && error && 'status' in error && error.status === 404 ? (
+									<div className='text-center text-xl'>Aún no tienes películas.</div>
+								) : (
+									<div className='text-center text-xl'>
+										Ha ocurrido un error al obtener las películas.
+									</div>
+								)}
+							</>
 						) : (
 							<div className='grid'>
 								<div className='grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-2'>
