@@ -12,16 +12,27 @@ import {
 import { useAuthStore } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 
+const userNavItems = [
+	{
+		name: 'Mi perfil',
+		path: '/profile',
+	},
+	{
+		name: 'Mis películas',
+		path: '/my-movies',
+	},
+	{
+		name: 'Mi Lista',
+		path: '/my-list',
+	},
+];
+
 export function UserNav() {
 	const { user, startLogout } = useAuthStore();
 	const navigate = useNavigate();
 
-	const onGoToProfile = () => {
-		navigate('/profile');
-	};
-
-	const onGoToMyMovies = () => {
-		navigate('/my-movies');
+	const onGoToPage = (path: string) => {
+		navigate(path);
 	};
 
 	return (
@@ -37,8 +48,11 @@ export function UserNav() {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-fit mt-3 mr-1 lg:mr-0' align='center' forceMount>
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={onGoToProfile}>Mi perfil</DropdownMenuItem>
-					<DropdownMenuItem onClick={onGoToMyMovies}>Mis películas</DropdownMenuItem>
+					{userNavItems.map(item => (
+						<DropdownMenuItem key={item.path} onClick={() => onGoToPage(item.path)}>
+							{item.name}
+						</DropdownMenuItem>
+					))}
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={startLogout}>Cerrar sesión</DropdownMenuItem>

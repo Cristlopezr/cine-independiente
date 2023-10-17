@@ -11,7 +11,7 @@ export const AppRouter = () => {
 		user: { emailVerified, user_id },
 		checkAuthToken,
 	} = useAuthStore();
-	const { startLoadingWatchHistory } = useCineStore();
+	const { startLoadingWatchHistory, startLoadingUserList } = useCineStore();
 
 	useEffect(() => {
 		//!Logout si no hay token
@@ -20,6 +20,7 @@ export const AppRouter = () => {
 
 	useEffect(() => {
 		startLoadingWatchHistory(user_id);
+		startLoadingUserList(user_id);
 	}, [user_id]);
 
 	if (status === 'checking') {

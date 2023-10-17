@@ -146,6 +146,13 @@ export interface WatchHistory {
 	viewingTime: number;
 }
 
+export interface UserList {
+	movie_id: string;
+	updatedAt: string;
+	user_id: string;
+	movie: Movie;
+}
+
 export interface UpdateMovie {
 	thumbnailUrl?: string | null;
 	imageUrl?: string;

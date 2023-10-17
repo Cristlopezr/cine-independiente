@@ -9,6 +9,7 @@ import {
 	Movie,
 	UpdateMovie,
 	UpdateMovieTeam,
+	UserList,
 	WatchHistory,
 	Writer,
 } from '@/interfaces';
@@ -32,6 +33,25 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		}),
 		getMovie: builder.query<{ movie: DetailedMovie }, string>({
 			query: id => `/movie/movie/${id}`,
+		}),
+		getUserList: builder.query<{ userList: UserList[] }, string>({
+			query: user_id => `/movie/get-user-list/${user_id}`,
+		}),
+		addMovieToUserList :builder.mutation<{data:{addedMovieToUserList:{movie_id:string, updatedAt:string, user_id:string},msg:string}}, {user_id:string, movie_id:string}>({
+			query: data => ({
+				url:"/movie/add-movie-user-list",
+				method:"POST",
+				body:data
+			})
+		}),
+		deleteMovieFromUserList: builder.mutation<{ data: { deletedMovieFromUserList:{movie_id:string, updatedAt:string, user_id:string},msg:string } }, {user_id:string, movie_id:string}>({
+			query: data => {
+				return {
+					url: `/movie/delete-movie-user-list`,
+					method: 'DELETE',
+					body:data
+				};
+			},
 		}),
 		getMoviesByUser: builder.query<{ userMovies: Movie[] }, string>({
 			query: id => `/movie/get-movies-by-user/${id}`,
@@ -211,4 +231,7 @@ export const {
 	useUpdateDirectorsMutation,
 	useUpdateWritersMutation,
 	useUpdateCastMutation,
+	useLazyGetUserListQuery,
+	useAddMovieToUserListMutation,
+	useDeleteMovieFromUserListMutation
 } = cineApiSlice;

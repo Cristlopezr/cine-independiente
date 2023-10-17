@@ -1,15 +1,17 @@
-import { useCineStore } from '@/hooks';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { Movie } from '@/interfaces';
 import { cn } from '@/lib/utils';
-import { BsFillPlayCircleFill, BsFillPlusCircleFill } from 'react-icons/bs';
+import { BsCheck2, BsFillPlayCircleFill, BsFillPlusCircleFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 
 export const MovieCarouselItem = ({ className, movie }: { className?: string; movie: Movie }) => {
 	const navigate = useNavigate();
 
-	const { watchHistory } = useCineStore();
+	const { watchHistory, startAddingMovieTolist, startDeletingMovieFromList, userList } = useCineStore();
+	const { user } = useAuthStore();
 
 	const history = watchHistory?.find(({ movie_id }) => movie_id === movie.movie_id);
+	const isMovieInlist = userList.some(({ movie_id }) => movie_id === movie.movie_id);
 
 	const onClickMovie = (movieId: string) => {
 		navigate(`/movie/${movieId}`);
@@ -17,6 +19,14 @@ export const MovieCarouselItem = ({ className, movie }: { className?: string; mo
 
 	const onClickPlay = (movieId: string) => {
 		navigate(`/movie/player/${movieId}`);
+	};
+
+	const onClickAddToList = () => {
+		startAddingMovieTolist({ movie_id: movie.movie_id, user_id: user.user_id, movie });
+	};
+
+	const onClickDeleteFromList = () => {
+		startDeletingMovieFromList({ movie_id: movie.movie_id, user_id: user.user_id });
 	};
 
 	return (
@@ -49,9 +59,21 @@ export const MovieCarouselItem = ({ className, movie }: { className?: string; mo
 						onClick={() => onClickPlay(movie.movie_id)}
 						className='absolute bottom-0 right-12 w-10 h-10 z-10 text-white/90 cursor-pointer hover:text-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
 					/>
-					<div className='absolute bottom-1 right-1 bg-black w-7 h-7 rounded-full'></div>
-					<div className='absolute bottom-1 right-14 bg-black w-7 h-7 rounded-full'></div>
-					<BsFillPlusCircleFill className='absolute bottom-0 right-0 w-10 h-10 z-10 text-white/90 cursor-pointer hover:text-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]' />
+					<div className='absolute bottom-2 right-2 bg-black w-6 h-6 rounded-full'></div>
+					<div className='absolute bottom-2 right-14 bg-black w-6 h-6 rounded-full'></div>
+					{isMovieInlist ? (
+						<div
+							onClick={onClickDeleteFromList}
+							className='absolute bg-white/90 flex items-center justify-center bottom-0 right-0 w-10 h-10 z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
+						>
+							<BsCheck2 className='w-full text-black text-3xl' />
+						</div>
+					) : (
+						<BsFillPlusCircleFill
+							onClick={onClickAddToList}
+							className='absolute bottom-0 right-0 w-10 h-10 z-10 text-white/90 cursor-pointer hover:text-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
+						/>
+					)}
 				</div>
 			</div>
 			<p className='mx-2 pt-1'>{movie.title}</p>

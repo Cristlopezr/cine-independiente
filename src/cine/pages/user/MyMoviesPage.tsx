@@ -56,7 +56,7 @@ export const MyMoviesPage = () => {
 					<UploadMovieForm onCloseModal={onCloseModal} />
 				</Modal>
 				{isFetching ? (
-					<div className='mt-40'>
+					<div className='mt-20'>
 						<Loading />
 					</div>
 				) : (
