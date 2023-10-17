@@ -4,11 +4,15 @@ import { MainCarousel, MovieCarousel, settings169 } from '@/components/cine/caro
 import React from 'react';
 import { Skeleton } from '@/components/ui';
 import Slider from 'react-slick';
+import { useCineStore } from '@/hooks';
 
 const skeletons = Array.from({ length: 5 });
 
 export const CinePage = () => {
 	const { data: genresWithMovies, isError, isFetching } = useGetGenresWithMoviesQuery();
+	const { userList } = useCineStore();
+
+	const userListMovies = userList.map(item => item.movie);
 
 	if (isError) {
 		return (
@@ -46,6 +50,14 @@ export const CinePage = () => {
 		<CineLayout headerTransparent>
 			<MainCarousel />
 			<section className='mt-5 flex flex-col gap-5 px-5 lg:px-12'>
+				{userListMovies.length > 0 && (
+					<MovieCarousel
+						movies={userListMovies}
+						title='Mi lista'
+						aspect='aspect-[16/9]'
+						settings={settings169}
+					/>
+				)}
 				{genresWithMovies?.map(({ name, genre_id, movies }) => {
 					if (movies.length === 0) return null;
 					return (

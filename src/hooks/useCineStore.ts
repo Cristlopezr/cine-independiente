@@ -116,6 +116,10 @@ export const useCineStore = () => {
 		await deleteMovieFromList({ movie_id, user_id });
 	};
 
+	const onDeleteUserList = () => {
+		dispatch(onSetUserList([]));
+	};
+
 	return {
 		//Propiedades
 		uploadProgress,
@@ -136,5 +140,6 @@ export const useCineStore = () => {
 		startLoadingUserList,
 		startAddingMovieTolist,
 		startDeletingMovieFromList,
+		onDeleteUserList,
 	};
 };

@@ -17,7 +17,7 @@ export const CustomAlert = ({
 	variant = 'default',
 }: CustomAlertProps) => {
 	return (
-		<Alert variant={variant} className={cn('flex items-center gap-5', className)}>
+		<Alert variant={variant} className={cn('flex items-center gap-5 z-50', className)}>
 			<div>{icon}</div>
 			<div>
 				<AlertTitle className='text-lg'>{title}</AlertTitle>

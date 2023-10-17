@@ -42,8 +42,8 @@ export const MyMoviesPage = () => {
 	return (
 		<CineLayout>
 			<div className='mt-[100px] px-10'>
-				<div className='flex justify-between items-center'>
-					<h1 className='text-2xl px-5 font-semibold'>Mis películas</h1>
+				<div className='flex justify-between items-center px-5'>
+					<h1 className='text-2xl font-semibold'>Mis películas</h1>
 					<Button onClick={onOpenModal}>Subir</Button>
 				</div>
 				<Separator className='my-5' />

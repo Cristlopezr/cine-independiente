@@ -53,6 +53,14 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
+		deleteUserList: builder.mutation<{ deletedUserListCount:number, msg:string }, string>({
+			query: user_id => {
+				return {
+					url: `/movie/delete-user-list/${user_id}`,
+					method: 'DELETE',
+				};
+			},
+		}),
 		getMoviesByUser: builder.query<{ userMovies: Movie[] }, string>({
 			query: id => `/movie/get-movies-by-user/${id}`,
 			providesTags: ['movie'],
@@ -233,5 +241,6 @@ export const {
 	useUpdateCastMutation,
 	useLazyGetUserListQuery,
 	useAddMovieToUserListMutation,
-	useDeleteMovieFromUserListMutation
+	useDeleteMovieFromUserListMutation,
+	useDeleteUserListMutation
 } = cineApiSlice;
