@@ -195,7 +195,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 													<BsFillCheckCircleFill className='w-8 h-8' />
 													<p>
 														Si tu película ya se ha subido, puedes cerrar esta
-														ventana
+														ventana.
 													</p>
 												</>
 											)}

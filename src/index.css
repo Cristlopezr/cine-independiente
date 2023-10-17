@@ -46,6 +46,10 @@
 	}
 }
 
+.slick-list .slick-track {
+	margin-left: 0;
+}
+
 @layer base {
 	* {
 		@apply border-border;
