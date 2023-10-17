@@ -49,7 +49,7 @@ export const CinePage = () => {
 	return (
 		<CineLayout headerTransparent>
 			<MainCarousel />
-			<section className='mt-5 flex flex-col gap-5 px-5 lg:px-12'>
+			<section className='mt-5 flex flex-col gap-16 px-5 lg:px-12'>
 				{userListMovies.length > 0 && (
 					<MovieCarousel
 						movies={userListMovies}

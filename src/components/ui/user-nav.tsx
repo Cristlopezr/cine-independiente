@@ -22,7 +22,7 @@ const userNavItems = [
 		path: '/my-movies',
 	},
 	{
-		name: 'Mi Lista',
+		name: 'Mi lista',
 		path: '/my-list',
 	},
 ];

@@ -1,10 +1,11 @@
 import { Movie } from '@/interfaces';
 import { HeaderImage } from '.';
 import { GoPlay } from 'react-icons/go';
-import { BsPlusLg } from 'react-icons/bs';
+import { BsCheck2, BsPlusLg } from 'react-icons/bs';
 import { Button } from '@/components/ui';
 import { useNavigate } from 'react-router-dom';
 import { formatMovieTime } from '@/helpers';
+import { useAuthStore, useCineStore } from '@/hooks';
 
 interface HeaderProps {
 	movie: Movie;
@@ -28,8 +29,20 @@ const gradientStyle = {
 export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
 	const navigate = useNavigate();
 
+	const { startAddingMovieTolist, startDeletingMovieFromList, userList } = useCineStore();
+	const { user } = useAuthStore();
+
+	const isMovieInlist = userList.some(({ movie_id }) => movie_id === movie.movie_id);
 	const onClickSeeDetails = (movieId: string) => {
 		navigate(`/movie/${movieId}`);
+	};
+
+	const onClickAddToList = () => {
+		startAddingMovieTolist({ movie_id: movie.movie_id, user_id: user.user_id, movie });
+	};
+
+	const onClickDeleteFromList = () => {
+		startDeletingMovieFromList({ movie_id: movie.movie_id, user_id: user.user_id });
 	};
 
 	return (
@@ -56,7 +69,19 @@ export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
 							Ver detalles
 						</Button>
 					) : (
-						<BsPlusLg className='text-3xl text-primary/80 cursor-pointer hover:text-primary' />
+						<>
+							{isMovieInlist ? (
+								<BsCheck2
+									onClick={onClickDeleteFromList}
+									className='text-3xl text-primary/80 cursor-pointer hover:text-primary'
+								/>
+							) : (
+								<BsPlusLg
+									onClick={onClickAddToList}
+									className='text-3xl text-primary/80 cursor-pointer hover:text-primary'
+								/>
+							)}
+						</>
 					)}
 				</section>
 				<p className='text-base md:text-lg w-[90%] xl:w-[60%]'>
