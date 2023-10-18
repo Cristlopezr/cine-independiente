@@ -5,6 +5,7 @@ import {
 	EditCastForm,
 	EditDirectorsForm,
 	EditMovieForm,
+	EditMoviesGenres,
 	EditWritersForm,
 	MovieImage,
 } from '@/components/cine/user/movieDetailsPage';
@@ -72,7 +73,10 @@ export const MovieDetailsPage = () => {
 					<EditDirectorsForm movie={movie} showHideAlert={showHideAlert} />
 					<EditWritersForm movie={movie} showHideAlert={showHideAlert} />
 					<EditCastForm movie={movie} showHideAlert={showHideAlert} />
-					<DisableMovie movie={movie} showHideAlert={showHideAlert} />
+					<EditMoviesGenres movie={movie} showHideAlert={showHideAlert} />
+					<div className='xl:col-start-3'>
+						<DisableMovie movie={movie} showHideAlert={showHideAlert} />
+					</div>
 				</div>
 			</div>
 		</CineLayout>

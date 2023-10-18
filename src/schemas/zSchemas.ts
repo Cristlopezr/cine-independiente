@@ -153,6 +153,12 @@ export const editCastFormSchema = z.object({
 	),
 });
 
+export const editGenresFormSchema = z.object({
+	genres: z.array(z.string()).refine(value => value.some(item => item), {
+		message: 'Por favor seleccionar al menos un género',
+	}),
+});
+
 export const uploadMovieFormSchema = z.object({
 	title: z.string().min(1, { message: 'Por favor ingresar un título' }).trim(),
 	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }).trim(),

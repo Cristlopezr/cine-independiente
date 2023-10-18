@@ -21,7 +21,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		}),
 		getGenresWithMovies: builder.query<GenreWithMovies[], void>({
 			query: () => '/movie/get-genres-movies',
-			providesTags: ['movie'],
+			providesTags: ['genresMovies'],
 		}),
 		getMovies: builder.query<Movie[], string>({
 			query: data => `/movie/get-movies?q=${data}`,
@@ -139,7 +139,34 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					);
 				} catch {}
 			},
-			invalidatesTags: ['movie'],
+			invalidatesTags: ['movie', 'genresMovies'],
+		}),
+		updateGenres: builder.mutation<{ msg: string; updatedGenres: Genre[] },{ movie: DetailedMovie; genres: string[] }>({
+			query: data => {
+				const formData = {
+					movie_id:data.movie.movie_id,
+					genres:data.genres
+				}
+				return {
+					url: '/movie/update-genretomovie',
+					method: 'PUT',
+					body: formData,
+				};
+			},
+			onQueryStarted: async ({ movie }, { dispatch, queryFulfilled }) => {
+				try {
+					const { data } = await queryFulfilled;
+					dispatch(
+						cineApiSlice.util.upsertQueryData('getMovie', movie.movie_id, {
+							movie: {
+								...movie,
+								genres: data.updatedGenres,
+							},
+						})
+					);
+				} catch {}
+			},
+			invalidatesTags: ['genresMovies'],
 		}),
 		updateDirectors: builder.mutation<{ msg: string; updatedDirectors: Director[] },{ movie: DetailedMovie; directors: UpdateMovieTeam[] }>({
 			query: data => {
@@ -242,5 +269,6 @@ export const {
 	useLazyGetUserListQuery,
 	useAddMovieToUserListMutation,
 	useDeleteMovieFromUserListMutation,
-	useDeleteUserListMutation
+	useDeleteUserListMutation,
+	useUpdateGenresMutation
 } = cineApiSlice;
