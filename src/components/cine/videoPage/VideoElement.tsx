@@ -62,7 +62,7 @@ export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewing
 		document.addEventListener('visibilitychange', handleBeforeUnload);
 		return () => {
 			document.removeEventListener('visibilitychange', handleBeforeUnload);
-			onSetViewingTime(playedRef.current, movie.movie_id, user.user_id);
+			onSetViewingTime(playedRef.current, movie, user.user_id);
 			onSaveWatchHistory(playedRef.current);
 		};
 	}, []);

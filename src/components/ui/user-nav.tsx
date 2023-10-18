@@ -25,6 +25,10 @@ const userNavItems = [
 		name: 'Mi lista',
 		path: '/my-list',
 	},
+	{
+		name: 'Mi historial',
+		path: '/my-history',
+	},
 ];
 
 export function UserNav() {

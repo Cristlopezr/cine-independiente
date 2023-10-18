@@ -3,22 +3,21 @@ import { CustomAlert } from '@/components';
 import { MovieCarouselItem } from '@/components/cine/carousel';
 import { Button, Loading, Separator } from '@/components/ui';
 import { useAuthStore, useCineStore, useShowHideAlert } from '@/hooks';
-import { useDeleteUserListMutation } from '@/store/cine';
+import { useDeleteUserWatchHistoryMutation } from '@/store/cine';
 import React from 'react';
 import { BiSolidError } from 'react-icons/bi';
 
-export const MyListPage = () => {
+export const MyHistoryPage = () => {
+	const { watchHistory, isLoading: isGetWatchHistoryLoading, onDeleteUserWatchHistory } = useCineStore();
 	const { user } = useAuthStore();
-	const { userList, isLoading: isGetUserListLoading, onDeleteUserList } = useCineStore();
-
-	const [deleteUserList, { isLoading }] = useDeleteUserListMutation();
+	const [deleteWatchHistory, { isLoading }] = useDeleteUserWatchHistoryMutation();
 	const { showAlert, showHideAlert } = useShowHideAlert();
 
-	if (isGetUserListLoading) {
+	if (isGetWatchHistoryLoading) {
 		return (
 			<CineLayout>
 				<div className='mt-[100px] px-10'>
-					<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
+					<h1 className='px-5 text-2xl font-semibold'>Mi historial</h1>
 					<Separator className='my-5' />
 					<div className='mt-20'>
 						<Loading />
@@ -28,24 +27,24 @@ export const MyListPage = () => {
 		);
 	}
 
-	if (userList.length === 0) {
+	if (watchHistory.length === 0) {
 		return (
 			<CineLayout>
 				<div className='mt-[100px] px-10'>
-					<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
+					<h1 className='px-5 text-2xl font-semibold'>Mi historial</h1>
 					<Separator className='my-5' />
-					<div className='mt-10 text-xl text-center'>Aún no has añadido películas a tu lista.</div>
+					<div className='mt-10 text-xl text-center'>Aún no has visto películas.</div>
 				</div>
 			</CineLayout>
 		);
 	}
 
-	const onDeleteList = async () => {
+	const onDeleteWatchHistory = async () => {
 		try {
-			await deleteUserList(user.user_id).unwrap();
-			onDeleteUserList();
+			await deleteWatchHistory(user.user_id).unwrap();
+			onDeleteUserWatchHistory();
 		} catch (error) {
-			showHideAlert('error', 'Ha ocurrido un error al eliminar la lista.');
+			showHideAlert('error', 'Ha ocurrido un error al eliminar el historial de visualización.');
 		}
 	};
 
@@ -61,21 +60,21 @@ export const MyListPage = () => {
 					description={showAlert.msg}
 				/>
 				<div className='flex items-center justify-between px-5'>
-					<h1 className='text-2xl font-semibold'>Mi lista</h1>
+					<h1 className='text-2xl font-semibold'>Mi historial</h1>
 					{isLoading ? (
 						<Button className='flex items-center gap-3'>
 							<Loading className='w-6 h-6' />
 							Procesando...
 						</Button>
 					) : (
-						<Button onClick={onDeleteList}>Borrar todo</Button>
+						<Button onClick={onDeleteWatchHistory}>Borrar todo</Button>
 					)}
 				</div>
 				<Separator className='my-5' />
 				<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
-					{userList?.map(({ movie }) => (
+					{watchHistory?.map(({ movie }) => (
 						<React.Fragment key={movie.movie_id}>
-							<MovieCarouselItem movie={movie} className='aspect-[16/9]' />
+							<MovieCarouselItem movie={movie} className='aspect-[16/9]' isHistoryPage />
 						</React.Fragment>
 					))}
 				</div>

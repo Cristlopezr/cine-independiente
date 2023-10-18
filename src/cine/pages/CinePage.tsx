@@ -10,7 +10,9 @@ const skeletons = Array.from({ length: 5 });
 
 export const CinePage = () => {
 	const { data: genresWithMovies, isError, isFetching } = useGetGenresWithMoviesQuery();
-	const { userList } = useCineStore();
+	const { userList, watchHistory } = useCineStore();
+
+	const watchHistoryMovies = watchHistory.map(singleWatchHistory => singleWatchHistory.movie);
 
 	const userListMovies = userList.map(item => item.movie);
 
@@ -50,6 +52,14 @@ export const CinePage = () => {
 		<CineLayout headerTransparent>
 			<MainCarousel />
 			<section className='mt-5 flex flex-col gap-16 px-5 lg:px-12'>
+				{watchHistoryMovies.length > 0 && (
+					<MovieCarousel
+						movies={watchHistoryMovies}
+						title='Continuar viendo'
+						aspect='aspect-[16/9]'
+						settings={settings169}
+					/>
+				)}
 				{userListMovies.length > 0 && (
 					<MovieCarousel
 						movies={userListMovies}

@@ -1,13 +1,28 @@
 import { useAuthStore, useCineStore } from '@/hooks';
 import { Movie } from '@/interfaces';
 import { cn } from '@/lib/utils';
-import { BsCheck2, BsFillPlayCircleFill, BsFillPlusCircleFill } from 'react-icons/bs';
+import { BsCheck2, BsPlusLg, BsX } from 'react-icons/bs';
+import { RiPlayFill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
-export const MovieCarouselItem = ({ className, movie }: { className?: string; movie: Movie }) => {
+export const MovieCarouselItem = ({
+	className,
+	movie,
+	isHistoryPage,
+}: {
+	className?: string;
+	movie: Movie;
+	isHistoryPage?: boolean;
+}) => {
 	const navigate = useNavigate();
 
-	const { watchHistory, startAddingMovieTolist, startDeletingMovieFromList, userList } = useCineStore();
+	const {
+		watchHistory,
+		startAddingMovieTolist,
+		startDeletingMovieFromList,
+		userList,
+		startDeletingFromWatchHistory,
+	} = useCineStore();
 	const { user } = useAuthStore();
 
 	const history = watchHistory?.find(({ movie_id }) => movie_id === movie.movie_id);
@@ -27,6 +42,10 @@ export const MovieCarouselItem = ({ className, movie }: { className?: string; mo
 
 	const onClickDeleteFromList = () => {
 		startDeletingMovieFromList({ movie_id: movie.movie_id, user_id: user.user_id });
+	};
+
+	const onClickDeleteFromHistory = () => {
+		startDeletingFromWatchHistory({ movie_id: movie.movie_id, user_id: user.user_id });
 	};
 
 	return (
@@ -54,25 +73,32 @@ export const MovieCarouselItem = ({ className, movie }: { className?: string; mo
 						) : null}
 					</div>
 				</div>
-				<div className='absolute w-full opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out bottom-5 right-5 flex items-center gap-3'>
-					<BsFillPlayCircleFill
-						onClick={() => onClickPlay(movie.movie_id)}
-						className='absolute bottom-0 right-12 w-10 h-10 z-10 text-white/90 cursor-pointer hover:text-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
-					/>
-					<div className='absolute bottom-2 right-2 bg-black w-6 h-6 rounded-full'></div>
-					<div className='absolute bottom-2 right-14 bg-black w-6 h-6 rounded-full'></div>
+				<div className='absolute w-full opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out bottom-0 flex items-center gap-3'>
+					{isHistoryPage && (
+						<div
+							onClick={onClickDeleteFromHistory}
+							className='absolute cursor-pointer hover:bg-gray-700 bg-gray-700/70 hover:ring-2 hover:ring-[hsl(258,84%,59%)] flex items-center justify-center rounded-full w-10 h-10 bottom-20 left-1/2 -translate-x-1/2'
+						>
+							<BsX className='w-full text-4xl' />
+						</div>
+					)}
+					<div className='absolute flex items-center justify-center bottom-5 right-[68px] w-10 h-10 z-10 bg-white/90 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'>
+						<RiPlayFill
+							onClick={() => onClickPlay(movie.movie_id)}
+							className='w-full text-2xl text-black'
+						/>
+					</div>
 					{isMovieInlist ? (
 						<div
 							onClick={onClickDeleteFromList}
-							className='absolute bg-white/90 flex items-center justify-center bottom-0 right-0 w-10 h-10 z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
+							className='absolute bg-white/90 flex items-center justify-center bottom-5 right-5 w-10 h-10 z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
 						>
-							<BsCheck2 className='w-full text-black text-3xl' />
+							<BsCheck2 className='w-full text-black text-2xl' />
 						</div>
 					) : (
-						<BsFillPlusCircleFill
-							onClick={onClickAddToList}
-							className='absolute bottom-0 right-0 w-10 h-10 z-10 text-white/90 cursor-pointer hover:text-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
-						/>
+						<div className='absolute bottom-5 right-5 w-10 h-10 z-10 flex items-center justify-center bg-white/90 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'>
+							<BsPlusLg onClick={onClickAddToList} className='w-full text-black text-2xl' />
+						</div>
 					)}
 				</div>
 			</div>

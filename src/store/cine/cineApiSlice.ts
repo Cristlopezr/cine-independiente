@@ -85,6 +85,23 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		getWatchHistory: builder.query<{ watchHistory: WatchHistory[] }, string>({
 			query: id => `/movie/get-watch-history/${id}`,
 		}),
+		deleteUserWatchHistory: builder.mutation<{ deletedWatchHistoryCount:number, msg:string }, string>({
+			query: user_id => {
+				return {
+					url: `/movie/delete-user-watchhistory/${user_id}`,
+					method: 'DELETE',
+				};
+			},
+		}),
+		deleteMovieFromWatchHistory: builder.mutation<{ deletedWatchHistory:{ user_id: string,movie_id: string,viewingTime: number,updatedAt: string}, msg:string }, {user_id:string, movie_id:string}>({
+			query: data => {
+				return {
+					url: `/movie/delete-movie-watchhistory`,
+					method: 'DELETE',
+					body:data
+				};
+			},
+		}),
 		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, CleanUploadMovieFormValues>({
 			query: data => {
 				const { writers, directors, cast, genres, ...movie } = data;
@@ -270,5 +287,7 @@ export const {
 	useAddMovieToUserListMutation,
 	useDeleteMovieFromUserListMutation,
 	useDeleteUserListMutation,
-	useUpdateGenresMutation
+	useUpdateGenresMutation,
+	useDeleteUserWatchHistoryMutation,
+	useDeleteMovieFromWatchHistoryMutation
 } = cineApiSlice;

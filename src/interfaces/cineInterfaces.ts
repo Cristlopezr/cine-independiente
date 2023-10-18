@@ -144,6 +144,7 @@ export interface WatchHistory {
 	updatedAt: string;
 	user_id: string;
 	viewingTime: number;
+	movie: Movie;
 }
 
 export interface UserList {
