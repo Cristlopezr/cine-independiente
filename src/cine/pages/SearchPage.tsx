@@ -19,7 +19,7 @@ export const SearchPage = () => {
 
 	return (
 		<CineLayout>
-			<div className='mt-32 px-10'>
+			<div className='mt-32 px-5 sm:px-10'>
 				<SearchInput onChange={onChange} query={query} />
 				{isFetching ? (
 					<div className='flex items-center justify-center mt-20'>
@@ -64,10 +64,10 @@ const SearchInput = ({
 }) => {
 	return (
 		<div className='relative flex items-center gap-5'>
-			<BsSearch className='absolute left-5 w-7 h-7' />
+			<BsSearch className='absolute left-5 w-5 h-5 sm:w-7 sm:h-7' />
 			<Input
 				placeholder='¿Qué película quieres ver?'
-				className='py-8 px-20 text-2xl'
+				className='py-8 ps-14 text-lg sm:px-20 sm:text-2xl'
 				onChange={onChange}
 				value={query}
 				spellCheck={false}

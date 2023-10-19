@@ -8,7 +8,7 @@ import React from 'react';
 import { BiSolidError } from 'react-icons/bi';
 
 export const MyHistoryPage = () => {
-	const { watchHistory, isLoading: isGetWatchHistoryLoading, onDeleteUserWatchHistory } = useCineStore();
+	const { watchHistory, isGetWatchHistoryLoading, onDeleteUserWatchHistory } = useCineStore();
 	const { user } = useAuthStore();
 	const [deleteWatchHistory, { isLoading }] = useDeleteUserWatchHistoryMutation();
 	const { showAlert, showHideAlert } = useShowHideAlert();
@@ -27,7 +27,7 @@ export const MyHistoryPage = () => {
 		);
 	}
 
-	if (watchHistory.length === 0) {
+	if (watchHistory.length < 1) {
 		return (
 			<CineLayout>
 				<div className='mt-[100px] px-10'>
@@ -50,7 +50,7 @@ export const MyHistoryPage = () => {
 
 	return (
 		<CineLayout>
-			<div className='mt-[100px] px-10'>
+			<div className='mt-[100px] px-5 sm:px-10'>
 				<CustomAlert
 					className={`${
 						showAlert.error ? 'top-32' : '-top-24'
@@ -59,7 +59,7 @@ export const MyHistoryPage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<div className='flex items-center justify-between px-5'>
+				<div className='flex items-center justify-between sm:px-5'>
 					<h1 className='text-2xl font-semibold'>Mi historial</h1>
 					{isLoading ? (
 						<Button className='flex items-center gap-3'>

@@ -41,8 +41,8 @@ export const MyMoviesPage = () => {
 
 	return (
 		<CineLayout>
-			<div className='mt-[100px] px-10'>
-				<div className='flex justify-between items-center px-5'>
+			<div className='mt-[100px] px-5 sm:px-10'>
+				<div className='flex justify-between items-center sm:px-5'>
 					<h1 className='text-2xl font-semibold'>Mis películas</h1>
 					<Button onClick={onOpenModal}>Subir</Button>
 				</div>
@@ -73,18 +73,18 @@ export const MyMoviesPage = () => {
 							</>
 						) : (
 							<div className='grid'>
-								<div className='grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-2'>
+								<div className='grid min-[500px]:grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-2'>
 									{data?.userMovies?.map(movie => (
 										<div key={movie.movie_id}>
 											<div className='pb-3 font-semibold'>{movie.title}</div>
-											<div className='border p-5 rounded-sm grid grid-cols-2 gap-2'>
+											<div className='border p-5 rounded-sm grid grid-cols-1 min-[500px]:grid-cols-2 gap-2'>
 												<div className='w-full'>
 													<img
 														className='w-full rounded-sm aspect-[16/9] object-cover'
 														src={movie.imageUrl}
 													/>
 												</div>
-												<div className='flex px-3 flex-col gap-5 items-center justify-between'>
+												<div className='flex min-[500px]:px-3 flex-col gap-5 items-center justify-between'>
 													<div className='flex flex-col px-1 gap-3 justify-around h-full min-w-max w-full text-sm'>
 														<p>Estado: {movie.enabled ? 'Activa' : 'Inactiva'}</p>
 														<p>Duración: {formatMovieTime(movie.duration)} MIN</p>

@@ -9,7 +9,7 @@ import { BiSolidError } from 'react-icons/bi';
 
 export const MyListPage = () => {
 	const { user } = useAuthStore();
-	const { userList, isLoading: isGetUserListLoading, onDeleteUserList } = useCineStore();
+	const { userList, isGetUserListLoading, onDeleteUserList } = useCineStore();
 
 	const [deleteUserList, { isLoading }] = useDeleteUserListMutation();
 	const { showAlert, showHideAlert } = useShowHideAlert();
@@ -28,7 +28,7 @@ export const MyListPage = () => {
 		);
 	}
 
-	if (userList.length === 0) {
+	if (userList.length < 1) {
 		return (
 			<CineLayout>
 				<div className='mt-[100px] px-10'>
@@ -51,7 +51,7 @@ export const MyListPage = () => {
 
 	return (
 		<CineLayout>
-			<div className='mt-[100px] px-10'>
+			<div className='mt-[100px] px-5 sm:px-10'>
 				<CustomAlert
 					className={`${
 						showAlert.error ? 'top-32' : '-top-24'
@@ -60,7 +60,7 @@ export const MyListPage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<div className='flex items-center justify-between px-5'>
+				<div className='flex items-center justify-between sm:px-5'>
 					<h1 className='text-2xl font-semibold'>Mi lista</h1>
 					{isLoading ? (
 						<Button className='flex items-center gap-3'>

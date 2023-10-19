@@ -1,10 +1,11 @@
 import {
 	onError,
-	onIsLoading,
 	onSetMovieToUpload,
 	onSetMovieUploadSuccessMessage,
 	onSetUserList,
+	onSetUserListLoading,
 	onSetWatchHistory,
+	onSetWatchHistoryLoading,
 	setUploadProgress,
 	useAddMovieToUserListMutation,
 	useDeleteMovieFromUserListMutation,
@@ -24,7 +25,8 @@ export const useCineStore = () => {
 		movieUploadSuccessMessage,
 		watchHistory,
 		userList,
-		isLoading,
+		isGetUserListLoading,
+		isGetWatchHistoryLoading,
 	} = useAppSelector(state => state.cine);
 
 	const [getWatchHistory] = useLazyGetWatchHistoryQuery();
@@ -51,14 +53,15 @@ export const useCineStore = () => {
 
 	const startLoadingWatchHistory = async (user_id: string) => {
 		if (!user_id) return;
-		dispatch(onIsLoading(true));
+		dispatch(onSetWatchHistoryLoading(true));
 		try {
 			const { watchHistory } = await getWatchHistory(user_id).unwrap();
 			dispatch(onSetWatchHistory(watchHistory));
 		} catch (error) {
-			dispatch(onIsLoading(false));
+			dispatch(onSetWatchHistoryLoading(false));
 		}
 	};
+
 	const onSetViewingTime = (viewingTime: number, movie: Movie, user_id: string) => {
 		const movieWatchHistory = watchHistory.find(
 			singleWatchHistory => singleWatchHistory.movie_id === movie.movie_id
@@ -104,12 +107,12 @@ export const useCineStore = () => {
 
 	const startLoadingUserList = async (user_id: string) => {
 		if (!user_id) return;
-		dispatch(onIsLoading(true));
+		dispatch(onSetUserListLoading(true));
 		try {
 			const { userList } = await getUserList(user_id).unwrap();
 			dispatch(onSetUserList(userList));
 		} catch (error) {
-			dispatch(onIsLoading(false));
+			dispatch(onSetUserListLoading(false));
 		}
 	};
 
@@ -152,7 +155,8 @@ export const useCineStore = () => {
 		watchHistory,
 		startLoadingWatchHistory,
 		userList,
-		isLoading,
+		isGetUserListLoading,
+		isGetWatchHistoryLoading,
 
 		//Metodos
 		onErrorMessage,

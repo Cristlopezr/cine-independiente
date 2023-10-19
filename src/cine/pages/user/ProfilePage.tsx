@@ -12,7 +12,7 @@ export const ProfilePage = () => {
 	const { showAlert, showHideAlert } = useShowHideAlert();
 	return (
 		<CineLayout>
-			<div className='mt-[100px] px-10'>
+			<div className='mt-[100px] px-5 sm:px-10'>
 				<CustomAlert
 					className={`${
 						showAlert.success ? 'top-32' : '-top-24'
@@ -29,12 +29,14 @@ export const ProfilePage = () => {
 					title='Error'
 					description={showAlert.msg}
 				/>
-				<h1 className='text-2xl px-5 font-semibold'>Mi perfil</h1>
+				<h1 className='text-2xl sm:px-5 font-semibold'>Mi perfil</h1>
 				<Separator className='my-5' />
-				<div className='grid grid-cols-1 gap-10 sm:grid-cols-2'>
+				<div className='grid grid-cols-1 gap-10 min-[960px]:grid-cols-2'>
 					<ProfileForm showHideAlert={showHideAlert} />
 					<ProfileImage showHideAlert={showHideAlert} />
-					<DisableAccount showHideAlert={showHideAlert} />
+					<div className='min-[960px]:col-span-2 min-[1200px]:col-span-1'>
+						<DisableAccount showHideAlert={showHideAlert} />
+					</div>
 				</div>
 			</div>
 		</CineLayout>

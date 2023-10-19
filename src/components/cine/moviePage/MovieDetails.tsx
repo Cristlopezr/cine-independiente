@@ -2,7 +2,7 @@ import { DetailedMovie } from '@/interfaces';
 
 export const MovieDetails = ({ movie }: { movie: DetailedMovie }) => {
 	return (
-		<section className='flex flex-col gap-10 px-14'>
+		<section className='flex flex-col gap-10 px-5 md:px-14'>
 			<div className='z-10 flex flex-col gap-5'>
 				<ul className='flex text-xs gap-5 sm:text-sm'>
 					{movie.genres.map(({ name, genre_id }) => (

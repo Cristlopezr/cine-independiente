@@ -66,7 +66,7 @@ export const ProfileForm = ({
 	};
 
 	return (
-		<div className='p-10 border rounded-md'>
+		<div className='p-5 sm:p-10 border rounded-md'>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
 					<FormField

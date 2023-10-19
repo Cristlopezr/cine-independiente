@@ -1,4 +1,4 @@
-import { BsSearch /* BsList */ } from 'react-icons/bs';
+import { BsList, BsSearch /* BsList */ } from 'react-icons/bs';
 import { RiVideoAddLine } from 'react-icons/ri';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserNav, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
@@ -31,7 +31,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 
 	return (
 		<header
-			className={`grid grid-cols-3 items-center  transition-all duration-300 h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
+			className={`grid grid-cols-[40px,1fr,1fr] min-[500px]:grid-cols-3 items-center transition-all duration-300 h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
 				headerTransparent
 					? scrolled
 						? 'bg-background/[98]'
@@ -41,7 +41,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 		>
 			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
 			<div className='flex items-center gap-5 w-fit md:w-full'>
-				{/* <BsList className='w-10 p-2 h-12' /> */}
+				<BsList className='w-10 p-2 h-12' />
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
 						<NavLink
@@ -50,12 +50,12 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 						>
 							Inicio
 						</NavLink>
-						{/* <li>Géneros</li> */}
+						<li>Géneros</li>
 					</ul>
 				</nav>
 			</div>
 
-			<Link to='/' className='md:text-2xl font-semibold text-center'>
+			<Link to='/' className='md:text-2xl font-semibold text-center w-fit min-[500px]:w-full'>
 				Cine Stream
 			</Link>
 
