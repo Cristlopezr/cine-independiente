@@ -19,12 +19,12 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		getGenres: builder.query<Genre[], void>({
 			query: () => '/movie/get-genres',
 		}),
-		getGenresWithMovies: builder.query<GenreWithMovies[], void>({
-			query: () => '/movie/get-genres-movies',
+		getGenresWithMovies: builder.query<GenreWithMovies[], {take:string, skip:string}>({
+			query: (data) => `/movie/get-genres-movies?take=${data.take}&skip=${data.skip}`,
 			providesTags: ['genresMovies'],
 		}),
-		getMovies: builder.query<Movie[], string>({
-			query: data => `/movie/get-movies?q=${data}`,
+		getMovies: builder.query<Movie[], {take:string, query:string, skip:string}>({
+			query: data => `/movie/get-movies?q=${data.query}&take=${data.take}&skip=${data.skip}`,
 			providesTags: ['movie'],
 		}),
 		getMoviesByGenre: builder.query<Movie[], string>({

@@ -12,7 +12,13 @@ export const SearchPage = () => {
 	const query = searchParams.get('q') || '';
 	const debouncedQuery = useDebounce(query);
 
-	const { data: movies, isError, isFetching, error } = useGetMoviesQuery(debouncedQuery);
+	const {
+		data: movies,
+		isError,
+		isFetching,
+		error,
+	} = useGetMoviesQuery({ query: debouncedQuery, take: '', skip: '' });
+
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchParams({ q: e.target.value });
 	};

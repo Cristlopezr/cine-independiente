@@ -5,12 +5,18 @@ import React from 'react';
 import { Skeleton } from '@/components/ui';
 import Slider from 'react-slick';
 import { useCineStore } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const skeletons = Array.from({ length: 5 });
 
 export const CinePage = () => {
-	const { data: genresWithMovies, isError, isFetching } = useGetGenresWithMoviesQuery();
+	const {
+		data: genresWithMovies,
+		isError,
+		isFetching,
+	} = useGetGenresWithMoviesQuery({ take: '20', skip: '' });
 	const { userList, watchHistory } = useCineStore();
+	const navigate = useNavigate();
 
 	const watchHistoryMovies = watchHistory.map(singleWatchHistory => singleWatchHistory.movie);
 
@@ -48,12 +54,18 @@ export const CinePage = () => {
 			</CineLayout>
 		);
 	}
+
+	const onClickClickableCarousel = (path: string) => {
+		navigate(path);
+	};
 	return (
 		<CineLayout headerTransparent>
 			<MainCarousel />
 			<section className='mt-5 flex flex-col gap-16 px-5 lg:px-12'>
 				{watchHistoryMovies.length > 0 && (
 					<MovieCarousel
+						clickable
+						onClick={() => onClickClickableCarousel('/my-history')}
 						movies={watchHistoryMovies}
 						title='Continuar viendo'
 						aspect='aspect-[16/9]'
@@ -62,6 +74,8 @@ export const CinePage = () => {
 				)}
 				{userListMovies.length > 0 && (
 					<MovieCarousel
+						onClick={() => onClickClickableCarousel('/my-list')}
+						clickable
 						movies={userListMovies}
 						title='Mi lista'
 						aspect='aspect-[16/9]'

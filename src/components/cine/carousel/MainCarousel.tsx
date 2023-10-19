@@ -63,7 +63,7 @@ const settings = {
 
 export const MainCarousel = () => {
 	const navigate = useNavigate();
-	const { data: movies, isError, isFetching } = useGetMoviesQuery('');
+	const { data: movies, isError, isFetching } = useGetMoviesQuery({ query: '', take: '10', skip: '' });
 
 	if (isError) {
 		return (

@@ -86,9 +86,19 @@ export const MyMoviesPage = () => {
 												</div>
 												<div className='flex min-[500px]:px-3 flex-col gap-5 items-center justify-between'>
 													<div className='flex flex-col px-1 gap-3 justify-around h-full min-w-max w-full text-sm'>
-														<p>Estado: {movie.enabled ? 'Activa' : 'Inactiva'}</p>
-														<p>Duración: {formatMovieTime(movie.duration)} MIN</p>
-														<p>Año de producción: {movie.productionYear}</p>
+														<p>
+															<span className='font-bold'>Estado: </span>
+															{movie.enabled ? 'Activa' : 'Inactiva'}
+														</p>
+														<p>
+															<span className='font-bold'>Duración: </span>
+															{formatMovieTime(movie.duration)} MIN
+														</p>
+														<p>
+															<span className='font-bold'>
+																Año de producción: </span>
+															{movie.productionYear}
+														</p>
 													</div>
 													<Button
 														className='w-full'
