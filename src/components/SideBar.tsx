@@ -1,4 +1,4 @@
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/';
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from '@/components/ui/';
 import { BsList } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 
@@ -9,19 +9,19 @@ const sideBarItems = [
 	},
 	{
 		name: 'Mi perfil',
-		path: '/profile',
+		path: '/user/profile',
 	},
 	{
 		name: 'Mis películas',
-		path: '/my-movies',
+		path: '/user/my-movies',
 	},
 	{
 		name: 'Mi lista',
-		path: '/my-list',
+		path: '/user/my-list',
 	},
 	{
 		name: 'Mi historial',
-		path: '/my-history',
+		path: '/user/my-history',
 	},
 ];
 
@@ -33,13 +33,14 @@ export const SideBar = () => {
 			</SheetTrigger>
 			<SheetContent side='left' className='p-16 flex flex-col gap-10 text-2xl'>
 				{sideBarItems.map(item => (
-					<Link
-						to={item.path}
-						key={item.path}
-						className='cursor-pointer text-white/80 hover:text-white hover:font-semibold'
-					>
-						{item.name}
-					</Link>
+					<SheetClose asChild key={item.path}>
+						<Link
+							to={item.path}
+							className='cursor-pointer text-white/80 hover:text-white hover:font-semibold'
+						>
+							{item.name}
+						</Link>
+					</SheetClose>
 				))}
 			</SheetContent>
 		</Sheet>

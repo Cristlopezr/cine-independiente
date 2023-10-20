@@ -2,22 +2,29 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { CinePage, MoviePage, SearchPage, VideoPage } from '../pages';
 import { MovieDetailsPage, MyHistoryPage, MyListPage, MyMoviesPage, ProfilePage } from '../pages/user';
 import { ScrollToTop } from '@/components';
+import { CineLayout } from '../layout';
 
 export const CineRoutes = () => {
 	return (
 		<>
 			<ScrollToTop />
 			<Routes>
-				<Route path='/' element={<CinePage />} />
-				<Route path='/*' element={<Navigate to='/' />} />
-				<Route path='/my-movies' element={<MyMoviesPage />} />
-				<Route path='/movie/:id' element={<MoviePage />} />
+				<Route path='/' element={<CineLayout headerTransparent />}>
+					<Route index element={<CinePage />} />
+					<Route path='movie/:id' element={<MoviePage />} />
+				</Route>
 				<Route path='/movie/player/:id' element={<VideoPage />} />
-				<Route path='/search' element={<SearchPage />} />
-				<Route path='/profile' element={<ProfilePage />} />
-				<Route path='/my-movies/:id' element={<MovieDetailsPage />} />
-				<Route path='/my-list' element={<MyListPage />} />
-				<Route path='/my-history' element={<MyHistoryPage />} />
+				<Route path='/user' element={<CineLayout />}>
+					<Route path='my-movies' element={<MyMoviesPage />} />
+					<Route path='profile' element={<ProfilePage />} />
+					<Route path='my-movies/:id' element={<MovieDetailsPage />} />
+					<Route path='my-list' element={<MyListPage />} />
+					<Route path='my-history' element={<MyHistoryPage />} />
+				</Route>
+				<Route path='/cine' element={<CineLayout />}>
+					<Route path='search' element={<SearchPage />} />
+				</Route>
+				<Route path='/*' element={<Navigate to='/' />} />
 			</Routes>
 		</>
 	);

@@ -9,7 +9,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 	const navigate = useNavigate();
 
 	const onClickUpload = () => {
-		navigate('/my-movies?upload=open');
+		navigate('/user/my-movies?upload=open');
 	};
 
 	const [scrolled, setScrolled] = useState(false);
@@ -51,7 +51,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 						>
 							Inicio
 						</NavLink>
-						<li>Géneros</li>
+						<NavLink to="/cine/movies">Películas</NavLink>
 					</ul>
 				</nav>
 			</div>
@@ -64,7 +64,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>
-							<Link to='/search'>
+							<Link to='/cine/search'>
 								<BsSearch className='text-xl cursor-pointer' />
 							</Link>
 						</TooltipTrigger>

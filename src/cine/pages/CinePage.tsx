@@ -1,5 +1,4 @@
 import { useGetGenresWithMoviesQuery } from '@/store/cine';
-import { CineLayout } from '../layout';
 import { MainCarousel, MovieCarousel, settings169 } from '@/components/cine/carousel';
 import React from 'react';
 import { Skeleton } from '@/components/ui';
@@ -24,18 +23,18 @@ export const CinePage = () => {
 
 	if (isError) {
 		return (
-			<CineLayout headerTransparent>
+			<div>
 				<MainCarousel />
 				<section className='pt-10 flex text-xl sm:text-2xl items-center justify-center px-5 lg:px-12'>
 					<div>Ha ocurrido un error al obtener las películas.</div>
 				</section>
-			</CineLayout>
+			</div>
 		);
 	}
 
 	if (isFetching) {
 		return (
-			<CineLayout headerTransparent>
+			<div>
 				<MainCarousel />
 				<section className='mt-5 flex flex-col gap-5 px-5 lg:px-12'>
 					{skeletons.map((_, i) => (
@@ -51,7 +50,7 @@ export const CinePage = () => {
 						</React.Fragment>
 					))}
 				</section>
-			</CineLayout>
+			</div>
 		);
 	}
 
@@ -59,13 +58,13 @@ export const CinePage = () => {
 		navigate(path);
 	};
 	return (
-		<CineLayout headerTransparent>
+		<div>
 			<MainCarousel />
 			<section className='mt-5 flex flex-col gap-16 px-5 lg:px-12'>
 				{watchHistoryMovies.length > 0 && (
 					<MovieCarousel
 						clickable
-						onClick={() => onClickClickableCarousel('/my-history')}
+						onClick={() => onClickClickableCarousel('/user/my-history')}
 						movies={watchHistoryMovies}
 						title='Continuar viendo'
 						aspect='aspect-[16/9]'
@@ -74,7 +73,7 @@ export const CinePage = () => {
 				)}
 				{userListMovies.length > 0 && (
 					<MovieCarousel
-						onClick={() => onClickClickableCarousel('/my-list')}
+						onClick={() => onClickClickableCarousel('/user/my-list')}
 						clickable
 						movies={userListMovies}
 						title='Mi lista'
@@ -96,6 +95,6 @@ export const CinePage = () => {
 					);
 				})}
 			</section>
-		</CineLayout>
+		</div>
 	);
 };

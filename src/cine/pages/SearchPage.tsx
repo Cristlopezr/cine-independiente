@@ -1,5 +1,4 @@
 import { Input, Loading } from '@/components/ui';
-import { CineLayout } from '../layout';
 import { BsSearch } from 'react-icons/bs';
 import { useGetMoviesQuery } from '@/store/cine';
 import { MovieCarouselItem } from '@/components/cine/carousel';
@@ -24,40 +23,38 @@ export const SearchPage = () => {
 	};
 
 	return (
-		<CineLayout>
-			<div className='mt-32 px-5 sm:px-10'>
-				<SearchInput onChange={onChange} query={query} />
-				{isFetching ? (
-					<div className='flex items-center justify-center mt-20'>
-						<Loading />
-					</div>
-				) : (
-					<>
-						{isError && error && 'status' in error && error.status === 404 ? (
-							<NotFound />
-						) : (
-							<>
-								{isError ? (
-									<Error />
-								) : (
-									<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
-										{movies?.map(movie => (
-											<React.Fragment key={movie.movie_id}>
-												<MovieCarouselItem
-													key={movie.movie_id}
-													movie={movie}
-													className='aspect-[16/9]'
-												/>
-											</React.Fragment>
-										))}
-									</div>
-								)}
-							</>
-						)}
-					</>
-				)}
-			</div>
-		</CineLayout>
+		<div className='mt-32 px-5 sm:px-10'>
+			<SearchInput onChange={onChange} query={query} />
+			{isFetching ? (
+				<div className='flex items-center justify-center mt-20'>
+					<Loading />
+				</div>
+			) : (
+				<>
+					{isError && error && 'status' in error && error.status === 404 ? (
+						<NotFound />
+					) : (
+						<>
+							{isError ? (
+								<Error />
+							) : (
+								<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
+									{movies?.map(movie => (
+										<React.Fragment key={movie.movie_id}>
+											<MovieCarouselItem
+												key={movie.movie_id}
+												movie={movie}
+												className='aspect-[16/9]'
+											/>
+										</React.Fragment>
+									))}
+								</div>
+							)}
+						</>
+					)}
+				</>
+			)}
+		</div>
 	);
 };
 

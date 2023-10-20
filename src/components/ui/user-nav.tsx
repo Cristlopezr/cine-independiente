@@ -15,19 +15,19 @@ import { useNavigate } from 'react-router-dom';
 const userNavItems = [
 	{
 		name: 'Mi perfil',
-		path: '/profile',
+		path: '/user/profile',
 	},
 	{
 		name: 'Mis películas',
-		path: '/my-movies',
+		path: '/user/my-movies',
 	},
 	{
 		name: 'Mi lista',
-		path: '/my-list',
+		path: '/user/my-list',
 	},
 	{
 		name: 'Mi historial',
-		path: '/my-history',
+		path: '/user/my-history',
 	},
 ];
 
