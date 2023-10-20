@@ -47,7 +47,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.0",
     "@testing-library/react": "^14.0.0",
