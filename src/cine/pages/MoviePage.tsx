@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CineLayout } from '../layout';
 import { useGetMovieQuery } from '@/store/cine';
 import { Loading } from '@/components/ui';
-import { HeaderImage, MovieDetails, MovieInfo } from '@/components/cine/moviePage';
+import { Header, MovieDetails } from '@/components/cine/moviePage';
 
 export const MoviePage = () => {
 	const { id } = useParams();
@@ -18,25 +18,29 @@ export const MoviePage = () => {
 	const { data, isError, isFetching } = useGetMovieQuery(id!);
 
 	if (isError) {
-		return <div>Ha ocurrido un error al obtener la película</div>;
+		return (
+			<CineLayout headerTransparent>
+				<div className='mt-[100px] text-center text-xl'>
+					Ha ocurrido un error al obtener la película.
+				</div>
+			</CineLayout>
+		);
 	}
 
 	if (isFetching) {
 		return (
-			<div className='mt-40'>
-				<Loading />
-			</div>
+			<CineLayout headerTransparent>
+				<div className='mt-40'>
+					<Loading />
+				</div>
+			</CineLayout>
 		);
 	}
 
 	const { movie } = data!;
-
 	return (
-		<CineLayout>
-			<div className='relative w-full'>
-				<HeaderImage imageUrl={movie.imageUrl} />
-				<MovieInfo movie={movie} onClickPlay={onClickPlay} />
-			</div>
+		<CineLayout headerTransparent>
+			<Header movie={movie} onClickPlay={onClickPlay} />
 			<MovieDetails movie={movie} />
 		</CineLayout>
 	);

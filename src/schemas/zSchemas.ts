@@ -46,6 +46,35 @@ export const verifyEmailFormSchema = z.object({
 		.regex(/^\d+$/, { message: 'Por favor ingresar solo números' }),
 });
 
+export const recoverPasswordEmailFormSchema = z.object({
+	email: z
+		.string()
+		.min(1, {
+			message: 'Por favor ingresar un email',
+		})
+		.trim()
+		.email('Por favor ingresar un email válido'),
+});
+
+export const resetPasswordFormSchema = z
+	.object({
+		password: z
+			.string()
+			.min(8, { message: 'Por favor ingresar una contraseña válida' })
+			.trim()
+			.refine(value => /[A-Z]/.test(value), {
+				message: 'La contraseña debe contener al menos una mayúscula',
+			})
+			.refine(value => /[!@#$%^&*(),.?":{}|<>]/.test(value), {
+				message: 'La contraseña debe contener al menos un caracter especial',
+			}),
+		confirmPassword: z.string().trim(),
+	})
+	.refine(data => data.password === data.confirmPassword, {
+		message: 'Las contraseñas no coinciden',
+		path: ['confirmPassword'],
+	});
+
 export const profileFormSchema = z.object({
 	name: z.string().min(1, { message: 'Por favor ingresar un nombre' }).trim(),
 	lastname: z.string().min(1, { message: 'Por favor ingresar un apellido' }).trim(),
@@ -76,13 +105,69 @@ export const uploadMovieInputSchema = z.object({
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 const CURRENT_YEAR = new Date().getFullYear();
 
-export const uploadMovieFormSchema = z.object({
-	title: z.string().min(1, { message: 'Por favor ingresar un título' }),
-	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }),
+export const editMovieFormSchema = z.object({
+	title: z.string().min(1, { message: 'Por favor ingresar un título' }).trim(),
+	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }).trim(),
 	productionYear: z
 		.string()
 		.min(4, { message: 'Por favor ingresar un año válido' })
 		.max(4, { message: 'Por favor ingresar un año válido' })
+		.trim()
+		.regex(/^\d+$/, { message: 'Por favor ingresar un año válido' })
+		.refine(value => Number(value) <= CURRENT_YEAR && Number(value) >= 1900, {
+			message: 'Por favor ingresar un año válido',
+		}),
+	/* movieImage: z
+		.any()
+		.refine(files => {
+			if (!files) return false;
+			return true;
+		}, 'Por favor seleccionar una imagen')
+		.refine(
+			files => ACCEPTED_IMAGE_TYPES.includes(files?.[0].type),
+			'Los formatos soportados son .JPG .JPEG .PNG'
+		), */
+});
+
+export const editDirectorsFormSchema = z.object({
+	directors: z.array(
+		z.object({
+			name: z.string().min(1, { message: 'Por favor ingresar un director' }).trim(),
+		})
+	),
+});
+
+export const editWritersFormSchema = z.object({
+	writers: z.array(
+		z.object({
+			name: z.string().min(1, { message: 'Por favor ingresar un guionista' }).trim(),
+		})
+	),
+});
+
+export const editCastFormSchema = z.object({
+	cast: z.array(
+		z.object({
+			name: z.string().min(1, { message: 'Por favor ingresar un actor' }).trim(),
+		})
+	),
+});
+
+export const editGenresFormSchema = z.object({
+	genres: z.array(z.string()).refine(value => value.some(item => item), {
+		message: 'Por favor seleccionar al menos un género',
+	}),
+});
+
+export const uploadMovieFormSchema = z.object({
+	title: z.string().min(1, { message: 'Por favor ingresar un título' }).trim(),
+	synopsis: z.string().min(1, { message: 'Por favor ingresar una sinopsis' }).trim(),
+	productionYear: z
+		.string()
+		.trim()
+		.min(4, { message: 'Por favor ingresar un año válido' })
+		.max(4, { message: 'Por favor ingresar un año válido' })
+		.trim()
 		.regex(/^\d+$/, { message: 'Por favor ingresar un año válido' })
 		.refine(value => Number(value) <= CURRENT_YEAR && Number(value) >= 1900, {
 			message: 'Por favor ingresar un año válido',
@@ -99,12 +184,12 @@ export const uploadMovieFormSchema = z.object({
 		),
 	directors: z.array(
 		z.object({
-			name: z.string().min(1, { message: 'Por favor ingresar un director' }),
+			name: z.string().min(1, { message: 'Por favor ingresar un director' }).trim(),
 		})
 	),
 	writers: z.array(
 		z.object({
-			name: z.string().min(1, { message: 'Por favor ingresar un guionista' }),
+			name: z.string().min(1, { message: 'Por favor ingresar un guionista' }).trim(),
 		})
 	),
 	genres: z.array(z.string()).refine(value => value.some(item => item), {
@@ -112,7 +197,7 @@ export const uploadMovieFormSchema = z.object({
 	}),
 	cast: z.array(
 		z.object({
-			name: z.string().min(1, { message: 'Por favor ingresar un actor' }),
+			name: z.string().min(1, { message: 'Por favor ingresar un actor' }).trim(),
 		})
 	),
 });

@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui';
 import { useGetMoviesQuery } from '@/store/cine';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 import Slider from 'react-slick';
-import { HeaderImage, MovieInfo } from '../moviePage';
+import { Header } from '../moviePage';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
@@ -63,11 +63,17 @@ const settings = {
 
 export const MainCarousel = () => {
 	const navigate = useNavigate();
-	const {
-		data: movies,
-		/* isError, */
-		isFetching,
-	} = useGetMoviesQuery('');
+	const { data: movies, isError, isFetching } = useGetMoviesQuery('');
+
+	if (isError) {
+		return (
+			<div className='relative w-full'>
+				<div className='w-full flex items-center justify-center main-slider-container relative h-screen'>
+					<div className='text-xl sm:text-2xl'>Ha ocurrido un error al obtener las películas.</div>
+				</div>
+			</div>
+		);
+	}
 
 	if (isFetching) {
 		return (
@@ -91,10 +97,7 @@ export const MainCarousel = () => {
 			<Slider {...settings}>
 				{movies?.map(movie => (
 					<React.Fragment key={movie.movie_id}>
-						<div className='relative w-full overflow-visible'>
-							<HeaderImage imageUrl={movie.imageUrl} />
-							<MovieInfo movie={movie} onClickPlay={onClickPlay} />
-						</div>
+						<Header movie={movie} onClickPlay={onClickPlay} isCarousel />
 					</React.Fragment>
 				))}
 			</Slider>

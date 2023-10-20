@@ -138,3 +138,31 @@ export interface FormStepOneItem {
 	type?: 'text' | 'file';
 	placeholder?: string;
 }
+
+export interface WatchHistory {
+	movie_id: string;
+	updatedAt: string;
+	user_id: string;
+	viewingTime: number;
+	movie: Movie;
+}
+
+export interface UserList {
+	movie_id: string;
+	updatedAt: string;
+	user_id: string;
+	movie: Movie;
+}
+
+export interface UpdateMovie {
+	thumbnailUrl?: string | null;
+	imageUrl?: string;
+	title?: string;
+	productionYear?: number;
+	synopsis?: string;
+	enabled?: boolean;
+}
+
+export interface UpdateMovieTeam {
+	name: string;
+}

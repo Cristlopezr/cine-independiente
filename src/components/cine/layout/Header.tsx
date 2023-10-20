@@ -4,7 +4,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserNav, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { useEffect, useState } from 'react';
 
-export const Header = () => {
+export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) => {
 	const navigate = useNavigate();
 
 	const onClickUpload = () => {
@@ -32,7 +32,11 @@ export const Header = () => {
 	return (
 		<header
 			className={`grid grid-cols-3 items-center  transition-all duration-300 h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
-				scrolled ? 'bg-background/[98]' : 'bg-transparent'
+				headerTransparent
+					? scrolled
+						? 'bg-background/[98]'
+						: 'bg-transparent'
+					: 'bg-background/[98]'
 			}`}
 		>
 			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
@@ -56,9 +60,19 @@ export const Header = () => {
 			</Link>
 
 			<section className='flex items-center justify-end gap-4 min-[440px]:gap-6 p-2 font-semibold'>
-				<Link to='/search'>
-					<BsSearch className='text-xl cursor-pointer' />
-				</Link>
+				<TooltipProvider>
+					<Tooltip delayDuration={100}>
+						<TooltipTrigger>
+							<Link to='/search'>
+								<BsSearch className='text-xl cursor-pointer' />
+							</Link>
+						</TooltipTrigger>
+						<TooltipContent sideOffset={8}>
+							<p>Buscar</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>

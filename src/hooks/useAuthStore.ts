@@ -86,7 +86,6 @@ export const useAuthStore = () => {
 	};
 
 	const startLogout = () => {
-		console.log('Borrando token');
 		localStorage.removeItem('token');
 		localStorage.removeItem('token-init-date');
 		dispatch(onLogout());

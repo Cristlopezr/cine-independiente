@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from './ui';
 
 interface CustomAlertProps {
@@ -5,14 +6,23 @@ interface CustomAlertProps {
 	title: string;
 	description: string;
 	className?: string;
+	variant?: 'default' | 'destructive';
 }
 
-export const CustomAlert = ({ icon, title, description, className }: CustomAlertProps) => {
+export const CustomAlert = ({
+	icon,
+	title,
+	description,
+	className,
+	variant = 'default',
+}: CustomAlertProps) => {
 	return (
-		<Alert className={className}>
-			{icon}
-			<AlertTitle>{title}</AlertTitle>
-			<AlertDescription>{description}</AlertDescription>
+		<Alert variant={variant} className={cn('flex items-center gap-5 z-50', className)}>
+			<div>{icon}</div>
+			<div>
+				<AlertTitle className='text-lg'>{title}</AlertTitle>
+				<AlertDescription>{description}</AlertDescription>
+			</div>
 		</Alert>
 	);
 };

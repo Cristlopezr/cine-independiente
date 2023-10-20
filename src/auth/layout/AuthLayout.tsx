@@ -5,7 +5,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 		<div className='container min-h-screen'>
 			<nav className='p-5'>
 				<ul className='flex items-center justify-between h-10'>
-					<li>Logo</li>
+					<img src='/assets/LogoStream2.png' className='h-full' alt='' />
 				</ul>
 			</nav>
 			<Separator />

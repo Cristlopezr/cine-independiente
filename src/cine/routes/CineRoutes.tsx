@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CinePage, MoviePage, SearchPage, VideoPage } from '../pages';
-import { MyMoviesPage, ProfilePage } from '../pages/user';
+import { MovieDetailsPage, MyHistoryPage, MyListPage, MyMoviesPage, ProfilePage } from '../pages/user';
 import { ScrollToTop } from '@/components';
 
 export const CineRoutes = () => {
@@ -15,6 +15,9 @@ export const CineRoutes = () => {
 				<Route path='/movie/player/:id' element={<VideoPage />} />
 				<Route path='/search' element={<SearchPage />} />
 				<Route path='/profile' element={<ProfilePage />} />
+				<Route path='/my-movies/:id' element={<MovieDetailsPage />} />
+				<Route path='/my-list' element={<MyListPage />} />
+				<Route path='/my-history' element={<MyHistoryPage />} />
 			</Routes>
 		</>
 	);

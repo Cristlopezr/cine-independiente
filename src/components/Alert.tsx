@@ -16,6 +16,7 @@ export const Alert = ({
 	trigger,
 	alertDialogDescription,
 	alertDialogTitle,
+	AlertDialogSubDescription,
 	alertDialogCancel,
 	alertDialogAction,
 }: {
@@ -23,6 +24,7 @@ export const Alert = ({
 	onAction: () => void;
 	trigger: React.ReactNode;
 	alertDialogDescription: string;
+	AlertDialogSubDescription?: string;
 	alertDialogTitle: string;
 	alertDialogCancel: string;
 	alertDialogAction: string;
@@ -34,6 +36,9 @@ export const Alert = ({
 				<AlertDialogHeader>
 					<AlertDialogTitle>{alertDialogTitle}</AlertDialogTitle>
 					<AlertDialogDescription>{alertDialogDescription}</AlertDialogDescription>
+					{AlertDialogSubDescription && (
+						<AlertDialogDescription>{AlertDialogSubDescription}</AlertDialogDescription>
+					)}
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel onClick={onCancel}>{alertDialogCancel}</AlertDialogCancel>

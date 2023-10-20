@@ -1,4 +1,4 @@
-import { Genre } from '@/interfaces';
+import { Genre, UserList, WatchHistory } from '@/interfaces';
 import { createSlice } from '@reduxjs/toolkit';
 /* import type { PayloadAction } from '@reduxjs/toolkit'; */
 /* import type { RootState } from '../../store'; */
@@ -12,6 +12,9 @@ interface CineState {
 		imageUrl: string | undefined;
 	};
 	genres: Genre[];
+	watchHistory: WatchHistory[];
+	userList: UserList[];
+	isLoading: boolean;
 }
 
 const initialState: CineState = {
@@ -24,6 +27,9 @@ const initialState: CineState = {
 		imageUrl: undefined,
 	},
 	genres: [],
+	watchHistory: [],
+	userList: [],
+	isLoading: false,
 };
 
 export const cineSlice = createSlice({
@@ -45,8 +51,27 @@ export const cineSlice = createSlice({
 		onSetMovieUploadSuccessMessage: (state, action) => {
 			state.movieUploadSuccessMessage = action.payload;
 		},
+		onSetWatchHistory: (state, action) => {
+			state.watchHistory = action.payload;
+			state.isLoading = false;
+		},
+		onSetUserList: (state, action) => {
+			state.userList = action.payload;
+			state.isLoading=false;
+		},
+		onIsLoading: (state, action) => {
+			state.isLoading = action.payload;
+		},
 	},
 });
 
-export const { setUploadProgress, onError, onSetMovieToUpload, onGetGenres, onSetMovieUploadSuccessMessage } =
-	cineSlice.actions;
+export const {
+	setUploadProgress,
+	onError,
+	onSetMovieToUpload,
+	onGetGenres,
+	onSetMovieUploadSuccessMessage,
+	onSetWatchHistory,
+	onSetUserList,
+	onIsLoading,
+} = cineSlice.actions;

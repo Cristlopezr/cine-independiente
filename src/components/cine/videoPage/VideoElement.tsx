@@ -8,6 +8,8 @@ import { Loading } from '@/components/ui';
 import { BsChevronLeft } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { useSaveWatchHistoryMutation } from '@/store/cine';
+import { useAuthStore, useCineStore } from '@/hooks';
+import { formatMovieTime } from '@/helpers';
 
 export type Level = {
 	height: number;
@@ -15,22 +17,7 @@ export type Level = {
 const baseUrl = 'https://storage.googleapis.com/';
 const urlBeacon = `${import.meta.env.VITE_API_CINE_BASE_URL}/movie/save-watch-history`;
 
-const format = (seconds: number) => {
-	if (seconds === 0) {
-		return '00:00';
-	}
-
-	const date = new Date(seconds * 1000);
-	const hh = date.getUTCHours();
-	const mm = date.getUTCMinutes();
-	const ss = date.getUTCSeconds().toString().padStart(2, '0');
-	if (hh) {
-		return `${hh}:${mm.toString().padStart(2, '0')}:${ss}`;
-	}
-	return `${mm}:${ss}`;
-};
-
-export const VideoElement = ({ movie }: { movie: Movie }) => {
+export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewingTime: number }) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
 	const [playerState, setPlayerState] = useState({
 		playing: true,
@@ -50,19 +37,21 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	const navigate = useNavigate();
 	const [saveWatchHistory] = useSaveWatchHistoryMutation();
 	const playedRef = useRef(0);
+	const { onSetViewingTime } = useCineStore();
+	const { user } = useAuthStore();
 
 	const currentTime = playerRef.current?.getCurrentTime() || 0;
-	const duration = playerRef.current?.getDuration() || 0;
+	const duration = movie.duration || 0;
 
-	const elapsedTime = format(currentTime!);
-	const totalDuration = format(duration!);
+	const elapsedTime = formatMovieTime(currentTime!);
+	const totalDuration = formatMovieTime(duration);
 
 	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded, seeking } = playerState;
 
 	useEffect(() => {
 		const handleBeforeUnload = () => {
 			const formData = new FormData();
-			formData.append('user_id', movie.user_id);
+			formData.append('user_id', user.user_id);
 			formData.append('movie_id', movie.movie_id);
 			formData.append('currentTime', playerRef.current?.getCurrentTime().toString() || (0).toString());
 			if (document.visibilityState === 'hidden') {
@@ -73,6 +62,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 		document.addEventListener('visibilitychange', handleBeforeUnload);
 		return () => {
 			document.removeEventListener('visibilitychange', handleBeforeUnload);
+			onSetViewingTime(playedRef.current, movie, user.user_id);
 			onSaveWatchHistory(playedRef.current);
 		};
 	}, []);
@@ -82,7 +72,12 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 	}, [played]);
 
 	const handlePlayerReady = () => {
+		const durationInt = parseInt(duration.toFixed(2));
+		const viewingTimeInt = parseInt(viewingTime.toFixed(2));
+
+		const hasFinishedMovie = durationInt - viewingTimeInt <= 2;
 		if (playerRef.current) {
+			playerRef.current.seekTo(hasFinishedMovie ? 0 : viewingTime);
 			const hlsPlayer = playerRef.current.getInternalPlayer('hls');
 
 			if (hlsPlayer) {
@@ -124,9 +119,7 @@ export const VideoElement = ({ movie }: { movie: Movie }) => {
 
 		setPlayerState({ ...playerState, fullScreen: !screenfull.isFullscreen });
 	};
-console.log(loaded)
 	const onProgress = (state: OnProgressProps) => {
-		console.log({played:state.playedSeconds, loaded: state.loadedSeconds})
 		if (count > 5) {
 			setShowControls(false);
 		}
@@ -202,7 +195,7 @@ console.log(loaded)
 
 	const onSaveWatchHistory = async (currentTime: number) => {
 		await saveWatchHistory({
-			user_id: movie.user_id,
+			user_id: user.user_id,
 			movie_id: movie.movie_id,
 			currentTime,
 		});

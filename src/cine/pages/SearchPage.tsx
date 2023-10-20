@@ -80,7 +80,7 @@ const NotFound = () => {
 	return (
 		<div className='pt-10 text-xl text-center flex flex-col gap-3'>
 			<p>No se encontraron películas que coincidan con la búsqueda.</p>
-			<p>Puedes buscar por nombre de actor, título de película y género.</p>
+			<p>Puedes buscar por nombre de actor, título de película o género.</p>
 		</div>
 	);
 };
