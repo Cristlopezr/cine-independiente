@@ -1,8 +1,9 @@
-import { BsList, BsSearch /* BsList */ } from 'react-icons/bs';
+import { BsSearch } from 'react-icons/bs';
 import { RiVideoAddLine } from 'react-icons/ri';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserNav, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { useEffect, useState } from 'react';
+import { SideBar } from '@/components';
 
 export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) => {
 	const navigate = useNavigate();
@@ -41,7 +42,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 		>
 			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
 			<div className='flex items-center gap-5 w-fit md:w-full'>
-				<BsList className='w-10 p-2 h-12' />
+				<SideBar />
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
 						<NavLink

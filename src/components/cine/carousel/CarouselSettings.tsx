@@ -119,3 +119,14 @@ export const settings169 = {
 		},
 	],
 };
+
+export const settingsGenre = {
+	className: 'slider variable-width',
+	dots: true,
+	infinite: false,
+	slidesToShow: 1,
+	slidesToScroll: 1,
+	variableWidth: true,
+	nextArrow: <RigthArrow />,
+	prevArrow: <LeftArrow />,
+};
