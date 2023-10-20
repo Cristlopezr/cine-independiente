@@ -46,12 +46,15 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
 						<NavLink
+							className='text-white/80 hover:text-white'
 							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
 							to='/'
 						>
 							Inicio
 						</NavLink>
-						<NavLink to="/cine/movies">Películas</NavLink>
+						<NavLink className='text-white/80 hover:text-white' to='/cine/movies'>
+							Películas
+						</NavLink>
 					</ul>
 				</nav>
 			</div>
@@ -65,7 +68,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>
 							<Link to='/cine/search'>
-								<BsSearch className='text-xl cursor-pointer' />
+								<BsSearch className='text-xl text-white/80 hover:text-white cursor-pointer' />
 							</Link>
 						</TooltipTrigger>
 						<TooltipContent sideOffset={8}>
@@ -77,7 +80,10 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>
-							<RiVideoAddLine onClick={onClickUpload} className='text-2xl cursor-pointer' />
+							<RiVideoAddLine
+								onClick={onClickUpload}
+								className='text-2xl text-white/80 hover:text-white cursor-pointer'
+							/>
 						</TooltipTrigger>
 						<TooltipContent sideOffset={8}>
 							<p>Subir película</p>

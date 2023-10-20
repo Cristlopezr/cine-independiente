@@ -120,13 +120,48 @@ export const settings169 = {
 	],
 };
 
+export function RigthGenreArrow(props: any) {
+	const { onClick, isRightArrowVisible } = props;
+	if (!isRightArrowVisible) return;
+	const isDisabled = onClick === null;
+
+	return (
+		<div
+			className={`cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-fit -right-5 rounded-sm z-10 top-1 bottom-[5px] flex items-center justify-center`}
+			onClick={onClick}
+		>
+			<BsChevronRight
+				className={`${isDisabled ? 'text-transparent' : 'text-primary'} ${
+					isDisabled ? 'text-transparent' : 'dark:text-accent-foreground'
+				} w-5 h-5 group-hover/arrow:h-7 group-hover/arrow:w-7 transition-all duration-300 ease-in-out`}
+			/>
+		</div>
+	);
+}
+
+export function LeftGenreArrow(props: any) {
+	const { onClick, currentSlide } = props;
+	const isDisabled = currentSlide === 0;
+	return (
+		<div
+			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-fit -left-5 rounded-sm z-10 top-1 bottom-[5px] flex items-center justify-center`}
+			onClick={onClick}
+		>
+			<BsChevronLeft
+				className={`${isDisabled ? 'text-transparent' : 'text-primary'} ${
+					isDisabled ? 'text-transparent' : 'dark:text-accent-foreground'
+				} w-5 h-5 group-hover/arrow:h-7 group-hover/arrow:w-7 transition-all duration-300 ease-in-out`}
+			/>
+		</div>
+	);
+}
+
 export const settingsGenre = {
 	className: 'slider variable-width',
 	dots: true,
 	infinite: false,
 	slidesToShow: 1,
-	slidesToScroll: 1,
+	slidesToScroll: 2,
 	variableWidth: true,
-	nextArrow: <RigthArrow />,
-	prevArrow: <LeftArrow />,
+	prevArrow: <LeftGenreArrow />,
 };

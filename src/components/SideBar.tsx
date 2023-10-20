@@ -8,6 +8,10 @@ const sideBarItems = [
 		path: '/',
 	},
 	{
+		name: 'Películas',
+		path: '/cine/movies',
+	},
+	{
 		name: 'Mi perfil',
 		path: '/user/profile',
 	},
