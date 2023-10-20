@@ -160,6 +160,7 @@ export const settingsGenre = {
 	className: 'slider variable-width',
 	dots: true,
 	infinite: false,
+	swipe: false,
 	slidesToShow: 1,
 	slidesToScroll: 2,
 	variableWidth: true,
