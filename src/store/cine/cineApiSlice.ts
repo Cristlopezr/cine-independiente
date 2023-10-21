@@ -26,7 +26,6 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		}),
 		getRecommendedMovies: builder.query<{recommendedMovies:RecommendedMovie[]}, string>({
 			query: user_id => `/user/get-recommended-movies-bygenre/${user_id}`,
-			providesTags: ['recommendedMovies'],
 		}),
 		getMovies: builder.query<{recommendedMovies:any}, {take:string, query:string, skip:string}>({
 			query: data => `/movie/get-movies?q=${data.query}&take=${data.take}&skip=${data.skip}`,
@@ -86,7 +85,6 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					body: data,
 				};
 			},
-			invalidatesTags:["recommendedMovies"]
 		}),
 		getWatchHistory: builder.query<{ watchHistory: WatchHistory[] }, string>({
 			query: id => `/movie/get-watch-history/${id}`,
@@ -98,7 +96,6 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					method: 'DELETE',
 				};
 			},
-			invalidatesTags:["recommendedMovies"]
 		}),
 		deleteMovieFromWatchHistory: builder.mutation<{ deletedWatchHistory:{ user_id: string,movie_id: string,viewingTime: number,updatedAt: string}, msg:string }, {user_id:string, movie_id:string}>({
 			query: data => {
@@ -108,7 +105,6 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					body:data
 				};
 			},
-			invalidatesTags:["recommendedMovies"]
 		}),
 		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, CleanUploadMovieFormValues>({
 			query: data => {
