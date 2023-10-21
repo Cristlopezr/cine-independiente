@@ -5,7 +5,7 @@ import { Button, Input } from '@/components/ui';
 import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieInputSchema } from '@/schemas/zSchemas';
 import { useUploadMovieInfoMutation, useUploadMovieMutation } from '@/store/cine';
-import { CleanUploadMovieFormValues } from '@/interfaces';
+import { InitialMovie } from '@/interfaces';
 
 interface UploadMovieInputProps {
 	setFormStep: (steap: number) => void;
@@ -45,7 +45,7 @@ export const UploadMovieInput = ({ setFormStep, setAbortController }: UploadMovi
 					date,
 					abortController,
 				}).unwrap();
-				const initialMovie: CleanUploadMovieFormValues = {
+				const initialMovie: InitialMovie = {
 					date,
 					cast: [{ name: user.user_id }],
 					directors: [{ name: user.user_id }],

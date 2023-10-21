@@ -112,6 +112,21 @@ export type UploadMovieForm = UseFormReturn<
 >;
 
 export interface CleanUploadMovieFormValues {
+	imageUrl: string | undefined;
+	productionYear: number;
+	genres: string[];
+	title: string;
+	synopsis: string;
+	directors: {
+		name: string;
+	}[];
+	writers: {
+		name: string;
+	}[];
+	cast: { name: string }[];
+}
+
+export interface InitialMovie {
 	date: string | undefined;
 	imageUrl: string | undefined;
 	productionYear: number;

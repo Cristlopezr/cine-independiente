@@ -1,5 +1,5 @@
 import { Button, Form, Loading, Separator } from '@/components/ui';
-import { useAuthStore, useCineStore } from '@/hooks';
+import { useCineStore } from '@/hooks';
 import { uploadMovieFormSchema } from '@/schemas/zSchemas';
 import { useEffect, useState } from 'react';
 import { BsFillCheckCircleFill, BsFillExclamationTriangleFill, BsXCircle } from 'react-icons/bs';
@@ -38,7 +38,6 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	}, []);
 
 	const [updateMovieInfo, { isLoading }] = useUpdateMovieInfoMutation();
-	const { user } = useAuthStore();
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
 		resolver: zodResolver(uploadMovieFormSchema),
 		defaultValues: {
@@ -106,15 +105,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		const { movieImage, ...newValues } = values;
 		const formValues = {
 			...newValues,
-			date: movieToUpload.date,
 			imageUrl: movieToUpload.imageUrl,
 			productionYear: Number(values.productionYear),
-			user_id: user.user_id,
-			enabled: true,
-			explicitContent: false,
-			user_id_date: user.user_id + movieToUpload.date,
-			duration: 0,
-			//!Enabled por ahora true;
 		};
 		return formValues;
 	};

@@ -6,6 +6,7 @@ import {
 	Director,
 	Genre,
 	GenreWithMovies,
+	InitialMovie,
 	Movie,
 	RecommendedMovie,
 	UpdateMovie,
@@ -106,7 +107,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
-		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, CleanUploadMovieFormValues>({
+		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, InitialMovie>({
 			query: data => {
 				const { writers, directors, cast, genres, ...movie } = data;
 				const formData = {
