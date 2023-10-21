@@ -49,6 +49,7 @@ export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
 		<section className='font-semibold main-slider-container relative overflow-hidden'>
 			<div className='absolute w-full h-[400px] -bottom-10' style={gradientStyle}></div>
 			<div className='absolute w-full h-[600px] -bottom-10' style={gradientStyle}></div>
+			<div className='bg-gradient-to-r from-background pointer-events-none from-0% absolute -top-36 bottom-0 -left-52 right-[80%]'></div>
 			<section className='absolute flex flex-col gap-2 lg:gap-3 bottom-10 font-semibold z-10 ps-10 md:px-14 w-full'>
 				<p className='uppercase text-2xl md:text-3xl lg:text-4xl xl:text-6xl z-10 drop-shadow-[0_10px_10px_hsla(224,71.4%,4.1%,1)]'>
 					{movie.title}

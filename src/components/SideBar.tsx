@@ -33,7 +33,7 @@ export const SideBar = () => {
 	return (
 		<Sheet>
 			<SheetTrigger>
-				<BsList className='w-10 p-2 h-12 cursor-pointer text-white/80 hover:text-white' />
+				<BsList className='w-10 p-2 h-12 cursor-pointer text-white' />
 			</SheetTrigger>
 			<SheetContent side='left' className='p-16 flex flex-col gap-10 text-2xl'>
 				{sideBarItems.map(item => (

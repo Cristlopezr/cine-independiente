@@ -47,7 +47,7 @@ export function UserNav() {
 						<AvatarImage src={user.avatarUrl ? user.avatarUrl : undefined} />
 						<AvatarFallback className='font-semibold'>{user.name.slice(0, 1)}</AvatarFallback>
 					</Avatar>
-					<p className='hidden md:block text-white/80 hover:text-white'>{user.name}</p>
+					<p className='hidden md:block text-white'>{user.name}</p>
 				</span>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className='w-fit mt-3 mr-1 lg:mr-0' align='center' forceMount>

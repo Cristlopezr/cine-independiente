@@ -40,19 +40,20 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 					: 'bg-background/[98]'
 			}`}
 		>
-			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
+			<div className='bg-gradient-to-b from-background pointer-events-none -z-20 from-0% absolute -top-36 bottom-0 left-0 right-0'></div>
+			<div className='bg-gradient-to-b from-background pointer-events-none -z-20 from-0% absolute -top-36 -bottom-10 left-0 right-0'></div>
 			<div className='flex items-center gap-5 w-fit md:w-full'>
 				<SideBar />
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
 						<NavLink
-							className='text-white/80 hover:text-white'
+							className='text-white'
 							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
 							to='/'
 						>
 							Inicio
 						</NavLink>
-						<NavLink className='text-white/80 hover:text-white' to='/cine/movies'>
+						<NavLink className='text-white' to='/cine/movies'>
 							Películas
 						</NavLink>
 					</ul>
@@ -68,7 +69,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>
 							<Link to='/cine/search'>
-								<BsSearch className='text-xl text-white/80 hover:text-white cursor-pointer' />
+								<BsSearch className='text-xl text-white cursor-pointer' />
 							</Link>
 						</TooltipTrigger>
 						<TooltipContent sideOffset={8}>
@@ -82,7 +83,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 						<TooltipTrigger>
 							<RiVideoAddLine
 								onClick={onClickUpload}
-								className='text-2xl text-white/80 hover:text-white cursor-pointer'
+								className='text-2xl text-white cursor-pointer'
 							/>
 						</TooltipTrigger>
 						<TooltipContent sideOffset={8}>
