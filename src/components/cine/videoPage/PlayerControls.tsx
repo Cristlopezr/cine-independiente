@@ -66,11 +66,11 @@ export const PlayerControls = ({
 				/>
 			</div>
 			<div className='flex justify-between items-center'>
-				<p className='tracking-widest'>
+				<p className='text-sm sm:text-base tracking-widest'>
 					{elapsedTime}/{totalDuration}
 				</p>
 				<div className='absolute left-1/2 -translate-x-1/2 flex items-center gap-1 md:gap-2 lg:gap-5 justify-center'>
-					<div className='relative cursor-pointer' onClick={onRewind}>
+					<div className='relative cursor-pointer hidden min-[550px]:block' onClick={onRewind}>
 						<p className='absolute text-[10px] top-3 lg:text-xs lg:top-4 left-1/2 -translate-x-1/2'>
 							15
 						</p>
@@ -83,7 +83,7 @@ export const PlayerControls = ({
 							<IoIosPlay onClick={onPlayPause} className='w-10 h-10 cursor-pointer' />
 						)}
 					</div>
-					<div className='relative cursor-pointer' onClick={onFastForward}>
+					<div className='relative cursor-pointer hidden min-[550px]:block' onClick={onFastForward}>
 						<p className='absolute text-[10px] lg:text-xs top-3 lg:top-4 left-1/2 -translate-x-1/2'>
 							15
 						</p>
@@ -98,7 +98,7 @@ export const PlayerControls = ({
 							<IoVolumeHighOutline onClick={onMute} className='w-6 h-6 cursor-pointer' />
 						)}
 						<VolumeSlider
-							className='h-2 cursor-pointer w-0 sm:w-16 lg:w-28'
+							className='h-2 cursor-pointer hidden min-[450px]:flex w-16 lg:w-28'
 							value={[volume * 100]}
 							defaultValue={[volume * 100]}
 							max={100}

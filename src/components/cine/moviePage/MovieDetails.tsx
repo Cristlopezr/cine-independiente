@@ -4,7 +4,7 @@ export const MovieDetails = ({ movie }: { movie: DetailedMovie }) => {
 	return (
 		<section className='flex flex-col gap-10 px-5 md:px-14'>
 			<div className='z-10 flex flex-col gap-5'>
-				<ul className='flex text-xs gap-5 sm:text-sm'>
+				<ul className='flex text-xs flex-wrap gap-5 sm:text-sm'>
 					{movie.genres.map(({ name, genre_id }) => (
 						<li key={genre_id} className='flex items-center gap-2'>
 							<div className='w-1 h-1 bg-white/80 rounded-full'></div>
