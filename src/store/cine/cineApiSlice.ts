@@ -27,7 +27,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		getRecommendedMovies: builder.query<{recommendedMovies:RecommendedMovie[]}, string>({
 			query: user_id => `/user/get-recommended-movies-bygenre/${user_id}`,
 		}),
-		getMovies: builder.query<{recommendedMovies:any}, {take:string, query:string, skip:string}>({
+		getMovies: builder.query<Movie[], {take:string, query:string, skip:string}>({
 			query: data => `/movie/get-movies?q=${data.query}&take=${data.take}&skip=${data.skip}`,
 			providesTags: ['movie'],
 		}),
