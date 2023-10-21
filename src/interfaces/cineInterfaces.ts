@@ -124,6 +124,8 @@ export interface CleanUploadMovieFormValues {
 		name: string;
 	}[];
 	cast: { name: string }[];
+	user_id_date: string;
+	user_id: string;
 }
 
 export interface InitialMovie {

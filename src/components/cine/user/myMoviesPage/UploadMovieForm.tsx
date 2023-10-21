@@ -1,5 +1,5 @@
 import { Button, Form, Loading, Separator } from '@/components/ui';
-import { useCineStore } from '@/hooks';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { uploadMovieFormSchema } from '@/schemas/zSchemas';
 import { useEffect, useState } from 'react';
 import { BsFillCheckCircleFill, BsFillExclamationTriangleFill, BsXCircle } from 'react-icons/bs';
@@ -31,6 +31,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		movieUploadSuccessMessage,
 		onMovieUploadSuccessMessage,
 	} = useCineStore();
+	const { user } = useAuthStore();
 
 	useEffect(() => {
 		onErrorMessage('');
@@ -107,6 +108,8 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 			...newValues,
 			imageUrl: movieToUpload.imageUrl,
 			productionYear: Number(values.productionYear),
+			user_id_date: user.user_id + movieToUpload.date,
+			user_id: user.user_id,
 		};
 		return formValues;
 	};
