@@ -166,3 +166,22 @@ export interface UpdateMovie {
 export interface UpdateMovieTeam {
 	name: string;
 }
+
+export interface RecommendedMovie {
+	movie_id: string;
+	thumbnailUrl: string | null;
+	imageUrl: string;
+	date: string;
+	title: string;
+	productionYear: number;
+	movieUrl: string | null;
+	synopsis: string;
+	user_id: string;
+	enabled: boolean;
+	createdAt: string;
+	updatedAt: string;
+	user_id_date: string;
+	explicitContent: boolean;
+	duration: number;
+	genres: Genre[];
+}

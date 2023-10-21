@@ -1,9 +1,9 @@
-import { useGetGenresWithMoviesQuery } from '@/store/cine';
+import { useGetGenresWithMoviesQuery, useGetRecommendedMoviesQuery } from '@/store/cine';
 import { MainCarousel, MovieCarousel, settings169 } from '@/components/cine/carousel';
 import React from 'react';
 import { Skeleton } from '@/components/ui';
 import Slider from 'react-slick';
-import { useCineStore } from '@/hooks';
+import { useAuthStore, useCineStore } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 
 const skeletons = Array.from({ length: 5 });
@@ -15,8 +15,11 @@ export const CinePage = () => {
 		isFetching,
 	} = useGetGenresWithMoviesQuery({ take: '20', skip: '' });
 	const { userList, watchHistory } = useCineStore();
+	const { user } = useAuthStore();
+	const { data, isFetching: isRecommendedMoviesFetching } = useGetRecommendedMoviesQuery(user.user_id);
 	const navigate = useNavigate();
 
+	const recommendedMovies = data?.recommendedMovies?.map(recommendedMovie => recommendedMovie);
 	const watchHistoryMovies = watchHistory.map(singleWatchHistory => singleWatchHistory.movie);
 
 	const userListMovies = userList.map(item => item.movie);
@@ -32,7 +35,7 @@ export const CinePage = () => {
 		);
 	}
 
-	if (isFetching) {
+	if (isFetching || isRecommendedMoviesFetching) {
 		return (
 			<div>
 				<MainCarousel />
@@ -61,6 +64,14 @@ export const CinePage = () => {
 		<div>
 			<MainCarousel />
 			<section className='mt-5 flex flex-col gap-16 px-5 lg:px-12'>
+				{recommendedMovies && recommendedMovies.length > 0 && (
+					<MovieCarousel
+						movies={recommendedMovies}
+						title='Nuestra selección para ti'
+						aspect='aspect-[16/9]'
+						settings={settings169}
+					/>
+				)}
 				{watchHistoryMovies.length > 0 && (
 					<MovieCarousel
 						clickable
