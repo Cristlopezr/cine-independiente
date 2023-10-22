@@ -41,6 +41,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		}),
 		getUserList: builder.query<{ userList: UserList[] }, string>({
 			query: user_id => `/movie/get-user-list/${user_id}`,
+			providesTags:["userList"]
 		}),
 		addMovieToUserList :builder.mutation<{data:{addedMovieToUserList:{movie_id:string, updatedAt:string, user_id:string},msg:string}}, {user_id:string, movie:Movie}>({
 			query: data => ({
@@ -140,6 +141,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		}),
 		getWatchHistory: builder.query<{ watchHistory: WatchHistory[] }, string>({
 			query: id => `/movie/get-watch-history/${id}`,
+			providesTags:["watchHistory"]
 		}),
 		deleteUserWatchHistory: builder.mutation<{ deletedWatchHistoryCount:number, msg:string }, string>({
 			query: user_id => {
@@ -234,7 +236,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					);
 				} catch {}
 			},
-			invalidatesTags: ['movie', 'genresMovies'],
+			invalidatesTags: ['movie', 'genresMovies', 'userList', 'watchHistory'],
 		}),
 		updateGenres: builder.mutation<{ msg: string; updatedGenres: Genre[] },{ movie: DetailedMovie; genres: string[] }>({
 			query: data => {
