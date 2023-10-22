@@ -25,13 +25,13 @@ export const MyListPage = () => {
 	}
 
 	if (isError) {
-		<div className='mt-[100px] px-10'>
-			<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
-			<Separator className='my-5' />
-			<div className='mt-20'>
-				<div>Ha ocurrido un error al obtener la lista.</div>
+		return (
+			<div className='mt-[100px] px-10'>
+				<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
+				<Separator className='my-5' />
+				<div className='mt-10 text-xl text-center'>Ha ocurrido un error al obtener la lista.</div>
 			</div>
-		</div>;
+		);
 	}
 
 	if (userList && userList?.userList?.length < 1) {

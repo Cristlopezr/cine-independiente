@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import {
 	useAddMovieToUserListMutation,
 	useDeleteMovieFromUserListMutation,
+	useDeleteMovieFromWatchHistoryMutation,
 	useGetUserListQuery,
 	useGetWatchHistoryQuery,
 } from '@/store/cine';
@@ -30,6 +31,7 @@ export const MovieCarouselItem = ({
 	const isMovieInlist = userList?.userList.some(({ movie_id }) => movie_id === movie.movie_id);
 	const [addMovieToList] = useAddMovieToUserListMutation();
 	const [deleteFromList] = useDeleteMovieFromUserListMutation();
+	const [deleteFromWatchHistory] = useDeleteMovieFromWatchHistoryMutation();
 
 	const onClickMovie = (movieId: string) => {
 		navigate(`/movie/${movieId}`);
@@ -47,8 +49,8 @@ export const MovieCarouselItem = ({
 		await deleteFromList({ user_id: user.user_id, movie_id: movie.movie_id });
 	};
 
-	const onClickDeleteFromHistory = () => {
-		/* startDeletingFromWatchHistory({ movie_id: movie.movie_id, user_id: user.user_id }); */
+	const onClickDeleteFromHistory = async () => {
+		await deleteFromWatchHistory({ user_id: user.user_id, movie_id: movie.movie_id });
 	};
 
 	return (

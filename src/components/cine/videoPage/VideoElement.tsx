@@ -8,7 +8,7 @@ import { Loading } from '@/components/ui';
 import { BsChevronLeft } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { useSaveWatchHistoryMutation } from '@/store/cine';
-import { useAuthStore, useCineStore } from '@/hooks';
+import { useAuthStore } from '@/hooks';
 import { formatMovieTime } from '@/helpers';
 
 export type Level = {
@@ -37,7 +37,6 @@ export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewing
 	const navigate = useNavigate();
 	const [saveWatchHistory] = useSaveWatchHistoryMutation();
 	const playedRef = useRef(0);
-	const { onSetViewingTime } = useCineStore();
 	const { user } = useAuthStore();
 
 	const currentTime = playerRef.current?.getCurrentTime() || 0;
@@ -62,7 +61,6 @@ export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewing
 		document.addEventListener('visibilitychange', handleBeforeUnload);
 		return () => {
 			document.removeEventListener('visibilitychange', handleBeforeUnload);
-			onSetViewingTime(playedRef.current, movie, user.user_id);
 			onSaveWatchHistory(playedRef.current);
 		};
 	}, []);
@@ -198,6 +196,7 @@ export const VideoElement = ({ movie, viewingTime = 0 }: { movie: Movie; viewing
 			user_id: user.user_id,
 			movie_id: movie.movie_id,
 			currentTime,
+			movie
 		});
 	};
 

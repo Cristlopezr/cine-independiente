@@ -34,7 +34,6 @@ export const CinePage = () => {
 		singleWatchHistory => singleWatchHistory.movie
 	);
 
-	console.log(userListData);
 	const recommendedMovies = recommendedMoviesData?.recommendedMovies;
 
 	if (isError) {

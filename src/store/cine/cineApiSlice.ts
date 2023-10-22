@@ -112,7 +112,7 @@ export const cineApiSlice = cineApi.injectEndpoints({
 				};
 			},
 		}),
-		saveWatchHistory: builder.mutation<string,{ user_id: string; movie_id: string; currentTime: number }>({
+		saveWatchHistory: builder.mutation<string,{ user_id: string; movie_id: string; currentTime: number, movie:Movie }>({
 			query: data => {
 				return {
 					url: '/movie/save-watch-history',
@@ -120,6 +120,23 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					body: data,
 				};
 			},
+			async onQueryStarted({ user_id, movie, currentTime }, { dispatch, queryFulfilled }) {
+				const patchResult = dispatch(
+					cineApiSlice.util.updateQueryData('getWatchHistory', user_id, (draft) => {
+						if(draft.watchHistory.length>0){
+							const watchHistory = draft.watchHistory.filter((singleWatchHistory) => singleWatchHistory.movie_id !== movie.movie_id);
+							draft.watchHistory = [...watchHistory, {updatedAt:'0',user_id, movie_id:movie.movie_id, viewingTime:currentTime, movie}]
+							return
+						}
+					Object.assign(draft.watchHistory, [...draft.watchHistory, {user_id, movie_id:movie.movie_id, viewingTime:currentTime, movie}])
+				  })
+				)
+				try {
+				  await queryFulfilled
+				} catch {
+				  patchResult.undo()
+				}
+			  },
 		}),
 		getWatchHistory: builder.query<{ watchHistory: WatchHistory[] }, string>({
 			query: id => `/movie/get-watch-history/${id}`,
@@ -131,6 +148,16 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					method: 'DELETE',
 				};
 			},
+			onQueryStarted: async ( user_id , { dispatch, queryFulfilled }) => {
+				try {
+					await queryFulfilled;
+					dispatch(
+						cineApiSlice.util.updateQueryData('getWatchHistory', user_id, draft => {
+							draft.watchHistory = []
+						})
+					);
+				} catch {}
+			},
 		}),
 		deleteMovieFromWatchHistory: builder.mutation<{ deletedWatchHistory:{ user_id: string,movie_id: string,viewingTime: number,updatedAt: string}, msg:string }, {user_id:string, movie_id:string}>({
 			query: data => {
@@ -140,6 +167,18 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					body:data
 				};
 			},
+			async onQueryStarted({ user_id, movie_id }, { dispatch, queryFulfilled }) {
+				const patchResult = dispatch(
+					cineApiSlice.util.updateQueryData('getWatchHistory', user_id, (draft) => {
+						draft.watchHistory = draft.watchHistory.filter((singleWatchHistory) => singleWatchHistory.movie_id !== movie_id);
+				  })
+				)
+				try {
+				  await queryFulfilled
+				} catch {
+				  patchResult.undo()
+				}
+			  },
 		}),
 		uploadMovieInfo: builder.mutation<{ createdMovie: Movie }, InitialMovie>({
 			query: data => {
