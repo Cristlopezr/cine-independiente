@@ -5,12 +5,14 @@ import { BsCheck2, BsPlusLg } from 'react-icons/bs';
 import { Button } from '@/components/ui';
 import { useNavigate } from 'react-router-dom';
 import { formatMovieTime } from '@/helpers';
-import { useAuthStore, useCineStore } from '@/hooks';
+import { useAddMovieToUserListMutation, useDeleteMovieFromUserListMutation } from '@/store/cine';
+import { useAuthStore } from '@/hooks';
 
 interface HeaderProps {
 	movie: Movie;
 	onClickPlay: (id: string) => void;
 	isCarousel?: boolean;
+	isMovieInlist?: boolean;
 }
 
 const gradientStyle = {
@@ -26,23 +28,30 @@ const gradientStyle = {
 	  hsla(224, 71.4%, 4.1%, 0) 100%)`,
 };
 
-export const Header = ({ movie, onClickPlay, isCarousel }: HeaderProps) => {
+export const Header = ({ movie, onClickPlay, isCarousel, isMovieInlist }: HeaderProps) => {
 	const navigate = useNavigate();
-
-	const { startAddingMovieTolist, startDeletingMovieFromList, userList } = useCineStore();
+	const [addMovieToList] = useAddMovieToUserListMutation();
+	const [deleteMovieFromList] = useDeleteMovieFromUserListMutation();
 	const { user } = useAuthStore();
 
-	const isMovieInlist = userList.some(({ movie_id }) => movie_id === movie.movie_id);
 	const onClickSeeDetails = (movieId: string) => {
 		navigate(`/movie/${movieId}`);
 	};
 
-	const onClickAddToList = () => {
-		startAddingMovieTolist({ movie_id: movie.movie_id, user_id: user.user_id, movie });
+	const onClickAddToList = async () => {
+		try {
+			await addMovieToList({ user_id: user.user_id, movie });
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
-	const onClickDeleteFromList = () => {
-		startDeletingMovieFromList({ movie_id: movie.movie_id, user_id: user.user_id });
+	const onClickDeleteFromList = async () => {
+		try {
+			await deleteMovieFromList({ user_id: user.user_id, movie_id: movie.movie_id });
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (

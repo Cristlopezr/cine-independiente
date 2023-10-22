@@ -1,9 +1,14 @@
-import { useGetGenresWithMoviesQuery, useGetRecommendedMoviesQuery } from '@/store/cine';
+import {
+	useGetGenresWithMoviesQuery,
+	useGetRecommendedMoviesQuery,
+	useGetUserListQuery,
+	useGetWatchHistoryQuery,
+} from '@/store/cine';
 import { MainCarousel, MovieCarousel, settings169 } from '@/components/cine/carousel';
 import React from 'react';
 import { Skeleton } from '@/components/ui';
 import Slider from 'react-slick';
-import { useAuthStore, useCineStore } from '@/hooks';
+import { useAuthStore } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 
 const skeletons = Array.from({ length: 5 });
@@ -14,15 +19,23 @@ export const CinePage = () => {
 		isError,
 		isFetching,
 	} = useGetGenresWithMoviesQuery({ take: '20', skip: '' });
-	const { userList, watchHistory } = useCineStore();
 	const { user } = useAuthStore();
-	const { data, isFetching: isRecommendedMoviesFetching } = useGetRecommendedMoviesQuery(user.user_id);
+	const { data: recommendedMoviesData, isFetching: isRecommendedMoviesFetching } =
+		useGetRecommendedMoviesQuery(user.user_id);
+	const { data: watchHistoryData, isFetching: isWatchHistoryFetching } = useGetWatchHistoryQuery(
+		user.user_id
+	);
+
+	const { data: userListData, isFetching: isUserListFetching } = useGetUserListQuery(user.user_id);
 	const navigate = useNavigate();
 
-	const recommendedMovies = data?.recommendedMovies?.map(recommendedMovie => recommendedMovie);
-	const watchHistoryMovies = watchHistory.map(singleWatchHistory => singleWatchHistory.movie);
+	const userListMovies = userListData?.userList.map(item => item.movie);
+	const watchHistoryMovies = watchHistoryData?.watchHistory.map(
+		singleWatchHistory => singleWatchHistory.movie
+	);
 
-	const userListMovies = userList.map(item => item.movie);
+	console.log(userListData);
+	const recommendedMovies = recommendedMoviesData?.recommendedMovies;
 
 	if (isError) {
 		return (
@@ -35,7 +48,7 @@ export const CinePage = () => {
 		);
 	}
 
-	if (isFetching || isRecommendedMoviesFetching) {
+	if (isFetching || isRecommendedMoviesFetching || isWatchHistoryFetching || isUserListFetching) {
 		return (
 			<div>
 				<MainCarousel />
@@ -72,7 +85,7 @@ export const CinePage = () => {
 						settings={settings169}
 					/>
 				)}
-				{watchHistoryMovies.length > 0 && (
+				{watchHistoryMovies && watchHistoryMovies.length > 0 && (
 					<MovieCarousel
 						clickable
 						onClick={() => onClickClickableCarousel('/user/my-history')}
@@ -82,7 +95,7 @@ export const CinePage = () => {
 						settings={settings169}
 					/>
 				)}
-				{userListMovies.length > 0 && (
+				{userListMovies && userListMovies.length > 0 && (
 					<MovieCarousel
 						onClick={() => onClickClickableCarousel('/user/my-list')}
 						clickable

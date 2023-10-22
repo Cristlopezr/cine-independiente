@@ -42,12 +42,24 @@ export const cineApiSlice = cineApi.injectEndpoints({
 		getUserList: builder.query<{ userList: UserList[] }, string>({
 			query: user_id => `/movie/get-user-list/${user_id}`,
 		}),
-		addMovieToUserList :builder.mutation<{data:{addedMovieToUserList:{movie_id:string, updatedAt:string, user_id:string},msg:string}}, {user_id:string, movie_id:string}>({
+		addMovieToUserList :builder.mutation<{data:{addedMovieToUserList:{movie_id:string, updatedAt:string, user_id:string},msg:string}}, {user_id:string, movie:Movie}>({
 			query: data => ({
 				url:"/movie/add-movie-user-list",
 				method:"POST",
-				body:data
-			})
+				body:{user_id:data.user_id, movie_id:data.movie.movie_id}
+			}),
+			async onQueryStarted({ user_id, movie }, { dispatch, queryFulfilled }) {
+				const patchResult = dispatch(
+					cineApiSlice.util.updateQueryData('getUserList', user_id, (draft) => {
+					Object.assign(draft.userList, [...draft.userList, {user_id, movie_id:movie.movie_id, movie}])
+				  })
+				)
+				try {
+				  await queryFulfilled
+				} catch {
+				  patchResult.undo()
+				}
+			  },
 		}),
 		deleteMovieFromUserList: builder.mutation<{ data: { deletedMovieFromUserList:{movie_id:string, updatedAt:string, user_id:string},msg:string } }, {user_id:string, movie_id:string}>({
 			query: data => {
@@ -57,6 +69,18 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					body:data
 				};
 			},
+			async onQueryStarted({ user_id, movie_id }, { dispatch, queryFulfilled }) {
+				const patchResult = dispatch(
+					cineApiSlice.util.updateQueryData('getUserList', user_id, (draft) => {
+						draft.userList = draft.userList.filter((list) => list.movie_id !== movie_id);
+				  })
+				)
+				try {
+				  await queryFulfilled
+				} catch {
+				  patchResult.undo()
+				}
+			  },
 		}),
 		deleteUserList: builder.mutation<{ deletedUserListCount:number, msg:string }, string>({
 			query: user_id => {
@@ -64,6 +88,16 @@ export const cineApiSlice = cineApi.injectEndpoints({
 					url: `/movie/delete-user-list/${user_id}`,
 					method: 'DELETE',
 				};
+			},
+			onQueryStarted: async ( user_id , { dispatch, queryFulfilled }) => {
+				try {
+					await queryFulfilled;
+					dispatch(
+						cineApiSlice.util.updateQueryData('getUserList', user_id, draft => {
+							draft.userList = []
+						})
+					);
+				} catch {}
 			},
 		}),
 		getMoviesByUser: builder.query<{ userMovies: Movie[] }, string>({
@@ -282,13 +316,12 @@ export const {
 	useGetMoviesByGenreQuery,
 	useGetGenresWithMoviesQuery,
 	useGetWatchHistoryQuery,
-	useLazyGetWatchHistoryQuery,
 	useGetMoviesByUserQuery,
 	useUpdateMovieMutation,
 	useUpdateDirectorsMutation,
 	useUpdateWritersMutation,
 	useUpdateCastMutation,
-	useLazyGetUserListQuery,
+	useGetUserListQuery,
 	useAddMovieToUserListMutation,
 	useDeleteMovieFromUserListMutation,
 	useDeleteUserListMutation,

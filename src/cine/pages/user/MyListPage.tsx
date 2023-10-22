@@ -1,19 +1,18 @@
 import { CustomAlert } from '@/components';
 import { MovieCarouselItem } from '@/components/cine/carousel';
 import { Button, Loading, Separator } from '@/components/ui';
-import { useAuthStore, useCineStore, useShowHideAlert } from '@/hooks';
-import { useDeleteUserListMutation } from '@/store/cine';
+import { useAuthStore, useShowHideAlert } from '@/hooks';
+import { useDeleteUserListMutation, useGetUserListQuery } from '@/store/cine';
 import React from 'react';
 import { BiSolidError } from 'react-icons/bi';
 
 export const MyListPage = () => {
 	const { user } = useAuthStore();
-	const { userList, isGetUserListLoading, onDeleteUserList } = useCineStore();
-
+	const { data: userList, isFetching, isError } = useGetUserListQuery(user.user_id);
 	const [deleteUserList, { isLoading }] = useDeleteUserListMutation();
 	const { showAlert, showHideAlert } = useShowHideAlert();
 
-	if (isGetUserListLoading) {
+	if (isFetching) {
 		return (
 			<div className='mt-[100px] px-10'>
 				<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
@@ -25,7 +24,17 @@ export const MyListPage = () => {
 		);
 	}
 
-	if (userList.length < 1) {
+	if (isError) {
+		<div className='mt-[100px] px-10'>
+			<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
+			<Separator className='my-5' />
+			<div className='mt-20'>
+				<div>Ha ocurrido un error al obtener la lista.</div>
+			</div>
+		</div>;
+	}
+
+	if (userList && userList?.userList?.length < 1) {
 		return (
 			<div className='mt-[100px] px-10'>
 				<h1 className='px-5 text-2xl font-semibold'>Mi lista</h1>
@@ -38,7 +47,6 @@ export const MyListPage = () => {
 	const onDeleteList = async () => {
 		try {
 			await deleteUserList(user.user_id).unwrap();
-			onDeleteUserList();
 		} catch (error) {
 			showHideAlert('error', 'Ha ocurrido un error al eliminar la lista.');
 		}
@@ -67,7 +75,7 @@ export const MyListPage = () => {
 			</div>
 			<Separator className='my-5' />
 			<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
-				{userList?.map(({ movie }) => (
+				{userList?.userList?.map(({ movie }) => (
 					<React.Fragment key={movie.movie_id}>
 						<MovieCarouselItem movie={movie} className='aspect-[16/9]' />
 					</React.Fragment>
