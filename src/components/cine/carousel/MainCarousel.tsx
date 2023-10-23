@@ -11,7 +11,7 @@ function RigthArrow(props: any) {
 	const isDisabled = onClick === null;
 	return (
 		<div
-			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-12 -right-0 rounded-sm z-10 top-1 bottom-0 flex items-center justify-center`}
+			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-fit right-0 rounded-sm z-10 top-1 bottom-0 flex items-center justify-center`}
 			onClick={onClick}
 		>
 			<BsChevronRight
@@ -29,7 +29,7 @@ function LeftArrow(props: any) {
 
 	return (
 		<div
-			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-12 left-0 rounded-sm z-10 top-1 bottom-0 flex items-center justify-center`}
+			className={`bg-transparent cursor-pointer absolute group/arrow transition-all duration-300 ease-in-out w-fit left-0 rounded-sm z-10 top-1 bottom-0 flex items-center justify-center`}
 			onClick={onClick}
 		>
 			<BsChevronLeft
@@ -63,7 +63,7 @@ const settings = {
 
 export const MainCarousel = () => {
 	const navigate = useNavigate();
-	const { data: movies, isError, isFetching } = useGetMoviesQuery('');
+	const { data: movies, isError, isFetching } = useGetMoviesQuery({ query: '', take: '10', skip: '' });
 
 	if (isError) {
 		return (

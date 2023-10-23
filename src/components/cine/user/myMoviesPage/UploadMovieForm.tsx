@@ -31,6 +31,7 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		movieUploadSuccessMessage,
 		onMovieUploadSuccessMessage,
 	} = useCineStore();
+	const { user } = useAuthStore();
 
 	useEffect(() => {
 		onErrorMessage('');
@@ -38,7 +39,6 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 	}, []);
 
 	const [updateMovieInfo, { isLoading }] = useUpdateMovieInfoMutation();
-	const { user } = useAuthStore();
 	const form = useForm<z.infer<typeof uploadMovieFormSchema>>({
 		resolver: zodResolver(uploadMovieFormSchema),
 		defaultValues: {
@@ -106,15 +106,10 @@ export const UploadMovieForm = ({ onCloseModal }: { onCloseModal: () => void }) 
 		const { movieImage, ...newValues } = values;
 		const formValues = {
 			...newValues,
-			date: movieToUpload.date,
 			imageUrl: movieToUpload.imageUrl,
 			productionYear: Number(values.productionYear),
-			user_id: user.user_id,
-			enabled: true,
-			explicitContent: false,
 			user_id_date: user.user_id + movieToUpload.date,
-			duration: 0,
-			//!Enabled por ahora true;
+			user_id: user.user_id,
 		};
 		return formValues;
 	};

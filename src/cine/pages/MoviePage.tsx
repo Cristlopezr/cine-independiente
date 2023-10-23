@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { CineLayout } from '../layout';
 import { useGetMovieQuery } from '@/store/cine';
 import { Loading } from '@/components/ui';
 import { Header, MovieDetails } from '@/components/cine/moviePage';
@@ -19,29 +18,23 @@ export const MoviePage = () => {
 
 	if (isError) {
 		return (
-			<CineLayout headerTransparent>
-				<div className='mt-[100px] text-center text-xl'>
-					Ha ocurrido un error al obtener la película.
-				</div>
-			</CineLayout>
+			<div className='mt-[100px] text-center text-xl'>Ha ocurrido un error al obtener la película.</div>
 		);
 	}
 
 	if (isFetching) {
 		return (
-			<CineLayout headerTransparent>
-				<div className='mt-40'>
-					<Loading />
-				</div>
-			</CineLayout>
+			<div className='mt-40'>
+				<Loading />
+			</div>
 		);
 	}
 
 	const { movie } = data!;
 	return (
-		<CineLayout headerTransparent>
+		<div>
 			<Header movie={movie} onClickPlay={onClickPlay} />
 			<MovieDetails movie={movie} />
-		</CineLayout>
+		</div>
 	);
 };

@@ -14,7 +14,8 @@ interface CineState {
 	genres: Genre[];
 	watchHistory: WatchHistory[];
 	userList: UserList[];
-	isLoading: boolean;
+	isGetUserListLoading: boolean;
+	isGetWatchHistoryLoading: boolean;
 }
 
 const initialState: CineState = {
@@ -29,7 +30,8 @@ const initialState: CineState = {
 	genres: [],
 	watchHistory: [],
 	userList: [],
-	isLoading: false,
+	isGetUserListLoading: false,
+	isGetWatchHistoryLoading: false,
 };
 
 export const cineSlice = createSlice({
@@ -53,14 +55,17 @@ export const cineSlice = createSlice({
 		},
 		onSetWatchHistory: (state, action) => {
 			state.watchHistory = action.payload;
-			state.isLoading = false;
+			state.isGetWatchHistoryLoading = false;
 		},
 		onSetUserList: (state, action) => {
 			state.userList = action.payload;
-			state.isLoading=false;
+			state.isGetUserListLoading = false;
 		},
-		onIsLoading: (state, action) => {
-			state.isLoading = action.payload;
+		onSetUserListLoading: (state, action) => {
+			state.isGetUserListLoading = action.payload;
+		},
+		onSetWatchHistoryLoading: (state, action) => {
+			state.isGetWatchHistoryLoading = action.payload;
 		},
 	},
 });
@@ -73,5 +78,6 @@ export const {
 	onSetMovieUploadSuccessMessage,
 	onSetWatchHistory,
 	onSetUserList,
-	onIsLoading,
+	onSetUserListLoading,
+	onSetWatchHistoryLoading,
 } = cineSlice.actions;

@@ -11,6 +11,7 @@
     "test": "jest --watchAll"
   },
   "dependencies": {
+    "@babel/core": "^7.23.2",
     "@hookform/resolvers": "^3.3.1",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
@@ -47,7 +48,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.0",
     "@testing-library/react": "^14.0.0",

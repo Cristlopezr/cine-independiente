@@ -1,5 +1,4 @@
 import { Input, Loading } from '@/components/ui';
-import { CineLayout } from '../layout';
 import { BsSearch } from 'react-icons/bs';
 import { useGetMoviesQuery } from '@/store/cine';
 import { MovieCarouselItem } from '@/components/cine/carousel';
@@ -12,46 +11,50 @@ export const SearchPage = () => {
 	const query = searchParams.get('q') || '';
 	const debouncedQuery = useDebounce(query);
 
-	const { data: movies, isError, isFetching, error } = useGetMoviesQuery(debouncedQuery);
+	const {
+		data: movies,
+		isError,
+		isFetching,
+		error,
+	} = useGetMoviesQuery({ query: debouncedQuery, take: '', skip: '' });
+
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchParams({ q: e.target.value });
 	};
 
 	return (
-		<CineLayout>
-			<div className='mt-32 px-10'>
-				<SearchInput onChange={onChange} query={query} />
-				{isFetching ? (
-					<div className='flex items-center justify-center mt-20'>
-						<Loading />
-					</div>
-				) : (
-					<>
-						{isError && error && 'status' in error && error.status === 404 ? (
-							<NotFound />
-						) : (
-							<>
-								{isError ? (
-									<Error />
-								) : (
-									<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
-										{movies?.map(movie => (
-											<React.Fragment key={movie.movie_id}>
-												<MovieCarouselItem
-													key={movie.movie_id}
-													movie={movie}
-													className='aspect-[16/9]'
-												/>
-											</React.Fragment>
-										))}
-									</div>
-								)}
-							</>
-						)}
-					</>
-				)}
-			</div>
-		</CineLayout>
+		<div className='mt-32 px-5 sm:px-10'>
+			<SearchInput onChange={onChange} query={query} />
+			{isFetching ? (
+				<div className='flex items-center justify-center mt-20'>
+					<Loading />
+				</div>
+			) : (
+				<>
+					{isError && error && 'status' in error && error.status === 404 ? (
+						<NotFound />
+					) : (
+						<>
+							{isError ? (
+								<Error />
+							) : (
+								<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
+									{movies?.map(movie => (
+										<React.Fragment key={movie.movie_id}>
+											<MovieCarouselItem
+												key={movie.movie_id}
+												movie={movie}
+												className='aspect-[16/9]'
+											/>
+										</React.Fragment>
+									))}
+								</div>
+							)}
+						</>
+					)}
+				</>
+			)}
+		</div>
 	);
 };
 
@@ -64,10 +67,10 @@ const SearchInput = ({
 }) => {
 	return (
 		<div className='relative flex items-center gap-5'>
-			<BsSearch className='absolute left-5 w-7 h-7' />
+			<BsSearch className='absolute left-5 w-5 h-5 sm:w-7 sm:h-7' />
 			<Input
 				placeholder='¿Qué película quieres ver?'
-				className='py-8 px-20 text-2xl'
+				className='py-8 ps-14 text-lg sm:px-20 sm:text-2xl'
 				onChange={onChange}
 				value={query}
 				spellCheck={false}

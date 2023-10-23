@@ -1,17 +1,13 @@
 import { Header } from '@/components/cine/layout';
+import { Outlet } from 'react-router-dom';
 
-export const CineLayout = ({
-	children,
-	headerTransparent,
-}: {
-	headerTransparent?: boolean;
-	children: React.ReactNode;
-}) => {
+export const CineLayout = ({ headerTransparent }: { headerTransparent?: boolean }) => {
 	return (
 		<div className='min-h-screen flex flex-col'>
 			<Header headerTransparent={headerTransparent} />
-			<main className='h-full'>{children}</main>
-
+			<main className='h-full'>
+				<Outlet />
+			</main>
 			<footer className='h-[180px]'></footer>
 		</div>
 	);

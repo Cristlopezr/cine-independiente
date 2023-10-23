@@ -1,14 +1,15 @@
-import { BsSearch /* BsList */ } from 'react-icons/bs';
+import { BsSearch } from 'react-icons/bs';
 import { RiVideoAddLine } from 'react-icons/ri';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserNav, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { useEffect, useState } from 'react';
+import { SideBar } from '@/components';
 
 export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) => {
 	const navigate = useNavigate();
 
 	const onClickUpload = () => {
-		navigate('/my-movies?upload=open');
+		navigate('/user/my-movies?upload=open');
 	};
 
 	const [scrolled, setScrolled] = useState(false);
@@ -31,7 +32,7 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 
 	return (
 		<header
-			className={`grid grid-cols-3 items-center  transition-all duration-300 h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
+			className={`grid grid-cols-[40px,1fr,1fr] min-[500px]:grid-cols-3 items-center transition-all duration-300 h-fit pt-1 md:h-[80px] px-5 sm:px-10 fixed z-50 right-0 left-0 ${
 				headerTransparent
 					? scrolled
 						? 'bg-background/[98]'
@@ -39,23 +40,27 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 					: 'bg-background/[98]'
 			}`}
 		>
-			<div className='bg-gradient-to-b from-background/50 pointer-events-none -z-20 from-0% absolute top-0 -bottom-10 left-0 right-0'></div>
+			<div className='bg-gradient-to-b from-background pointer-events-none -z-20 from-0% absolute -top-36 bottom-0 left-0 right-0'></div>
+			<div className='bg-gradient-to-b from-background pointer-events-none -z-20 from-0% absolute -top-36 -bottom-10 left-0 right-0'></div>
 			<div className='flex items-center gap-5 w-fit md:w-full'>
-				{/* <BsList className='w-10 p-2 h-12' /> */}
+				<SideBar />
 				<nav className='hidden md:block'>
 					<ul className='flex items-center gap-5 font-semibold'>
 						<NavLink
+							className='text-white'
 							/* style={({ isActive }) => (isActive ? { color: 'red' } : { color: 'white' })} */
 							to='/'
 						>
 							Inicio
 						</NavLink>
-						{/* <li>Géneros</li> */}
+						<NavLink className='text-white' to='/cine/movies'>
+							Películas
+						</NavLink>
 					</ul>
 				</nav>
 			</div>
 
-			<Link to='/' className='md:text-2xl font-semibold text-center'>
+			<Link to='/' className='md:text-2xl font-semibold text-center w-fit min-[500px]:w-full'>
 				Cine Stream
 			</Link>
 
@@ -63,8 +68,8 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>
-							<Link to='/search'>
-								<BsSearch className='text-xl cursor-pointer' />
+							<Link to='/cine/search'>
+								<BsSearch className='text-xl text-white cursor-pointer' />
 							</Link>
 						</TooltipTrigger>
 						<TooltipContent sideOffset={8}>
@@ -76,7 +81,10 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 				<TooltipProvider>
 					<Tooltip delayDuration={100}>
 						<TooltipTrigger>
-							<RiVideoAddLine onClick={onClickUpload} className='text-2xl cursor-pointer' />
+							<RiVideoAddLine
+								onClick={onClickUpload}
+								className='text-2xl text-white cursor-pointer'
+							/>
 						</TooltipTrigger>
 						<TooltipContent sideOffset={8}>
 							<p>Subir película</p>

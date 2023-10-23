@@ -4,7 +4,7 @@ module.exports = {
 		['@babel/preset-react', { runtime: 'automatic' }],
 		'@babel/preset-typescript',
 	],
-	plugins: [
+	/* plugins: [
 		function () {
 			return {
 				visitor: {
@@ -22,5 +22,5 @@ module.exports = {
 				},
 			},
 		],
-	],
+	], */
 };
