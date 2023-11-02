@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { formatMovieTime } from '@/helpers';
 import { useAddMovieToUserListMutation, useDeleteMovieFromUserListMutation } from '@/store/cine';
 import { useAuthStore } from '@/hooks';
+import { v4 as uuidv4 } from 'uuid';
+import { gradientStyle } from '@/lib/utils';
 
 interface HeaderProps {
 	movie: Movie;
@@ -14,19 +16,6 @@ interface HeaderProps {
 	isCarousel?: boolean;
 	isMovieInlist?: boolean;
 }
-
-const gradientStyle = {
-	backgroundImage: `linear-gradient(
-	  hsla(224, 71.4%, 4.1%, 0) 0%, hsla(224, 71.4%, 4.1%, 0) 49.02%, 
-	  hsla(224, 71.4%, 4.1%, 0.009) 52.42%, hsla(224, 71.4%, 4.1%, 0.036) 55.82%, 
-	  hsla(224, 71.4%, 4.1%, 0.082) 59.22%, hsla(224, 71.4%, 4.1%, 0.15) 62.62%, 
-	  hsla(224, 71.4%, 4.1%, 0.23) 66.02%, hsla(224, 71.4%, 4.1%, 0.332) 69.41%, 
-	  hsla(224, 71.4%, 4.1%, 0.443) 72.81%, hsla(224, 71.4%, 4.1%, 0.557) 76.21%, 
-	  hsla(224, 71.4%, 4.1%, 0.668) 79.61%, hsla(224, 71.4%, 4.1%, 0.77) 83.01%, 
-	  hsla(224, 71.4%, 4.1%, 0.85) 86.41%, hsla(224, 71.4%, 4.1%, 0.918) 89.8%, 
-	  hsla(224, 71.4%, 4.1%, 0.964) 93.2%, hsla(224, 71.4%, 4.1%, 0.991) 96.6%, 
-	  hsla(224, 71.4%, 4.1%, 0) 100%)`,
-};
 
 export const Header = ({ movie, onClickPlay, isCarousel, isMovieInlist }: HeaderProps) => {
 	const navigate = useNavigate();
@@ -54,6 +43,11 @@ export const Header = ({ movie, onClickPlay, isCarousel, isMovieInlist }: Header
 		}
 	};
 
+	const onClickWatchParty = () => {
+		const roomId = uuidv4();
+		navigate(`/room/${movie.movie_id}/${roomId}`);
+	};
+
 	return (
 		<section className='font-semibold main-slider-container relative overflow-hidden'>
 			<div className='absolute w-full h-[400px] -bottom-10' style={gradientStyle}></div>
@@ -75,7 +69,12 @@ export const Header = ({ movie, onClickPlay, isCarousel, isMovieInlist }: Header
 						className='text-4xl md:text-5xl xl:text-6xl text-primary/80 cursor-pointer hover:text-primary'
 					/>
 					{isCarousel ? (
-						<Button onClick={() => onClickSeeDetails(movie.movie_id)} variant='outline' size='lg'>
+						<Button
+							onClick={() => onClickSeeDetails(movie.movie_id)}
+							variant='outline'
+							size='lg'
+							className='border-border-second border-2'
+						>
 							Ver detalles
 						</Button>
 					) : (
@@ -91,6 +90,13 @@ export const Header = ({ movie, onClickPlay, isCarousel, isMovieInlist }: Header
 									className='text-3xl text-primary/80 cursor-pointer hover:text-primary'
 								/>
 							)}
+							<Button
+								variant='outline'
+								className='border-border-second border-2'
+								onClick={onClickWatchParty}
+							>
+								Ver en grupo
+							</Button>
 						</>
 					)}
 				</section>
