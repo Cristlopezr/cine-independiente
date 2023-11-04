@@ -17,7 +17,7 @@ export const CineRoutes = () => {
 				<Route path='/user' element={<CineLayout />}>
 					<Route path='my-movies' element={<MyMoviesPage />} />
 					<Route path='profile' element={<ProfilePage />} />
-					<Route path='my-movies/:id' element={<MovieDetailsPage />} />
+					<Route path='my-movies/:id/:user_id' element={<MovieDetailsPage />} />
 					<Route path='my-list' element={<MyListPage />} />
 					<Route path='my-history' element={<MyHistoryPage />} />
 				</Route>

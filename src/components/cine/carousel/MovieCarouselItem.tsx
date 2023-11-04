@@ -1,6 +1,13 @@
-import { useAuthStore, useCineStore } from '@/hooks';
+import { useAuthStore } from '@/hooks';
 import { Movie } from '@/interfaces';
 import { cn } from '@/lib/utils';
+import {
+	useAddMovieToUserListMutation,
+	useDeleteMovieFromUserListMutation,
+	useDeleteMovieFromWatchHistoryMutation,
+	useGetUserListQuery,
+	useGetWatchHistoryQuery,
+} from '@/store/cine';
 import { BsCheck2, BsPlusLg, BsX } from 'react-icons/bs';
 import { RiPlayFill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
@@ -16,17 +23,15 @@ export const MovieCarouselItem = ({
 }) => {
 	const navigate = useNavigate();
 
-	const {
-		watchHistory,
-		startAddingMovieTolist,
-		startDeletingMovieFromList,
-		userList,
-		startDeletingFromWatchHistory,
-	} = useCineStore();
 	const { user } = useAuthStore();
 
-	const history = watchHistory?.find(({ movie_id }) => movie_id === movie.movie_id);
-	const isMovieInlist = userList.some(({ movie_id }) => movie_id === movie.movie_id);
+	const { data: watchHistory } = useGetWatchHistoryQuery(user.user_id);
+	const { data: userList } = useGetUserListQuery(user.user_id);
+	const history = watchHistory?.watchHistory?.find(({ movie_id }) => movie_id === movie.movie_id);
+	const isMovieInlist = userList?.userList.some(({ movie_id }) => movie_id === movie.movie_id);
+	const [addMovieToList] = useAddMovieToUserListMutation();
+	const [deleteFromList] = useDeleteMovieFromUserListMutation();
+	const [deleteFromWatchHistory] = useDeleteMovieFromWatchHistoryMutation();
 
 	const onClickMovie = (movieId: string) => {
 		navigate(`/movie/${movieId}`);
@@ -36,16 +41,16 @@ export const MovieCarouselItem = ({
 		navigate(`/movie/player/${movieId}`);
 	};
 
-	const onClickAddToList = () => {
-		startAddingMovieTolist({ movie_id: movie.movie_id, user_id: user.user_id, movie });
+	const onClickAddToList = async () => {
+		await addMovieToList({ user_id: user.user_id, movie });
 	};
 
-	const onClickDeleteFromList = () => {
-		startDeletingMovieFromList({ movie_id: movie.movie_id, user_id: user.user_id });
+	const onClickDeleteFromList = async () => {
+		await deleteFromList({ user_id: user.user_id, movie_id: movie.movie_id });
 	};
 
-	const onClickDeleteFromHistory = () => {
-		startDeletingFromWatchHistory({ movie_id: movie.movie_id, user_id: user.user_id });
+	const onClickDeleteFromHistory = async () => {
+		await deleteFromWatchHistory({ user_id: user.user_id, movie_id: movie.movie_id });
 	};
 
 	return (

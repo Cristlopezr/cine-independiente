@@ -1,15 +1,19 @@
 import { CustomAlert } from '@/components';
 import { MovieCarouselItem } from '@/components/cine/carousel';
 import { Button, Loading, Separator } from '@/components/ui';
-import { useAuthStore, useCineStore, useShowHideAlert } from '@/hooks';
-import { useDeleteUserWatchHistoryMutation } from '@/store/cine';
+import { useAuthStore, useShowHideAlert } from '@/hooks';
+import { useDeleteUserWatchHistoryMutation, useGetWatchHistoryQuery } from '@/store/cine';
 import React from 'react';
 import { BiSolidError } from 'react-icons/bi';
 
 export const MyHistoryPage = () => {
-	const { watchHistory, isGetWatchHistoryLoading, onDeleteUserWatchHistory } = useCineStore();
 	const { user } = useAuthStore();
 	const [deleteWatchHistory, { isLoading }] = useDeleteUserWatchHistoryMutation();
+	const {
+		data: watchHistory,
+		isFetching: isGetWatchHistoryLoading,
+		isError,
+	} = useGetWatchHistoryQuery(user.user_id);
 	const { showAlert, showHideAlert } = useShowHideAlert();
 
 	if (isGetWatchHistoryLoading) {
@@ -24,7 +28,21 @@ export const MyHistoryPage = () => {
 		);
 	}
 
-	if (watchHistory.length < 1) {
+	if (isError) {
+		return (
+			<div className='mt-[100px] px-10'>
+				<h1 className='px-5 text-2xl font-semibold'>Mi historial</h1>
+				<Separator className='my-5' />
+				<div className='mt-20'>
+					<div className='mt-10 text-xl text-center'>
+						Ha ocurrido un error al obtener el historial de visualización.
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	if (watchHistory?.watchHistory && watchHistory?.watchHistory?.length < 1) {
 		return (
 			<div className='mt-[100px] px-10'>
 				<h1 className='px-5 text-2xl font-semibold'>Mi historial</h1>
@@ -37,7 +55,6 @@ export const MyHistoryPage = () => {
 	const onDeleteWatchHistory = async () => {
 		try {
 			await deleteWatchHistory(user.user_id).unwrap();
-			onDeleteUserWatchHistory();
 		} catch (error) {
 			showHideAlert('error', 'Ha ocurrido un error al eliminar el historial de visualización.');
 		}
@@ -66,7 +83,7 @@ export const MyHistoryPage = () => {
 			</div>
 			<Separator className='my-5' />
 			<div className='mt-10 grid grid-cols-2 gap-y-5 gap-x-3 min-[677px]:grid-cols-3 min-[1177px]:grid-cols-4 min-[1500px]:grid-cols-5'>
-				{watchHistory?.map(({ movie }) => (
+				{watchHistory?.watchHistory?.map(({ movie }) => (
 					<React.Fragment key={movie.movie_id}>
 						<MovieCarouselItem movie={movie} className='aspect-[16/9]' isHistoryPage />
 					</React.Fragment>

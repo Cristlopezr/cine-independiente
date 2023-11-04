@@ -35,7 +35,7 @@ export const MyMoviesPage = () => {
 	};
 
 	const onClickMovie = (movieId: string) => {
-		navigate(`/user/my-movies/${movieId}`);
+		navigate(`/user/my-movies/${movieId}/${user.user_id}`);
 	};
 
 	return (

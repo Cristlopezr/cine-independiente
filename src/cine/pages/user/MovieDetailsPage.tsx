@@ -9,19 +9,28 @@ import {
 	MovieImage,
 } from '@/components/cine/user/movieDetailsPage';
 import { Loading, Separator } from '@/components/ui';
-import { useShowHideAlert } from '@/hooks';
+import { useAuthStore, useShowHideAlert } from '@/hooks';
 import { useGetMovieQuery } from '@/store/cine';
+import { useEffect } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 import { BiSolidError } from 'react-icons/bi';
 
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const MovieDetailsPage = () => {
-	const { id } = useParams();
-
+	const { id, user_id } = useParams();
+	const navigate = useNavigate();
 	const { showAlert, showHideAlert } = useShowHideAlert();
 
 	const { data, isFetching, isError } = useGetMovieQuery(id!);
+
+	const { user } = useAuthStore();
+
+	useEffect(() => {
+		if (user.user_id !== user_id) {
+			navigate('/');
+		}
+	}, []);
 
 	if (isError) {
 		return (
