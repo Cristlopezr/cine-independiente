@@ -1,11 +1,13 @@
+import { CustomAlert } from '@/components';
 import { Header } from '@/components/cine/layout';
 import { VideoElWatchParty } from '@/components/cine/roomPage';
 import { Avatar, AvatarFallback, AvatarImage, Button, Loading, Separator } from '@/components/ui';
 import { formatMovieTime } from '@/helpers';
-import { useAuthStore } from '@/hooks';
+import { useAuthStore, useShowHideAlert } from '@/hooks';
 import { UserWatchParty } from '@/interfaces';
 import { useGetMovieQuery } from '@/store/cine';
 import { useEffect, useRef, useState } from 'react';
+import { AiOutlineCheck } from 'react-icons/ai';
 import ReactPlayer from 'react-player';
 import { useNavigate, useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
@@ -20,7 +22,7 @@ const pageText = {
 	startWatchingButton: 'Empezar a ver',
 	roomComplete: 'La sala está completa.',
 };
-
+const baseUrl = import.meta.env.VITE_BASE_URL;
 type RoomStatus = 'playing' | 'waiting';
 type MovieState = 'started' | 'not-started';
 export const Room = () => {
@@ -33,6 +35,7 @@ export const Room = () => {
 	const navigate = useNavigate();
 	const { data, isError, isFetching } = useGetMovieQuery(movie_id!);
 	const playerRef = useRef<ReactPlayer | null>(null);
+	const { showAlert, showHideAlert } = useShowHideAlert();
 	const [playerState, setPlayerState] = useState({
 		playing: true,
 		muted: false,
@@ -110,12 +113,12 @@ export const Room = () => {
 		socket.on('disconnect', () => {
 			console.log('Usuario desconectado');
 		});
-		//!Enviar el roomId, user_id, movie_id
-		//!OnUserJoinRoom setear los participantes
 		return () => {
 			socket.off('SERVER:started-movie');
 			socket.off('SERVER:user-seeked');
 			socket.off('SERVER:play-pause');
+			socket.off('SERVER:movie-ended');
+			socket.off('SERVER:time-stamp');
 			socket.off('SERVER:participants');
 			socket.off('SERVER:room-status');
 			socket.off('connect');
@@ -140,14 +143,6 @@ export const Room = () => {
 
 	const onLeaveWatchParty = () => {
 		navigate('/');
-		/* 	const remainingParticipants = participants.filter(
-			participant => participant.user_id !== user.user_id
-		);
-		setParticipants(remainingParticipants);
-		if (socket === undefined) return;
-		socket.emit('CLIENT:participant-left-room', remainingParticipants); */
-		//!Setear participantes y enviar participantes
-		//!Se setea solo on disconect del server
 	};
 
 	const onClickPlay = () => {
@@ -156,12 +151,26 @@ export const Room = () => {
 			room_status: 'playing',
 			movie_state: 'started',
 		});
-		//!Change room status and send room status
+	};
+
+	const onCopyLink = () => {
+		const link = `${baseUrl}/room/${movie_id}/${room_id}`;
+		navigator.clipboard.writeText(link).then(() => {
+			showHideAlert('success', 'Enlace copiado');
+		});
 	};
 
 	const { movie } = data!;
 	return (
 		<>
+			<CustomAlert
+				className={`${
+					showAlert.success ? 'top-32' : '-top-24'
+				} bg-background border-green-700 transition-all z-50 duration-500 ease-in-out absolute left-1/2 -translate-x-1/2 w-1/2`}
+				icon={<AiOutlineCheck className='w-6 h-6 text-green-700' />}
+				title='Éxito'
+				description={showAlert.msg}
+			/>
 			{movieState === 'not-started' && (
 				<>
 					<Header />
@@ -228,11 +237,16 @@ export const Room = () => {
 										</span>
 									))}
 								</div>
-								<div className='flex flex-col gap-1 items-center w-full'>
+								<div className='flex flex-col gap-10 items-center w-full'>
 									<Button onClick={onClickPlay} className='w-fit'>
 										{pageText.startWatchingButton}
 									</Button>
-									<p className='text-xl font-semibold'>{pageText.inviteText}</p>
+									<div className='flex flex-col items-center'>
+										<p className='text-xl font-semibold'>{pageText.inviteText}</p>
+										<Button variant='link' className='text-base' onClick={onCopyLink}>
+											Copiar enlace
+										</Button>
+									</div>
 								</div>
 							</div>
 						</div>
