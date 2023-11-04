@@ -1,40 +1,59 @@
-import { Movie } from '@/interfaces';
-import { useEffect, useRef, useState } from 'react';
+import { Movie, UserWatchParty } from '@/interfaces';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import screenfull from 'screenfull';
 import { PlayerControls } from '../videoPage/PlayerControls';
 import { OnProgressProps } from 'react-player/base';
-import { Loading } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage, Loading } from '@/components/ui';
 import { BsChevronLeft } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
 import { useSaveWatchHistoryMutation } from '@/store/cine';
 import { useAuthStore } from '@/hooks';
 import { formatMovieTime } from '@/helpers';
-
+import type { Socket } from 'socket.io-client';
 export type Level = {
 	height: number;
 };
 const baseUrl = 'https://storage.googleapis.com/';
 const urlBeacon = `${import.meta.env.VITE_API_CINE_BASE_URL}/movie/save-watch-history`;
+type MovieState = 'started' | 'not-started';
+type PlayerState = {
+	playing: boolean; //true,
+	muted: boolean; //false,
+	volume: number; //1,
+	volumeSeek: number; //1,
+	fullScreen: boolean; // false,
+	played: number; //0,
+	loaded: number; //0,
+	seeking: boolean; //false,
+};
+type VideoElWatchPartyProps = {
+	movie: Movie;
+	viewingTime: number;
+	socket: Socket;
+	room_id: string;
+	onSetMovieState: (movie_state: MovieState, socket: Socket) => void;
+	playerState: PlayerState;
+	setPlayerState: (playerState: PlayerState) => void;
+	playerRef: React.MutableRefObject<ReactPlayer | null>;
+	participants: UserWatchParty[];
+};
 
-export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; viewingTime: number }) => {
+export const VideoElWatchParty = ({
+	movie,
+	/* viewingTime = 0, */
+	socket,
+	room_id,
+	onSetMovieState,
+	playerState,
+	setPlayerState,
+	playerRef,
+	participants,
+}: VideoElWatchPartyProps) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
-	const [playerState, setPlayerState] = useState({
-		playing: true,
-		muted: false,
-		volume: 1,
-		volumeSeek: 1,
-		fullScreen: false,
-		played: 0,
-		loaded: 0,
-		seeking: false,
-	});
-	const playerRef = useRef<ReactPlayer | null>(null);
 	const playerContainerRef = useRef(null);
 	const [count, setCount] = useState(0);
 	const [showControls, setShowControls] = useState(true);
 	const [loading, setLoading] = useState(false);
-	const navigate = useNavigate();
 	const [saveWatchHistory] = useSaveWatchHistoryMutation();
 	const playedRef = useRef(0);
 	const { user } = useAuthStore();
@@ -46,6 +65,9 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 	const totalDuration = formatMovieTime(duration);
 
 	const { playing, muted, volume, volumeSeek, fullScreen, played, loaded, seeking } = playerState;
+	const participantsWatchingMovie = participants.filter(
+		participant => participant?.user_movie_state === 'started'
+	);
 
 	useEffect(() => {
 		const handleBeforeUnload = () => {
@@ -70,12 +92,7 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 	}, [played]);
 
 	const handlePlayerReady = () => {
-		const durationInt = parseInt(duration.toFixed(2));
-		const viewingTimeInt = parseInt(viewingTime.toFixed(2));
-
-		const hasFinishedMovie = durationInt - viewingTimeInt <= 2;
 		if (playerRef.current) {
-			playerRef.current.seekTo(hasFinishedMovie ? 0 : viewingTime);
 			const hlsPlayer = playerRef.current.getInternalPlayer('hls');
 
 			if (hlsPlayer) {
@@ -89,14 +106,18 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 
 	const onPlayPause = () => {
 		setPlayerState({ ...playerState, playing: !playing });
+		socket.emit('CLIENT:play-pause', { room_id, playing: !playing });
+		//!EMITIR STATE PLAY PAUSE
 	};
 
 	const onRewind = () => {
 		playerRef.current?.seekTo(playerRef.current.getCurrentTime() - 15);
+		//!EMITIR SEEK
 	};
 
 	const onFastForward = () => {
 		playerRef.current?.seekTo(playerRef.current.getCurrentTime() + 15);
+		//!EMITIR SEEK
 	};
 
 	const onMute = () => {
@@ -117,6 +138,7 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 
 		setPlayerState({ ...playerState, fullScreen: !screenfull.isFullscreen });
 	};
+
 	const onProgress = (state: OnProgressProps) => {
 		if (count > 5) {
 			setShowControls(false);
@@ -133,6 +155,12 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 
 		if (!seeking) {
 			setPlayerState({ ...playerState, played: state.playedSeconds, loaded: state.loadedSeconds });
+			socket.emit('CLIENT:on-progress', {
+				room_id,
+				user_time_stamp: state.playedSeconds,
+				user_id: user.user_id,
+				playing,
+			});
 		}
 	};
 
@@ -149,6 +177,7 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 
 		setPlayerState({ ...playerState, played: seeked, seeking: true });
 		playerRef.current?.seekTo(seeked);
+		socket.emit('CLIENT:user-seek', { room_id, seek_time_stamp: seeked, playing });
 	};
 
 	const onSeekEnded = () => {
@@ -173,19 +202,19 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 	const url = `${baseUrl}${movie?.movieUrl}`;
 
 	const onGoBack = () => {
-		navigate(`/movie/${movie.movie_id}`, {
-			replace: true,
-		});
+		onSetMovieState('not-started', socket);
 	};
 
 	const onEnded = () => {
-		navigate(`/movie/${movie.movie_id}`, {
-			replace: true,
+		socket.emit('CLIENT:movie-ended', {
+			room_id,
+			room_status: 'waiting',
+			movie_state: 'not-started',
 		});
 	};
 
 	const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-		if (e.keyCode === 32) {
+		if (e.key === 'space') {
 			onPlayPause();
 			onMouseMove();
 		}
@@ -208,6 +237,17 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 			onKeyDown={onKeyDown}
 			tabIndex={0}
 		>
+			<div className='absolute z-10 top-2 left-2 flex flex-col gap-2 opacity-80'>
+				{participantsWatchingMovie.map(({ avatarUrl, name, user_id }) => (
+					<div key={user_id} className='flex items-center gap-3'>
+						<Avatar className='w-6 h-6 border-border-second border-2'>
+							<AvatarImage src={avatarUrl ? avatarUrl : undefined} />
+							<AvatarFallback className='text-base'>{name.slice(0, 1)}</AvatarFallback>
+						</Avatar>
+						<p className='text-sm'>{name}</p>
+					</div>
+				))}
+			</div>
 			<BsChevronLeft
 				onClick={onGoBack}
 				className={`absolute top-[8%] left-5 md:left-10 lg:left-20 z-50 w-10 h-10 ${
@@ -223,6 +263,9 @@ export const VideoElWatchParty = ({ movie, viewingTime = 0 }: { movie: Movie; vi
 					loading ? 'visible' : 'hidden'
 				} absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}
 			>
+				{participantsWatchingMovie.length > 1 && (
+					<p className='font-semibold text-lg'>Sincronizando</p>
+				)}
 				<Loading className='md:w-10 md:h-10 lg:w-12 lg:h-12' />
 			</div>
 			<ReactPlayer
