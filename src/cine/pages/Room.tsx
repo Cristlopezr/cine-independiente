@@ -113,7 +113,7 @@ export const Room = () => {
 			playerRef.current?.seekTo(seek_time_stamp);
 		});
 
-		socket.on('disconnect', () => {});
+	/* 	socket.on('disconnect', () => {}); */
 		return () => {
 			socket.off('SERVER:started-movie');
 			socket.off('SERVER:user-seeked');
