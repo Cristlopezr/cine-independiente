@@ -14,7 +14,7 @@ import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 
 const MAX_PARTICIPANTS = 3;
-
+const MAX_TIME_DIFFERENCE = 0.15;
 const pageText = {
 	pageTitle: 'Ver en grupo',
 	inviteText: 'Invita hasta 2 amigos a tu grupo.',
@@ -25,6 +25,7 @@ const pageText = {
 const baseUrl = import.meta.env.VITE_BASE_URL;
 type RoomStatus = 'playing' | 'waiting';
 type MovieState = 'started' | 'not-started';
+
 export const Room = () => {
 	const { movie_id, room_id } = useParams();
 	const { user } = useAuthStore();
@@ -35,6 +36,8 @@ export const Room = () => {
 	const navigate = useNavigate();
 	const { data, isError, isFetching } = useGetMovieQuery(movie_id!);
 	const playerRef = useRef<ReactPlayer | null>(null);
+	const [showControls, setShowControls] = useState(true);
+	const [count, setCount] = useState(0);
 	const { showAlert, showHideAlert } = useShowHideAlert();
 	const [playerState, setPlayerState] = useState({
 		playing: true,
@@ -73,7 +76,6 @@ export const Room = () => {
 		});
 
 		socket.on('SERVER:started-movie', ({ movie_state }) => {
-			console.log(movie_state);
 			onSetMovieState(movie_state, socket);
 			/* setPlayerState({ ...playerState, muted: false }); */
 		});
@@ -84,7 +86,7 @@ export const Room = () => {
 
 		socket.on('SERVER:time-stamp', ({ maxTime, playing }) => {
 			if (playerRef.current) {
-				if (maxTime - playerRef?.current?.getCurrentTime() > 0.15) {
+				if (maxTime - playerRef?.current?.getCurrentTime() > MAX_TIME_DIFFERENCE) {
 					playerRef.current.seekTo(maxTime, 'seconds');
 					setPlayerState({ ...playerState, playing });
 				}
@@ -95,6 +97,11 @@ export const Room = () => {
 			setRoomStatus(room_status);
 			onSetMovieState(movie_state, socket);
 			/* setPlayerState({ ...playerState, played: 0 }); */
+		});
+
+		socket.on('SERVER:mouse-move', () => {
+			setCount(0);
+			setShowControls(true);
 		});
 
 		socket.on('SERVER:play-pause', ({ playing }) => {
@@ -110,9 +117,7 @@ export const Room = () => {
 			playerRef.current?.seekTo(seek_time_stamp);
 		});
 
-		socket.on('disconnect', () => {
-			console.log('Usuario desconectado');
-		});
+		socket.on('disconnect', () => {});
 		return () => {
 			socket.off('SERVER:started-movie');
 			socket.off('SERVER:user-seeked');
@@ -120,6 +125,7 @@ export const Room = () => {
 			socket.off('SERVER:movie-ended');
 			socket.off('SERVER:time-stamp');
 			socket.off('SERVER:participants');
+			socket.off('SERVER:mouse-move');
 			socket.off('SERVER:room-status');
 			socket.off('connect');
 			socket.off('disconnect');
@@ -264,6 +270,10 @@ export const Room = () => {
 					onSetMovieState={onSetMovieState}
 					playerRef={playerRef}
 					participants={participants}
+					showControls={showControls}
+					setShowControls={setShowControls}
+					count={count}
+					setCount={setCount}
 				/>
 			)}
 		</>

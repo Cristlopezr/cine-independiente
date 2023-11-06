@@ -36,6 +36,10 @@ type VideoElWatchPartyProps = {
 	setPlayerState: (playerState: PlayerState) => void;
 	playerRef: React.MutableRefObject<ReactPlayer | null>;
 	participants: UserWatchParty[];
+	showControls: boolean;
+	setShowControls: (state: boolean) => void;
+	count: number;
+	setCount: (count: number) => void;
 };
 
 export const VideoElWatchParty = ({
@@ -48,11 +52,13 @@ export const VideoElWatchParty = ({
 	setPlayerState,
 	playerRef,
 	participants,
+	showControls,
+	setShowControls,
+	count,
+	setCount,
 }: VideoElWatchPartyProps) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
 	const playerContainerRef = useRef(null);
-	const [count, setCount] = useState(0);
-	const [showControls, setShowControls] = useState(true);
 	const [loading, setLoading] = useState(false);
 	const [saveWatchHistory] = useSaveWatchHistoryMutation();
 	const playedRef = useRef(0);
@@ -167,6 +173,7 @@ export const VideoElWatchParty = ({
 	const onMouseMove = () => {
 		setCount(0);
 		setShowControls(true);
+		socket.emit('CLIENT:mouse-move', { room_id });
 	};
 
 	const onSeek = (seeked: number) => {
@@ -284,7 +291,7 @@ export const VideoElWatchParty = ({
 				playing={playing}
 				onProgress={onProgress}
 				onSeek={onSeekEnded}
-				progressInterval={500}
+				progressInterval={1000}
 				onBuffer={onBuffer}
 				onBufferEnd={onBufferEnd}
 				onEnded={onEnded}
