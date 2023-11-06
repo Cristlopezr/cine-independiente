@@ -40,7 +40,7 @@ export const Room = () => {
 	const [count, setCount] = useState(0);
 	const { showAlert, showHideAlert } = useShowHideAlert();
 	const [playerState, setPlayerState] = useState({
-		playing: false,
+		playing: true,
 		muted: false,
 		volume: 1,
 		volumeSeek: 1,
@@ -88,7 +88,7 @@ export const Room = () => {
 			if (playerRef.current) {
 				if (maxTime - playerRef?.current?.getCurrentTime() > MAX_TIME_DIFFERENCE) {
 					playerRef.current.seekTo(maxTime, 'seconds');
-					setPlayerState({ ...playerState, playing });
+					setPlayerState(prevPlayerState => ({ ...prevPlayerState, playing }));
 				}
 			}
 		});
@@ -105,7 +105,7 @@ export const Room = () => {
 		});
 
 		socket.on('SERVER:play-pause', ({ playing }) => {
-			setPlayerState({ ...playerState, playing });
+			setPlayerState(prevPlayerState => ({ ...prevPlayerState, playing }));
 		});
 
 		socket.on('SERVER:user-seeked', ({ seek_time_stamp, playing }) => {
@@ -113,7 +113,12 @@ export const Room = () => {
 				const hlsPlayer = playerRef.current.getInternalPlayer('hls');
 				hlsPlayer.stopLoad();
 			}
-			setPlayerState({ ...playerState, played: seek_time_stamp, seeking: true, playing });
+			setPlayerState(prevPlayerState => ({
+				...prevPlayerState,
+				played: seek_time_stamp,
+				seeking: true,
+				playing,
+			}));
 			playerRef.current?.seekTo(seek_time_stamp);
 		});
 
