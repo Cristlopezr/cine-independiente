@@ -40,7 +40,7 @@ export const Room = () => {
 	const [count, setCount] = useState(0);
 	const { showAlert, showHideAlert } = useShowHideAlert();
 	const [playerState, setPlayerState] = useState({
-		playing: true,
+		playing: false,
 		muted: false,
 		volume: 1,
 		volumeSeek: 1,
