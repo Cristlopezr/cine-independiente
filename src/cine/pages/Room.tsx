@@ -65,19 +65,11 @@ export const Room = () => {
 		});
 
 		socket.on('SERVER:participants', ({ participants }) => {
-			/* setParticipants(prevParticipants => {
-				if (participants.length > MAX_PARTICIPANTS) {
-					return [...prevParticipants];
-				}
-				return [...participants];
-			});
- */
 			setParticipants(participants);
 		});
 
 		socket.on('SERVER:started-movie', ({ movie_state }) => {
 			onSetMovieState(movie_state, socket);
-			/* setPlayerState({ ...playerState, muted: false }); */
 		});
 
 		socket.on('SERVER:room-status', ({ room_status }) => {
@@ -96,7 +88,6 @@ export const Room = () => {
 		socket.on('SERVER:movie-ended', ({ room_status, movie_state }) => {
 			setRoomStatus(room_status);
 			onSetMovieState(movie_state, socket);
-			/* setPlayerState({ ...playerState, played: 0 }); */
 		});
 
 		socket.on('SERVER:mouse-move', () => {
