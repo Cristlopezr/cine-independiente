@@ -43,8 +43,10 @@
     "react-slick": "^0.29.0",
     "screenfull": "^6.0.2",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.2",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^9.0.1",
     "zod": "^3.22.2"
   },
   "devDependencies": {
@@ -58,6 +60,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/react-modal": "^3.16.0",
     "@types/react-slick": "^0.23.10",
+    "@types/uuid": "^9.0.6",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",

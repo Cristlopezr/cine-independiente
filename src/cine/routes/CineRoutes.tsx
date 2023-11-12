@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { CinePage, MoviePage, MoviesPage, SearchPage, VideoPage } from '../pages';
+import { CinePage, MoviePage, MoviesPage, Room, SearchPage, VideoPage } from '../pages';
 import { MovieDetailsPage, MyHistoryPage, MyListPage, MyMoviesPage, ProfilePage } from '../pages/user';
 import { ScrollToTop } from '@/components';
 import { CineLayout } from '../layout';
@@ -13,6 +13,7 @@ export const CineRoutes = () => {
 					<Route index element={<CinePage />} />
 					<Route path='movie/:id' element={<MoviePage />} />
 				</Route>
+				<Route path='room/:movie_id/:room_id' element={<Room />} />
 				<Route path='/movie/player/:id' element={<VideoPage />} />
 				<Route path='/user' element={<CineLayout />}>
 					<Route path='my-movies' element={<MyMoviesPage />} />

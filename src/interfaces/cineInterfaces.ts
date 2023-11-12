@@ -128,6 +128,19 @@ export interface CleanUploadMovieFormValues {
 	user_id: string;
 }
 
+export interface UserWatchParty {
+	user_id: string;
+	name: string;
+	lastname: string;
+	email: string;
+	emailVerified: boolean;
+	avatarUrl?: string;
+	user_movie_state?: string;
+	userTs?: number;
+	socket_id?: string;
+	leader?: boolean;
+}
+
 export interface InitialMovie {
 	date: string | undefined;
 	imageUrl: string | undefined;

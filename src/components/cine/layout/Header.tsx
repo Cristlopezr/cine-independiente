@@ -60,9 +60,9 @@ export const Header = ({ headerTransparent }: { headerTransparent?: boolean }) =
 				</nav>
 			</div>
 
-			<Link to='/' className='md:text-2xl font-semibold text-center w-fit min-[500px]:w-full'>
-				Cine Stream
-			</Link>
+			<span className='md:text-2xl font-semibold text-center w-fit min-[500px]:w-full '>
+				<Link to='/'>Cine Stream</Link>
+			</span>
 
 			<section className='flex items-center justify-end gap-4 min-[440px]:gap-6 p-2 font-semibold'>
 				<TooltipProvider>
