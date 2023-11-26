@@ -1,6 +1,6 @@
 import { CustomAlert } from '@/components';
 import { Header } from '@/components/cine/layout';
-import { VideoElWatchParty } from '@/components/cine/roomPage';
+import { Chat, VideoElWatchParty } from '@/components/cine/roomPage';
 import { Avatar, AvatarFallback, AvatarImage, Button, Loading, Separator } from '@/components/ui';
 import { formatMovieTime } from '@/helpers';
 import { useAuthStore, useShowHideAlert } from '@/hooks';
@@ -24,7 +24,13 @@ const pageText = {
 };
 const baseUrl = import.meta.env.VITE_BASE_URL;
 type RoomStatus = 'playing' | 'waiting';
-type MovieState = 'started' | 'not-started';
+export type MovieState = 'started' | 'not-started';
+type Message = {
+	message_id: string;
+	msg: string;
+	user: UserWatchParty;
+	time: string;
+};
 
 export const Room = () => {
 	const { movie_id, room_id } = useParams();
@@ -39,6 +45,8 @@ export const Room = () => {
 	const [showControls, setShowControls] = useState(true);
 	const [count, setCount] = useState(0);
 	const { showAlert, showHideAlert } = useShowHideAlert();
+	const [isChatOpen, setIsChatOpen] = useState(false);
+	const playerContainerRef = useRef(null);
 	const [playerState, setPlayerState] = useState({
 		playing: true,
 		muted: false,
@@ -49,6 +57,9 @@ export const Room = () => {
 		loaded: 0,
 		seeking: false,
 	});
+	const [messages, setMessages] = useState<Message[]>([]);
+
+	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	const onSetMovieState = (movie_state: MovieState, socket: Socket) => {
 		setMovieState(movie_state);
@@ -64,6 +75,10 @@ export const Room = () => {
 			socket.emit('CLIENT:user-joined-room', { room_id, user: { ...user } });
 		});
 
+		socket.on('SERVER:messages', ({ messages }) => {
+			setMessages(messages);
+		});
+
 		socket.on('SERVER:participants', ({ participants }) => {
 			setParticipants(participants);
 		});
@@ -74,6 +89,10 @@ export const Room = () => {
 
 		socket.on('SERVER:room-status', ({ room_status }) => {
 			setRoomStatus(room_status);
+		});
+
+		socket.on('SERVER:sent-message', ({ msg }) => {
+			setMessages(prevMessages => [...prevMessages, msg]);
 		});
 
 		socket.on('SERVER:time-stamp', ({ maxTime, playing }) => {
@@ -123,6 +142,8 @@ export const Room = () => {
 			socket.off('SERVER:participants');
 			socket.off('SERVER:mouse-move');
 			socket.off('SERVER:room-status');
+			socket.off('SERVER:sent-message');
+			socket.off('SERVER:messages');
 			socket.off('connect');
 			socket.off('disconnect');
 			socket.close();
@@ -162,6 +183,28 @@ export const Room = () => {
 		});
 	};
 
+	const onSubmitMessage = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (!inputRef.current || inputRef.current.value === '') return;
+
+		const now = new Date();
+		const hours = now.getHours().toString().padStart(2, '0');
+		const minutes = now.getMinutes().toString().padStart(2, '0');
+		const seconds = now.getSeconds().toString().padStart(2, '0');
+
+		const time = `${hours}:${minutes}:${seconds}`;
+		const message_id = now.getTime().toString();
+		setMessages([...messages, { user, msg: inputRef.current?.value, time, message_id }]);
+		socket?.emit('CLIENT:send-message', {
+			room_id,
+			user,
+			msg: inputRef.current?.value,
+			time,
+			message_id,
+		});
+		inputRef.current.value = '';
+	};
+
 	const { movie } = data!;
 	return (
 		<>
@@ -179,8 +222,8 @@ export const Room = () => {
 					<div className='pt-[100px] px-5 sm:px-10'>
 						<h1 className='text-2xl sm:px-5 font-semibold'>{pageText.pageTitle}</h1>
 						<Separator className='my-5' />
-						<div className='grid grid-cols-1 gap-10 lg:grid-cols-2'>
-							<div className='flex flex-col w-full md:max-w-[600px] sm:px-5 gap-10'>
+						<div className='grid grid-cols-1 gap-3 lg:grid-cols-3 p-2'>
+							<div className='flex flex-col w-full md:max-w-[600px] sm:px-5 gap-10 mx-auto'>
 								<h2 className='text-2xl'>{movie.title}</h2>
 								<div className='w-full rounded-md overflow-hidden'>
 									<img src={movie.imageUrl} className='w-full' alt='Imagen película' />
@@ -218,26 +261,32 @@ export const Room = () => {
 									<div>La película ya empezó, unete haciendo clic en empezar a ver.</div>
 								)}
 								<div className='flex gap-10 items-center'>
-									{participants.map(({ user_id, name, avatarUrl }, i) => (
-										<span
-											key={user_id}
-											className={`flex flex-col items-center ${
-												i === 0 ? 'order-2' : i === 1 ? 'order-1' : 'order-3'
-											}`}
-										>
-											<Avatar
-												className={`${
-													i === 0 ? 'w-[10rem] h-[10rem]' : 'w-[8rem] h-[8rem]'
-												} border-4 border-border-second`}
+									{participants.length === 0 ? (
+										<div className='w-[10rem] h-[10rem] flex items-center justify-center'>
+											<Loading className='h-10 w-10' />
+										</div>
+									) : (
+										participants.map(({ user_id, name, avatarUrl }, i) => (
+											<span
+												key={user_id}
+												className={`flex flex-col items-center ${
+													i === 0 ? 'order-2' : i === 1 ? 'order-1' : 'order-3'
+												}`}
 											>
-												<AvatarImage src={avatarUrl ? avatarUrl : undefined} />
-												<AvatarFallback className='text-4xl'>
-													{name.slice(0, 1)}
-												</AvatarFallback>
-											</Avatar>
-											<p className='hidden md:block text-white'>{name}</p>
-										</span>
-									))}
+												<Avatar
+													className={`${
+														i === 0 ? 'w-[5rem] h-[5rem]' : 'w-[3rem] h-[3rem]'
+													} border-2 border-border-second`}
+												>
+													<AvatarImage src={avatarUrl ? avatarUrl : undefined} />
+													<AvatarFallback className='text-2xl'>
+														{name.slice(0, 1)}
+													</AvatarFallback>
+												</Avatar>
+												<p className='hidden md:block text-white mt-1'>{name}</p>
+											</span>
+										))
+									)}
 								</div>
 								<div className='flex flex-col gap-10 items-center w-full'>
 									<Button onClick={onClickPlay} className='w-fit'>
@@ -251,26 +300,55 @@ export const Room = () => {
 									</div>
 								</div>
 							</div>
+							<Chat
+								inputRef={inputRef}
+								messages={messages}
+								onSubmitMessage={onSubmitMessage}
+								user={user}
+								setIsChatOpen={setIsChatOpen}
+								movieState={movieState}
+								isChatOpen={isChatOpen}
+							/>
 						</div>
 					</div>
 				</>
 			)}
 			{movieState === 'started' && (
-				<VideoElWatchParty
-					movie={movie}
-					viewingTime={0}
-					playerState={playerState}
-					setPlayerState={setPlayerState}
-					socket={socket!}
-					room_id={room_id!}
-					onSetMovieState={onSetMovieState}
-					playerRef={playerRef}
-					participants={participants}
-					showControls={showControls}
-					setShowControls={setShowControls}
-					count={count}
-					setCount={setCount}
-				/>
+				<div className='flex' ref={playerContainerRef}>
+					<VideoElWatchParty
+						movie={movie}
+						viewingTime={0}
+						playerState={playerState}
+						setPlayerState={setPlayerState}
+						socket={socket!}
+						room_id={room_id!}
+						onSetMovieState={onSetMovieState}
+						playerRef={playerRef}
+						participants={participants}
+						showControls={showControls}
+						setShowControls={setShowControls}
+						count={count}
+						setCount={setCount}
+						playerContainerRef={playerContainerRef.current}
+						setIsChatOpen={setIsChatOpen}
+						isChatOpen={isChatOpen}
+					/>
+					<div
+						className={`z-50 w-[500px] ${
+							isChatOpen ? 'opacity-100' : 'absolute left-[-999px] opacity-0'
+						} transition-all duration-700 ease-out`}
+					>
+						<Chat
+							inputRef={inputRef}
+							messages={messages}
+							onSubmitMessage={onSubmitMessage}
+							user={user}
+							setIsChatOpen={setIsChatOpen}
+							movieState={movieState}
+							isChatOpen={isChatOpen}
+						/>
+					</div>
+				</div>
 			)}
 		</>
 	);

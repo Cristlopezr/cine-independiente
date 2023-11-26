@@ -139,6 +139,7 @@ export interface UserWatchParty {
 	userTs?: number;
 	socket_id?: string;
 	leader?: boolean;
+	color?:string;
 }
 
 export interface InitialMovie {

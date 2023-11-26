@@ -5,7 +5,7 @@ import screenfull from 'screenfull';
 import { PlayerControls } from '../videoPage/PlayerControls';
 import { OnProgressProps } from 'react-player/base';
 import { Avatar, AvatarFallback, AvatarImage, Loading } from '@/components/ui';
-import { BsChevronLeft } from 'react-icons/bs';
+import { BsArrowLeft, BsChevronLeft } from 'react-icons/bs';
 import { useSaveWatchHistoryMutation } from '@/store/cine';
 import { useAuthStore } from '@/hooks';
 import { formatMovieTime } from '@/helpers';
@@ -40,6 +40,9 @@ type VideoElWatchPartyProps = {
 	setShowControls: (state: boolean) => void;
 	count: number;
 	setCount: (count: number) => void;
+	playerContainerRef: any;
+	setIsChatOpen: (state: boolean) => void;
+	isChatOpen: boolean;
 };
 
 export const VideoElWatchParty = ({
@@ -56,9 +59,12 @@ export const VideoElWatchParty = ({
 	setShowControls,
 	count,
 	setCount,
+	playerContainerRef,
+	setIsChatOpen,
+	isChatOpen,
 }: VideoElWatchPartyProps) => {
 	const [availableLevels, setAvailableLevels] = useState<Level[]>([]);
-	const playerContainerRef = useRef(null);
+
 	const [loading, setLoading] = useState(false);
 	const [saveWatchHistory] = useSaveWatchHistoryMutation();
 	const playedRef = useRef(0);
@@ -238,7 +244,7 @@ export const VideoElWatchParty = ({
 
 	return (
 		<div
-			ref={playerContainerRef}
+			/* ref={playerContainerRef} */
 			onMouseMove={onMouseMove}
 			className='h-screen relative bg-black outline-none'
 			onKeyDown={onKeyDown}
@@ -261,6 +267,19 @@ export const VideoElWatchParty = ({
 					showControls ? 'opacity-100' : 'opacity-0'
 				} cursor-pointer transition-all duration-700 ease-out`}
 			/>
+			<div
+				className={`flex items-center gap-3 absolute top-[8%] right-5 md:right-10 lg:right-20 z-50 ${
+					showControls
+						? !isChatOpen
+							? 'opacity-100 transition-all duration-700 ease-out'
+							: 'opacity-0 transition-all duration-0 ease-out'
+						: ''
+				} cursor-pointer `}
+				onClick={() => setIsChatOpen(true)}
+			>
+				<BsArrowLeft className='w-10 h-10' />
+				<p className='text-xs font-semibold'>Abrir chat</p>
+			</div>
 			<div className={showControls ? 'opacity-100' : 'opacity-0'}>
 				<div className='absolute bg-gradient-to-t from-transparent from-0% to-background pointer-events-none top-0 bottom-[85%] left-0 right-0'></div>
 				<div className='absolute bg-gradient-to-b from-transparent from-0% to-background pointer-events-none top-[75%] bottom-0 left-0 right-0'></div>
