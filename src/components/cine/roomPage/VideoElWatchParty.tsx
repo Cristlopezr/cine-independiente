@@ -246,7 +246,7 @@ export const VideoElWatchParty = ({
 		<div
 			/* ref={playerContainerRef} */
 			onMouseMove={onMouseMove}
-			className='h-screen relative bg-black outline-none'
+			className='h-screen relative bg-black outline-none w-full'
 			onKeyDown={onKeyDown}
 			tabIndex={0}
 		>

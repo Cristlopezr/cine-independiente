@@ -14,7 +14,7 @@ import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 
 const MAX_PARTICIPANTS = 3;
-const MAX_TIME_DIFFERENCE = 0.1;
+const MAX_TIME_DIFFERENCE = 0.08;
 const pageText = {
 	pageTitle: 'Ver en grupo',
 	inviteText: 'Invita hasta 2 amigos a tu grupo.',
