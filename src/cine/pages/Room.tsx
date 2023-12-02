@@ -14,7 +14,7 @@ import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 
 const MAX_PARTICIPANTS = 3;
-const MAX_TIME_DIFFERENCE = 0.08;
+const MAX_TIME_DIFFERENCE = 0.15;
 const pageText = {
 	pageTitle: 'Ver en grupo',
 	inviteText: 'Invita hasta 2 amigos a tu grupo.',
@@ -98,7 +98,7 @@ export const Room = () => {
 		socket.on('SERVER:time-stamp', ({ maxTime, playing }) => {
 			if (playerRef.current) {
 				if (maxTime - playerRef?.current?.getCurrentTime() > MAX_TIME_DIFFERENCE) {
-					playerRef.current.seekTo(maxTime + MAX_TIME_DIFFERENCE, 'seconds');
+					playerRef.current.seekTo(maxTime, 'seconds');
 					setPlayerState(prevPlayerState => ({ ...prevPlayerState, playing }));
 				}
 			}

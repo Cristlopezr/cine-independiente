@@ -255,7 +255,7 @@ export const VideoElWatchParty = ({
 					<div key={user_id} className='flex items-center gap-3'>
 						<Avatar className='w-6 h-6 border-border-second border-2'>
 							<AvatarImage src={avatarUrl ? avatarUrl : undefined} />
-							<AvatarFallback className='text-base'>{name.slice(0, 1)}</AvatarFallback>
+							<AvatarFallback className='text-xs'>{name.slice(0, 1)}</AvatarFallback>
 						</Avatar>
 						<p className='text-sm'>{name}</p>
 					</div>
