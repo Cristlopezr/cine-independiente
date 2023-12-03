@@ -268,17 +268,24 @@ export const VideoElWatchParty = ({
 				} cursor-pointer transition-all duration-700 ease-out`}
 			/>
 			<div
-				className={`flex items-center gap-3 absolute top-[8%] right-5 md:right-10 lg:right-20 z-50 ${
+				className={`absolute top-[8%] right-5 md:right-10 lg:right-20 z-50 ${
 					showControls
-						? !isChatOpen
-							? 'opacity-100 transition-all duration-700 ease-out'
-							: 'opacity-0 transition-all duration-0 ease-out'
-						: ''
+						? 'opacity-100 transition-all duration-700 ease-out'
+						: 'opacity-0 transition-all duration-0 ease-out'
 				} cursor-pointer `}
 				onClick={() => setIsChatOpen(true)}
 			>
-				<BsArrowLeft className='w-10 h-10' />
-				<p className='text-xs font-semibold'>Abrir chat</p>
+				<div
+					className={`flex items-center gap-3
+						${
+							!isChatOpen
+								? 'opacity-100 transition-all duration-700 ease-out'
+								: 'opacity-0 transition-all duration-0 ease-out'
+						}`}
+				>
+					<BsArrowLeft className='w-10 h-10' />
+					<p className='text-xs font-semibold'>Abrir chat</p>
+				</div>
 			</div>
 			<div className={showControls ? 'opacity-100' : 'opacity-0'}>
 				<div className='absolute bg-gradient-to-t from-transparent from-0% to-background pointer-events-none top-0 bottom-[85%] left-0 right-0'></div>
