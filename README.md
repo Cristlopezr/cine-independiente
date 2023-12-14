@@ -17,7 +17,9 @@ git clone https://github.com/carlolopezr/Server-CineIndependiente
 ```
 git clone https://github.com/carlolopezr/api-peliculas
 ```
-
+```
+git clone https://github.com/carlolopezr/server-watch-party
+```
 4. Rename .env.example to .env and change the variables values accordingly.
 
 5. Run the project
