@@ -75,7 +75,7 @@ export const CinePage = () => {
 	return (
 		<div>
 			<MainCarousel />
-			<section className='mt-5 flex flex-col gap-16 px-5 lg:px-12'>
+			<section className='mt-5 flex flex-col gap-10 px-5 lg:px-12'>
 				{recommendedMovies && recommendedMovies.length > 0 && (
 					<MovieCarousel
 						movies={recommendedMovies}

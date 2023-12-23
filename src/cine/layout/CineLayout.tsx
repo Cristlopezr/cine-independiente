@@ -8,7 +8,7 @@ export const CineLayout = ({ headerTransparent }: { headerTransparent?: boolean 
 			<main className='h-full'>
 				<Outlet />
 			</main>
-			<footer className='h-[180px]'></footer>
+			<footer className='h-[80px]'></footer>
 		</div>
 	);
 };
