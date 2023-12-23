@@ -78,31 +78,33 @@ export const MovieCarouselItem = ({
 						) : null}
 					</div>
 				</div>
-				<div className='absolute w-full opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out bottom-0 flex items-center gap-3'>
-					{isHistoryPage && (
+				{isHistoryPage && (
+					<div className='opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out '>
 						<div
 							onClick={onClickDeleteFromHistory}
-							className='absolute cursor-pointer hover:bg-gray-700 bg-gray-700/70 hover:ring-2 hover:ring-[hsl(258,84%,59%)] flex items-center justify-center rounded-full w-10 h-10 bottom-20 left-1/2 -translate-x-1/2'
+							className='absolute w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 cursor-pointer top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hover:bg-gray-700 bg-gray-700/70 hover:ring-2 hover:ring-[hsl(258,84%,59%)] flex items-center justify-center rounded-full'
 						>
 							<BsX className='w-full text-4xl' />
 						</div>
-					)}
-					<div className='absolute flex items-center justify-center bottom-5 right-[68px] w-10 h-10 z-10 bg-white/90 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'>
+					</div>
+				)}
+				<div className='absolute opacity-0 group-hover/actions:opacity-100 transition-all duration-500 ease-in-out flex items-center justify-between w-fit gap-2 bottom-5 right-5'>
+					<div className='w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 bg-white/90 flex items-center justify-center z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'>
 						<RiPlayFill
 							onClick={() => onClickPlay(movie.movie_id)}
-							className='w-full text-2xl text-black'
+							className='w-full text-black md:text-2xl'
 						/>
 					</div>
 					{isMovieInlist ? (
 						<div
 							onClick={onClickDeleteFromList}
-							className='absolute bg-white/90 flex items-center justify-center bottom-5 right-5 w-10 h-10 z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
+							className='w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 bg-white/90 flex items-center justify-center z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'
 						>
-							<BsCheck2 className='w-full text-black text-2xl' />
+							<BsCheck2 className='w-full text-black md:text-2xl' />
 						</div>
 					) : (
-						<div className='absolute bottom-5 right-5 w-10 h-10 z-10 flex items-center justify-center bg-white/90 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'>
-							<BsPlusLg onClick={onClickAddToList} className='w-full text-black text-2xl' />
+						<div className='w-7 h-7 md:w-9 md:h-9 lg:w-10 lg:h-10 bg-white/90 flex items-center justify-center z-1 cursor-pointer hover:bg-white hover:ring-2 rounded-full hover:ring-[hsl(258,84%,59%)]'>
+							<BsPlusLg onClick={onClickAddToList} className='w-full text-black md:text-2xl' />
 						</div>
 					)}
 				</div>
