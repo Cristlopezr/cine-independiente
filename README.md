@@ -1,4 +1,4 @@
-# Cine Independiente App
+# Cine Independiente App - Proyecto de Título
 
 1. Clone the repository
 ```
