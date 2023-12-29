@@ -26,7 +26,7 @@ export const useAuthStore = () => {
 			saveTokenInLocalStorage(token);
 			dispatch(onLogin(user));
 		} catch (error: any) {
-			dispatch(onError(error.data.msg));
+			dispatch(onError(error?.data?.msg));
 			dispatch(onLogout());
 		}
 	};
